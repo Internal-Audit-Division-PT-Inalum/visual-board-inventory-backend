@@ -14,6 +14,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, HasRoles, HasUlid, Notifiable;
 
     protected $keyType = 'string';
+
     public $incrementing = false;
 
     protected $fillable = [
