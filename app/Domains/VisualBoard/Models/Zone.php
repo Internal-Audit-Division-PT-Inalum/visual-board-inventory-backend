@@ -2,8 +2,9 @@
 
 namespace App\Domains\VisualBoard\Models;
 
-use App\Models\User;
+use App\Domains\Core\Models\User;
 use App\Shared\Concerns\HasUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Zone extends Model
 {
-    use HasUlid, SoftDeletes;
+    use HasFactory, HasUlid, SoftDeletes;
 
     protected $fillable = [
         'name',

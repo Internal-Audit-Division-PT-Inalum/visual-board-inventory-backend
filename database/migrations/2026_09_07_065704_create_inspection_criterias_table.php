@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('inspection_criteria', function (Blueprint $table) {
+        Schema::create('inspection_criterias', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('zone_id')->constrained('zones')->cascadeOnDelete();
             $table->string('item_group');

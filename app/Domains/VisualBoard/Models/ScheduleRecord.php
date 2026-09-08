@@ -3,12 +3,13 @@
 namespace App\Domains\VisualBoard\Models;
 
 use App\Shared\Concerns\HasUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ScheduleRecord extends Model
 {
-    use HasUlid;
+    use HasFactory, HasUlid;
 
     protected $fillable = [
         'monthly_schedule_id',
