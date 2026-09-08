@@ -12,7 +12,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->foreignUlid('zone_id')->constrained('zones')->cascadeOnDelete();
             $table->foreignUlid('monthly_schedule_id')->nullable()->constrained('monthly_schedules')->nullOnDelete();
-            $table->foreignUlid('inspection_criteria_id')->nullable()->constrained('inspection_criteria')->nullOnDelete();
+            $table->foreignUlid('inspection_criteria_id')->nullable()->constrained('inspection_criterias')->nullOnDelete();
 
             $table->date('date_found');
             $table->text('problem_description');

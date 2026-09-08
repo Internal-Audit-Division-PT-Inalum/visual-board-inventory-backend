@@ -7,7 +7,7 @@ use App\Domains\VisualBoard\Models\ScheduleRecord;
 use App\Domains\VisualBoard\Models\Zone;
 
 beforeEach(function () {
-    $this->user = User::factory()->create(['id' => 1]);
+    $this->user = User::factory()->create();
     $this->zone = Zone::factory()->create(['name' => 'Zona 1 - Produksi']);
 
     $this->criteria = InspectionCriteria::factory()->create([
