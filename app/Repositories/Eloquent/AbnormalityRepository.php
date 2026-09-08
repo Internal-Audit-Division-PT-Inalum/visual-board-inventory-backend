@@ -58,4 +58,31 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
 
         return $abnormality->delete();
     }
+
+    public function getSummaryByMonth(int $month, int $year): array
+    {
+        $data = $this->model->newQuery()
+            ->whereMonth('date_found', $month)
+            ->whereYear('date_found', $year)
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        return [
+            'open' => $data['open'] ?? 0,
+            'in_progress' => $data['in_progress'] ?? 0,
+            'resolved' => $data['resolved'] ?? 0,
+        ];
+    }
+
+    public function getLatestUnresolved(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->model->newQuery()
+            ->with(['zone', 'pic'])
+            ->whereIn('status', ['open', 'in_progress'])
+            ->latest('date_found')
+            ->limit($limit)
+            ->get();
+    }
 }
