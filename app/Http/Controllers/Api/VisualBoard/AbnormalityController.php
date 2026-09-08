@@ -8,9 +8,17 @@ use App\Http\Requests\VisualBoard\UpdateAbnormalityProgressRequest;
 use App\Http\Resources\Api\VisualBoard\AbnormalityResource;
 use App\Repositories\Contracts\AbnormalityRepositoryInterface;
 use App\Services\VisualBoard\AbnormalityService;
+use App\Shared\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+
+/**
+ * @group Visual Board Domain
+ * @subgroup Manajemen Abnormality
+ *
+ * Endpoint untuk mencatat dan mengelola masalah (abnormality) dari inspeksi 5R harian.
+ */
 
 class AbnormalityController extends Controller
 {
@@ -33,43 +41,53 @@ class AbnormalityController extends Controller
     }
 
     /**
-     * Store a newly created abnormality.
+     * Buat Abnormality Baru
+     * 
+     * Endpoint ini mencatat masalah baru yang ditemukan di lapangan.
      */
     public function store(StoreAbnormalityRequest $request): JsonResponse
     {
         $abnormality = $this->service->createAbnormality($request->validated());
 
-        return response()->json([
-            'message' => 'Abnormality created successfully',
-            'data' => new AbnormalityResource($abnormality),
-        ], 201);
+        return ApiResponse::success(
+            new AbnormalityResource($abnormality),
+            'Abnormality created successfully',
+            201
+        );
     }
 
     /**
-     * Display the specified abnormality.
+     * Detail Abnormality
+     * 
+     * Mengambil detail lengkap suatu masalah beserta progressnya.
+     * 
+     * @urlParam id string required ULID dari abnormality.
      */
     public function show(string $id): JsonResponse
     {
         $abnormality = $this->repository->findById($id);
 
         if (! $abnormality) {
-            return response()->json(['message' => 'Abnormality not found'], 404);
+            return ApiResponse::error('Abnormality not found', 404);
         }
 
-        return response()->json([
-            'data' => new AbnormalityResource($abnormality),
-        ]);
+        return ApiResponse::success(new AbnormalityResource($abnormality));
     }
 
     /**
-     * Update progress of the specified abnormality.
+     * Update Progress Abnormality
+     * 
+     * Menyimpan progres perbaikan (0-100%) dan aktual dari penanggulangan masalah.
+     * Jika persentase 100, status otomatis berubah menjadi 'resolved'.
+     * 
+     * @urlParam id string required ULID dari abnormality.
      */
     public function updateProgress(UpdateAbnormalityProgressRequest $request, string $id): JsonResponse
     {
         $abnormality = $this->repository->findById($id);
 
         if (! $abnormality) {
-            return response()->json(['message' => 'Abnormality not found'], 404);
+            return ApiResponse::error('Abnormality not found', 404);
         }
 
         $updatedAbnormality = $this->service->updateProgress(
@@ -79,27 +97,29 @@ class AbnormalityController extends Controller
             $request->validated('pic_id')
         );
 
-        return response()->json([
-            'message' => 'Progress updated successfully',
-            'data' => new AbnormalityResource($updatedAbnormality),
-        ]);
+        return ApiResponse::success(
+            new AbnormalityResource($updatedAbnormality),
+            'Progress updated successfully'
+        );
     }
 
     /**
-     * Remove the specified abnormality.
+     * Hapus Abnormality
+     * 
+     * Menghapus catatan abnormality (menggunakan soft deletes).
+     * 
+     * @urlParam id string required ULID dari abnormality.
      */
     public function destroy(string $id): JsonResponse
     {
         $abnormality = $this->repository->findById($id);
 
         if (! $abnormality) {
-            return response()->json(['message' => 'Abnormality not found'], 404);
+            return ApiResponse::error('Abnormality not found', 404);
         }
 
         $this->service->deleteAbnormality($id);
 
-        return response()->json([
-            'message' => 'Abnormality deleted successfully',
-        ]);
+        return ApiResponse::success(null, 'Abnormality deleted successfully');
     }
 }
