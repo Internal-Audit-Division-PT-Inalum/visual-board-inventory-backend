@@ -52,6 +52,7 @@ class AbnormalityController extends Controller
         return ApiResponse::success(
             new AbnormalityResource($abnormality),
             'Abnormality created successfully',
+            [],
             201
         );
     }

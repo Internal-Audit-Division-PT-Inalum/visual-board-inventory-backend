@@ -24,8 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*') || $request->expectsJson()) {
                 return \App\Shared\Responses\ApiResponse::error(
                     'Validasi gagal.',
-                    422,
-                    $e->errors()
+                    $e->errors(),
+                    422
                 );
             }
         });
@@ -34,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*') || $request->expectsJson()) {
                 return \App\Shared\Responses\ApiResponse::error(
                     'Data tidak ditemukan.',
+                    [],
                     404
                 );
             }
@@ -43,6 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*') || $request->expectsJson()) {
                 return \App\Shared\Responses\ApiResponse::error(
                     'Endpoint atau rute tidak ditemukan.',
+                    [],
                     404
                 );
             }
@@ -52,6 +54,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*') || $request->expectsJson()) {
                 return \App\Shared\Responses\ApiResponse::error(
                     'Unauthenticated. Silakan login terlebih dahulu.',
+                    [],
                     401
                 );
             }
@@ -61,6 +64,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*') || $request->expectsJson()) {
                 return \App\Shared\Responses\ApiResponse::error(
                     'Anda tidak memiliki akses ke sumber daya ini.',
+                    [],
                     403
                 );
             }
@@ -72,6 +76,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if (app()->environment('production') && ($request->is('api/*') || $request->expectsJson())) {
                 return \App\Shared\Responses\ApiResponse::error(
                     'Terjadi kesalahan internal server.',
+                    [],
                     500
                 );
             }

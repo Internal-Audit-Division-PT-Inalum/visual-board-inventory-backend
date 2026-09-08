@@ -36,7 +36,7 @@ class ScheduleController extends Controller
         $schedule = $this->scheduleRepository->getScheduleWithRecords($id);
 
         if (! $schedule) {
-            return ApiResponse::error('Jadwal bulanan tidak ditemukan.', 404);
+            return ApiResponse::error('Jadwal bulanan tidak ditemukan.', [], 404);
         }
 
         return ApiResponse::success(
