@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\AbnormalityRepositoryInterface;
 use App\Repositories\Contracts\MonthlyScheduleRepositoryInterface;
+use App\Repositories\Eloquent\AbnormalityRepository;
 use App\Repositories\Eloquent\MonthlyScheduleRepository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\ServiceProvider;
@@ -14,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             MonthlyScheduleRepositoryInterface::class,
             MonthlyScheduleRepository::class
+        );
+        $this->app->bind(
+            AbnormalityRepositoryInterface::class,
+            AbnormalityRepository::class
         );
     }
 
