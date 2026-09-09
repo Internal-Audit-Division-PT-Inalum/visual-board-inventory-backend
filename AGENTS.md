@@ -5,19 +5,8 @@ AGENTS.md-compatible lain) yang bekerja di repo ini. Untuk prinsip arsitektur, b
 keras, status fase, dan istilah domain, baca `GEMINI.md` terlebih dahulu — file ini
 fokus ke "bagaimana caranya", bukan "kenapa".
 
-## ⚠️ Catatan Penting Sebelum Mulai
-
-File `AGENTS.md` dan `CLAUDE.md` di root repo ini **saat ini masih berisi stub bawaan
-Laravel Boost** (instruksi generik "install PHP/Composer lalu jalankan
-`php artisan boost:install`"). Jika stub itu masih ada saat kamu membaca ini:
-
-1. Jangan jalankan `boost:install` tanpa sepengetahuan user — itu akan **menimpa total**
-   isi `AGENTS.md` dengan guideline hasil generate otomatis dari Boost.
-2. Jika user memang ingin memakai Laravel Boost, jalankan installernya, lalu **gabungkan**
-   isi file operasional di bawah ini ke bagian bawah `AGENTS.md` hasil generate Boost —
-   jangan hilangkan konvensi proyek yang sudah ditetapkan di sini.
-3. Isi `GEMINI.md` tidak akan tersentuh oleh Boost — jadi prinsip arsitektur & batasan
-   di sana tetap berlaku apa pun yang terjadi pada `AGENTS.md`.
+## Panduan Dasar
+Selalu patuhi pedoman yang tertulis di dalam file ini dan `GEMINI.md` saat bekerja.
 
 ## Setup Environment
 
@@ -25,7 +14,7 @@ Laravel Boost** (instruksi generik "install PHP/Composer lalu jalankan
 composer install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate --seed
+php artisan migrate:fresh --seed # Akan meng-generate tabel, permission (Filament Shield), dan Super Admin (admin@admin.com / password)
 npm install && npm run build
 ```
 
@@ -52,6 +41,10 @@ php artisan scribe:generate
   `laravel-model-states` (sudah ter-install, **belum dipakai** — jangan asumsikan
   ada state machine aktif di model manapun saat ini), `laravel-query-builder`
 - Pest 4 + `pest-plugin-arch` + `pest-plugin-laravel`, Larastan, Pint
+
+> **PERINGATAN KRUSIAL SPATIE PERMISSION & SHIELD:**
+> 1. Tabel `model_has_roles` dan `model_has_permissions` pada _migration_ bawaan Spatie telah **dimodifikasi secara kustom** untuk menggunakan tipe `$table->ulid('model_id')`. Jangan pernah menjalankan ulang `php artisan vendor:publish --tag="permission-migrations"` atau `shield:setup` karena akan merusak skema ini (kembali ke bigint) dan membuat sistem *crash* (Postgres Type Mismatch).
+> 2. Kofigurasi *Super Admin* Filament Shield menggunakan `define_via_gate = true`. Hak akses penuh diberikan otomatis melalui Laravel Gate. **Dilarang** memanggil `Artisan::call('shield:generate')` di dalam `DatabaseSeeder.php`. Pembentukan *Super Admin* di seeder murni memakai OOP Eloquent sederhana.
 
 ## Konvensi Kode (ikuti pola yang sudah ada, jangan buat gaya baru)
 
@@ -90,6 +83,11 @@ php artisan scribe:generate
 - **Cache key naming**: format `{domain}:{resource}:{identifier}`. Contoh:
   `visual-board:kiosk:dashboard`, `inventory:item:{ulid}:stock`.
   Cache hanya di Service layer. Lihat `GEMINI.md` §7 untuk strategi invalidasi.
+- **Aturan Filament 5.7 (Backoffice UI)**:
+  - **Separation of Concerns**: Jangan deklarasikan array `form()` dan `table()` di dalam class `...Resource.php` jika sudah ada direktori `Schemas/` dan `Tables/`. Lakukan modifikasi hanya di file form/table yang bersangkutan.
+  - **Lokalisasi Harga Mati**: Seluruh komponen (form, tabel, filter) **WAJIB** memakai modifier `->label('Terjemahan Bahasa Indonesia')`. Tidak boleh ada bahasa Inggris untuk kolom kecuali ID.
+  - **UX Tabel**: Kolom utama (seperti nama, kode, status) wajib memakai modifier `->searchable()` dan `->sortable()` untuk mempermudah pencarian oleh Admin.
+  - **Pengelolaan Media/File**: Dilarang membuat sistem upload manual. Seluruh upload gambar/dokumen pada form Filament WAJIB menggunakan integrasi bawaan `\Filament\Forms\Components\SpatieMediaLibraryFileUpload`, dan Model bersangkutan wajib mengimplementasikan interface `Spatie\MediaLibrary\HasMedia` beserta trait `InteractsWithMedia`.
 
 ## Peta Direktori (taruh file baru di tempat yang tepat)
 
@@ -120,24 +118,24 @@ tests/Feature/Api/{Domain}/           # Pest feature test per domain
 7. `pint --dirty` dan `phpstan analyse` bersih.
 8. `php artisan scribe:generate` dijalankan ulang kalau bentuk endpoint berubah.
 
-## Tugas Konkret yang Sudah Diketahui Belum Dikerjakan (Fase 2 — Inventory)
+## Tugas Konkret yang Belum Dikerjakan (Fase 5 — API Endpoints)
 
-Prioritas berikutnya berdasarkan roadmap yang diberikan user, dipetakan ke struktur
-di atas:
+Prioritas berikutnya adalah membangun API endpoints terpusat untuk melayani aplikasi frontend dan Kiosk:
 
-- Migration: `locations`, `items`, `inventory_ledgers` (pakai ULID + SoftDeletes
-  di `locations`/`items`, tidak perlu SoftDeletes di ledger karena sifatnya append-only).
-- Model: `Location`, `Item`, `InventoryLedger` + relasi (`Item belongsTo Location`,
-  dst) di `app/Domains/Inventory/Models/`.
-- Repository: `ItemRepositoryInterface`/`ItemRepository`,
-  `LocationRepositoryInterface`/`LocationRepository`.
-- Service: `InventoryService::takeItem()` — WAJIB `DB::transaction()` +
-  `lockForUpdate()`, cegah stok jadi minus, tulis baris baru ke `InventoryLedger`
-  setiap transaksi (siapa, apa, berapa, kapan).
-- Http: `StoreItemRequest`, `TakeItemRequest`, `ItemResource`, `LocationResource`,
-  `InventoryController` (thin).
-- Isi `routes/api/inventory.php` — saat ini masih `Route::middleware(['auth:sanctum'])
-  ->group(function () {});` kosong total.
+1. **API Domain HR / Organization**:
+   - Pembuatan FormRequests, Resources, dan API Controllers untuk Entitas Department, Employee, dan EmployeeAttendance.
+   - Pembuatan routing (contoh: `routes/api/hr.php`).
+2. **API Domain Portal**:
+   - Endpoint read-only untuk mengambil data `Bulletin` yang aktif guna ditampilkan di mading digital.
+   - Pembuatan routing (contoh: `routes/api/portal.php`).
+3. **API Domain Visual Board 5R (Refaktor & Kiosk)**:
+   - Endpoint (read) untuk menampilkan matriks harian 5R (berbasis kolom JSONB `days_data` pada `ScheduleRecord`) dan jadwal rotasi PIC.
+   - Endpoint (write) untuk memvalidasi/melaporkan temuan (Abnormality) dari Kiosk dengan penyertaan tanggal target.
+4. **Security, Caching, & Dokumentasi**:
+   - Penambahan Custom Exceptions per domain di direktori `app/Domains/{Domain}/Exceptions`.
+   - Penerapan Caching Strategy pada Service layer (terutama untuk query berat mading/Kiosk).
+   - Pembuatan Feature Test komprehensif di `tests/Feature/Api/{Domain}`.
+   - Eksekusi `php artisan scribe:generate` secara berkala untuk update dokumentasi Postman otomatis.
 
 ## Testing
 

@@ -44,13 +44,14 @@ Aturan tanggung jawab per layer (jangan dilanggar walau demi "kepraktisan"):
 | Fase | Status | Catatan |
 |---|---|---|
 | 1. Fondasi & Arsitektur | Selesai | Domain dirs, ApiResponse, BaseRepository, Sanctum, Media config sudah ada |
-| 2. Domain Inventory | Selesai | `locations`, `items`, `inventory_ledgers`: Model, Migration, Repository, Service (dengan lockForUpdate), Controller, dan Route sudah selesai dan ditest. |
-| 3. Domain Visual Board | Inti selesai | Zone, InspectionCriteria, MonthlySchedule, ScheduleRecord, Abnormality: Model+Migration+Repository+Service+Controller lengkap |
-| 4. Backoffice Filament | Sebagian | Panel + Shield terpasang, belum ada satupun Filament Resource |
-| 5. Optimasi & Dokumentasi | Sebagian | Caching kiosk (60s) & Scribe sudah jalan; exception handling terpusat sudah diimplementasi & diverifikasi |
+| 2. Domain Inventory | Selesai | `locations`, `items`, `inventory_ledgers`: Selesai dan ditest. |
+| 3. Domain Visual Board | Selesai | Zone, InspectionCriteria, MonthlySchedule, ScheduleRecord, Abnormality selesai. |
+| 4. Backoffice Filament | Inti selesai | Panel + Shield terpasang, 7 Resources dibuat. Tapi butuh Ekstensi Domain (Gap Analysis). |
+| 4.5 Ekstensi Domain (HR & Portal) | Selesai | Fondasi HR, Portal, & rotasi PIC terpasang (Migration, Model, Repo, Service, Filament). |
+| 5. API Endpoints & Postman | Perlu Dikerjakan | Scribe sudah siap, endpoint Kiosk belum lengkap karena menunggu integrasi domain baru. |
 
-Prioritas kerja saat ini: **Fase 4 (Filament Resources)**
-adalah yang paling tertinggal dari rencana.
+Prioritas kerja saat ini: **Fase 5 (Pengembangan API Endpoint Terpusat)** 
+sebelum melangkah ke integrasi Frontend.
 
 ## 4. Batasan & Larangan Keras
 
@@ -70,15 +71,17 @@ adalah yang paling tertinggal dari rencana.
 ## 5. Istilah Domain (jaga konsistensi penamaan di kode & komentar)
 
 - **5R** = versi Indonesia dari 5S (Ringkas, Rapi, Resik, Rawat, Rajin).
-- Status harian pada `ScheduleRecord.days_data`: `rencana`, `ok`, `ok_5r`, `abnormal`, `libur`.
-- **PIC** = Person In Charge. Hierarki approval jadwal: PIC → Staf → M → VP.
-- **Mading** = papan informasi fisik pabrik, direpresentasikan sebagai gambar/poster
-  di layar kiosk (dikelola lewat Spatie Media Library dari Filament).
+- Status harian pada `ScheduleRecord`: `rencana`, `ok_tanpa_5r`, `ok_dengan_5r`, `abnormal`. (Mengikuti standar matriks).
+- **PIC** = Person In Charge. Hierarki otorisasi: Pelaksana (Staff) → Penyelia → Managerial (MS). Pada rotasi harian 5R, terdapat **PIC Utama** dan **PIC Pengganti**.
+- **Departemen** = Struktur organisasi hierarkis. Entitas ini mengelompokkan Karyawan.
+- **Akses Dashboard Admin**: Sistem wajib menggunakan integrasi `spatie/laravel-permission` (melalui `bezhanSalleh/filament-shield`). Pembuatan user `Super Admin` dan *generate* seluruh *permission* Resource mutlak dilakukan secara otomatis saat eksekusi `php artisan migrate:fresh --seed` via `DatabaseSeeder`. Dilarang meminta User menjalankan *command* *seeding* manual atau *script* kustom.
+- **Dilarang memakai raw SQL** untuk data bisnis, gunakan Eloquent/Repository.
+- **Single Source of Truth**: Dokumentasi ini (GEMINI.md dan AGENTS.md) adalah acuan utama. Dilarang mengubah aturan tanpa pesetujuan arsitek/User.
+- **Mading / Portal Hub** = papan informasi digital untuk karyawan, berisi *Attendance* dan *Bulletin*.
 - **Abnormality** = temuan masalah di lapangan, dilacak dari `open` → `in_progress` → `resolved`
-  dengan `progress_percentage` 0–100. Jika `is_kaizen = true`, temuan ini dianggap perbaikan
-  berkelanjutan yang layak dilaporkan sebagai Kaizen Report.
-- **Ledger** (Fase 2, akan datang) = jejak audit setiap pengambilan/penambahan barang
-  di Inventory — siapa mengambil apa, kapan, berapa banyak.
+  dengan target penyelesaian dan aktualisasi (`target_date`, `actual_resolution_date`).
+- **Kaizen** = Jika `is_kaizen = true`, temuan ini dianggap perbaikan berkelanjutan.
+- **Ledger** = jejak audit setiap pengambilan/penambahan barang di Inventory.
 
 ## 6. Error Handling Strategy
 
