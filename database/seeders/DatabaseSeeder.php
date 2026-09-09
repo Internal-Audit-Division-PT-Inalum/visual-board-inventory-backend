@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Domains\Core\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +16,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1. Buat Role super_admin secara manual (karena define_via_gate = true, tidak butuh shield:generate saat seed)
+        $role = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // 2. Buat Super Admin User
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => bcrypt('password'),
+            ]
+        );
+
+        // 3. Assign Role super_admin (bawaan dari Filament Shield)
+        $admin->assignRole('super_admin');
     }
 }
