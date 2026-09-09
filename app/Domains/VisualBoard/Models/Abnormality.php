@@ -21,6 +21,8 @@ class Abnormality extends Model
         'problem_description',
         'countermeasure_plan',
         'countermeasure_actual',
+        'target_date',
+        'actual_resolution_date',
         'pic_id',
         'status',
         'progress_percentage',
@@ -29,6 +31,8 @@ class Abnormality extends Model
 
     protected $casts = [
         'date_found' => 'date',
+        'target_date' => 'date',
+        'actual_resolution_date' => 'date',
         'progress_percentage' => 'integer',
         'is_kaizen' => 'boolean',
     ];
