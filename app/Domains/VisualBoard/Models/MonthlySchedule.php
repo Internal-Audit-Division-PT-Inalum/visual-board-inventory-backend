@@ -41,4 +41,9 @@ class MonthlySchedule extends Model
     {
         return $this->hasMany(ScheduleRecord::class);
     }
+
+    public function schedulePics(): HasMany
+    {
+        return $this->hasMany(SchedulePic::class);
+    }
 }
