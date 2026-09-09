@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Domains\VisualBoard\Models\Abnormality;
 use App\Repositories\Contracts\AbnormalityRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class AbnormalityRepository implements AbnormalityRepositoryInterface
@@ -76,7 +77,7 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
         ];
     }
 
-    public function getLatestUnresolved(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    public function getLatestUnresolved(int $limit = 5): Collection
     {
         return $this->model->newQuery()
             ->with(['zone', 'pic'])

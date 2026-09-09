@@ -15,11 +15,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
  * @group Visual Board Domain
+ *
  * @subgroup Manajemen Abnormality
  *
  * Endpoint untuk mencatat dan mengelola masalah (abnormality) dari inspeksi 5R harian.
  */
-
 class AbnormalityController extends Controller
 {
     public function __construct(
@@ -42,7 +42,7 @@ class AbnormalityController extends Controller
 
     /**
      * Buat Abnormality Baru
-     * 
+     *
      * Endpoint ini mencatat masalah baru yang ditemukan di lapangan.
      */
     public function store(StoreAbnormalityRequest $request): JsonResponse
@@ -59,9 +59,9 @@ class AbnormalityController extends Controller
 
     /**
      * Detail Abnormality
-     * 
+     *
      * Mengambil detail lengkap suatu masalah beserta progressnya.
-     * 
+     *
      * @urlParam id string required ULID dari abnormality.
      */
     public function show(string $id): JsonResponse
@@ -77,10 +77,10 @@ class AbnormalityController extends Controller
 
     /**
      * Update Progress Abnormality
-     * 
+     *
      * Menyimpan progres perbaikan (0-100%) dan aktual dari penanggulangan masalah.
      * Jika persentase 100, status otomatis berubah menjadi 'resolved'.
-     * 
+     *
      * @urlParam id string required ULID dari abnormality.
      */
     public function updateProgress(UpdateAbnormalityProgressRequest $request, string $id): JsonResponse
@@ -106,9 +106,9 @@ class AbnormalityController extends Controller
 
     /**
      * Hapus Abnormality
-     * 
+     *
      * Menghapus catatan abnormality (menggunakan soft deletes).
-     * 
+     *
      * @urlParam id string required ULID dari abnormality.
      */
     public function destroy(string $id): JsonResponse

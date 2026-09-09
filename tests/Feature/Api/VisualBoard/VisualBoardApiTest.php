@@ -45,41 +45,41 @@ it('can fetch kiosk dashboard data with correct structure and aggregation', func
     $response = $this->getJson('/api/v1/visual-board/kiosk');
 
     $response->assertStatus(200)
-             ->assertJsonStructure([
-                 'success',
-                 'message',
-                 'data' => [
-                     'organization_structure' => [
-                         '*' => [
-                             'id',
-                             'name',
-                             'pic_utama',
-                             'pic_pengganti',
-                         ],
-                     ],
-                     'abnormality_trend' => [
-                         'month',
-                         'summary' => [
-                             'open',
-                             'in_progress',
-                             'resolved',
-                         ],
-                     ],
-                     'open_problems' => [
-                         '*' => [
-                             'id',
-                             'zone',
-                             'problem_description',
-                             'status',
-                         ],
-                     ],
-                 ],
-             ]);
+        ->assertJsonStructure([
+            'success',
+            'message',
+            'data' => [
+                'organization_structure' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'pic_utama',
+                        'pic_pengganti',
+                    ],
+                ],
+                'abnormality_trend' => [
+                    'month',
+                    'summary' => [
+                        'open',
+                        'in_progress',
+                        'resolved',
+                    ],
+                ],
+                'open_problems' => [
+                    '*' => [
+                        'id',
+                        'zone',
+                        'problem_description',
+                        'status',
+                    ],
+                ],
+            ],
+        ]);
 
     // Assert aggregation values
     $response->assertJsonPath('data.abnormality_trend.summary.open', 1)
-             ->assertJsonPath('data.abnormality_trend.summary.in_progress', 1)
-             ->assertJsonPath('data.abnormality_trend.summary.resolved', 1);
+        ->assertJsonPath('data.abnormality_trend.summary.in_progress', 1)
+        ->assertJsonPath('data.abnormality_trend.summary.resolved', 1);
 
     // Should return 2 open problems (open + in_progress)
     $this->assertCount(2, $response->json('data.open_problems'));
@@ -93,7 +93,7 @@ it('caches the kiosk response', function () {
     Abnormality::query()->delete();
 
     $response2 = $this->getJson('/api/v1/visual-board/kiosk');
-    
+
     // Values should still be 1 (from cache)
     $response2->assertJsonPath('data.abnormality_trend.summary.open', 1);
 });

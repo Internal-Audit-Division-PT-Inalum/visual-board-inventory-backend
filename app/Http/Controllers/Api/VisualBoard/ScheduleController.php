@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 
 /**
  * @group Visual Board Domain
+ *
  * @subgroup Manajemen Jadwal 5R
  *
  * Endpoint untuk mengelola matriks jadwal harian 5R (Modul 1.1).
@@ -26,9 +27,9 @@ class ScheduleController extends Controller
 
     /**
      * Detail Jadwal Bulanan
-     * 
+     *
      * Mengambil detail jadwal bulanan beserta seluruh record hariannya.
-     * 
+     *
      * @urlParam id string required ULID dari jadwal bulanan.
      */
     public function show(string $id): JsonResponse
@@ -47,9 +48,9 @@ class ScheduleController extends Controller
 
     /**
      * Update Status Harian
-     * 
+     *
      * Memperbarui simbol/status 5R pada hari tertentu dalam satu record jadwal.
-     * 
+     *
      * @urlParam recordId string required ULID dari record jadwal spesifik.
      */
     public function updateDay(UpdateDailyStatusRequest $request, string $recordId): JsonResponse

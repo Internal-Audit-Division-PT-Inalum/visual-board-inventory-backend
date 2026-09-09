@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 
 /**
  * @group Visual Board Domain
+ *
  * @subgroup Kiosk Dashboard
  *
  * Endpoint API agregasi data untuk konsumsi Read-Only pada layar TV Kiosk (Modul 1.3).
@@ -22,7 +23,7 @@ class VisualBoardController extends Controller
 
     /**
      * Data Kiosk Dashboard
-     * 
+     *
      * Endpoint ini mengambil agregasi struktur organisasi, tren masalah bulanan,
      * dan daftar masalah yang belum terselesaikan. Hasil dari kueri ini di-cache
      * secara otomatis selama 1 menit.
