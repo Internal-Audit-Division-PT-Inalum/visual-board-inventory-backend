@@ -90,11 +90,8 @@ endpoints:
     responses:
       -
         custom: []
-        status: 500
-        content: |-
-          {
-              "message": "Server Error"
-          }
+        status: 401
+        content: '{"success":false,"message":"Unauthenticated. Silakan login terlebih dahulu.","errors":[],"meta":[]}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
@@ -211,11 +208,8 @@ endpoints:
     responses:
       -
         custom: []
-        status: 500
-        content: |-
-          {
-              "message": "Server Error"
-          }
+        status: 401
+        content: '{"success":false,"message":"Unauthenticated. Silakan login terlebih dahulu.","errors":[],"meta":[]}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
@@ -290,7 +284,7 @@ endpoints:
         name: date_found
         description: 'Must be a valid date.'
         required: true
-        example: '2026-09-08T06:58:41'
+        example: '2026-09-09T01:59:18'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -331,7 +325,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       zone_id: architecto
-      date_found: '2026-09-08T06:58:41'
+      date_found: '2026-09-09T01:59:18'
       problem_description: 'n'
       countermeasure_plan: g
       is_kaizen: false
@@ -385,11 +379,8 @@ endpoints:
     responses:
       -
         custom: []
-        status: 500
-        content: |-
-          {
-              "message": "Server Error"
-          }
+        status: 401
+        content: '{"success":false,"message":"Unauthenticated. Silakan login terlebih dahulu.","errors":[],"meta":[]}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
