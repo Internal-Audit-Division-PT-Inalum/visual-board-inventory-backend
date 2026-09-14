@@ -16,13 +16,13 @@ class BulletinResource extends Resource
 {
     protected static ?string $model = Bulletin::class;
 
-    protected static ?string $modelLabel = 'Pengumuman / Mading';
+    protected static ?string $modelLabel = 'Papan Informasi';
 
-    protected static ?string $pluralModelLabel = 'Daftar Pengumuman';
+    protected static ?string $pluralModelLabel = 'Daftar Informasi';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-megaphone';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Pusat Informasi';
+    protected static string|\UnitEnum|null $navigationGroup = 'Portal';
 
     public static function form(Schema $schema): Schema
     {
