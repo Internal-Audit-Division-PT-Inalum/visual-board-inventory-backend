@@ -16,13 +16,13 @@ class EmployeeAttendanceResource extends Resource
 {
     protected static ?string $model = EmployeeAttendance::class;
 
-    protected static ?string $modelLabel = 'Kehadiran Karyawan';
+    protected static ?string $modelLabel = 'Kehadiran Pegawai';
 
-    protected static ?string $pluralModelLabel = 'Kehadiran Karyawan';
+    protected static ?string $pluralModelLabel = 'Data Kehadiran';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Organisasi & HR';
+    protected static string|\UnitEnum|null $navigationGroup = 'Human Resources';
 
     public static function form(Schema $schema): Schema
     {

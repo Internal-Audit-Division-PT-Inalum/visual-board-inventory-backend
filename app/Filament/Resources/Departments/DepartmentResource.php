@@ -20,9 +20,9 @@ class DepartmentResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Departemen';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Organisasi & HR';
+    protected static string|\UnitEnum|null $navigationGroup = 'Human Resources';
 
     public static function form(Schema $schema): Schema
     {
