@@ -12,6 +12,11 @@ class EditAbnormality extends EditRecord
 {
     protected static string $resource = AbnormalityResource::class;
 
+    protected function handleRecordUpdate(\Illuminate\Database\Eloquent\Model $record, array $data): \Illuminate\Database\Eloquent\Model
+    {
+        return app(\App\Services\VisualBoard\AbnormalityService::class)->updateAbnormality($record->id, $data);
+    }
+
     protected function getHeaderActions(): array
     {
         return [
