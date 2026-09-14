@@ -9,6 +9,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -26,6 +27,11 @@ class ZonesTable
                     ->label('Nama Zona')
                     ->searchable()
                     ->sortable(),
+                SpatieMediaLibraryImageColumn::make('standard_images')
+                    ->label('Foto Standar')
+                    ->collection('standard_images')
+                    ->circular()
+                    ->stacked(),
                 TextColumn::make('area')
                     ->label('Area')
                     ->searchable()

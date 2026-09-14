@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Zones\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Schemas\Schema;
 
 class ZoneForm
@@ -32,6 +33,13 @@ class ZoneForm
                 Toggle::make('is_active')
                     ->label('Status Aktif')
                     ->required(),
+                SpatieMediaLibraryFileUpload::make('standard_images')
+                    ->label('Foto Standar Ruangan')
+                    ->collection('standard_images')
+                    ->image()
+                    ->imageEditor()
+                    ->multiple()
+                    ->columnSpanFull(),
             ]);
     }
 }

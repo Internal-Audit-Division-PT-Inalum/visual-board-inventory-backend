@@ -21,17 +21,24 @@ class MonthlyScheduleForm
                     ->required(),
                 DatePicker::make('period_month')
                     ->label('Periode (Bulan)')
+                    ->native(false)
+                    ->displayFormat('F Y')
                     ->required(),
-                TextInput::make('status')
+                Select::make('status')
                     ->label('Status Approval')
+                    ->options([
+                        'draft' => 'Draft',
+                        'in_progress' => 'Sedang Berjalan',
+                        'completed' => 'Selesai',
+                    ])
                     ->required()
                     ->default('draft'),
-                TextInput::make('approval_data')
-                    ->label('Data Approval (JSON)')
-                    ->required()
-                    ->default('{}'),
-                TextInput::make('created_by')
-                    ->label('Dibuat Oleh (User ID)'),
+                Select::make('created_by')
+                    ->label('Dibuat Oleh')
+                    ->relationship('creator', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->default(fn () => auth()->id()),
             ]);
     }
 }
