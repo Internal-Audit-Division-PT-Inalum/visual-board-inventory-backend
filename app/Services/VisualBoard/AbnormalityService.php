@@ -4,6 +4,12 @@ namespace App\Services\VisualBoard;
 
 use App\Domains\VisualBoard\Models\Abnormality;
 use App\Repositories\Contracts\AbnormalityRepositoryInterface;
+use App\Domains\Core\Models\User;
+use Filament\Notifications\Notification;
+use Filament\Actions\Action;
+use App\Filament\Resources\Abnormalities\AbnormalityResource;
+use Illuminate\Support\Facades\Log;
+use App\Domains\VisualBoard\Exceptions\UnauthorizedVerificationException;
 
 class AbnormalityService
 {
@@ -22,7 +28,32 @@ class AbnormalityService
         $data['status'] = 'open';
         $data['progress_percentage'] = 0;
 
-        return $this->repository->create($data);
+        $abnormality = $this->repository->create($data);
+
+        Log::info('Abnormality: created', [
+            'abnormality_id' => $abnormality->id,
+            'zone_id' => $data['zone_id'],
+            'reported_by' => $data['reported_by_id'] ?? null,
+            'status' => 'open',
+        ]);
+
+        // Notifikasi ke semua staff penyelia & super admin
+        $recipients = User::role(['staff_penyelia', 'super_admin'])->get();
+        if ($recipients->isNotEmpty()) {
+            Notification::make()
+                ->title('Temuan 5R Baru')
+                ->body('Terdapat temuan abnormality baru yang perlu diperiksa.')
+                ->actions([
+                    Action::make('view')
+                        ->label('Lihat Detail')
+                        ->button()
+                        ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id]))
+                ])
+                ->success()
+                ->sendToDatabase($recipients);
+        }
+
+        return $abnormality;
     }
 
     /**
@@ -58,14 +89,128 @@ class AbnormalityService
             $data['status'] = 'open';
         }
 
-        return $this->repository->update($id, $data);
+        $abnormality = $this->repository->update($id, $data);
+
+        Log::info('Abnormality: progress updated', [
+            'abnormality_id' => $id,
+            'progress' => $percentage,
+            'new_status' => $data['status'],
+            'user_id' => auth()->id(),
+        ]);
+
+        // Jika status menjadi resolved, beritahu pelapor
+        if ($data['status'] === 'resolved' && $abnormality->reported_by_id) {
+            $reporter = User::find($abnormality->reported_by_id);
+            if ($reporter) {
+                Notification::make()
+                    ->title('Temuan 5R Diselesaikan')
+                    ->body('Temuan yang Anda laporkan telah selesai ditangani.')
+                    ->actions([
+                        Action::make('view')
+                            ->label('Lihat Detail')
+                            ->button()
+                            ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id]))
+                    ])
+                    ->success()
+                    ->sendToDatabase($reporter);
+            }
+        }
+
+        return $abnormality;
     }
 
     /**
-     * Delete an abnormality.
+     * Update an abnormality and handle notifications.
      */
-    public function deleteAbnormality(string $id): bool
+    public function updateAbnormality(string $id, array $data): Abnormality
     {
-        return $this->repository->delete($id);
+        $abnormality = $this->repository->update($id, $data);
+
+        // Jika status menjadi resolved, beritahu pelapor
+        if (isset($data['status']) && $data['status'] === 'resolved' && $abnormality->reported_by_id) {
+            $reporter = User::find($abnormality->reported_by_id);
+            if ($reporter) {
+                Notification::make()
+                    ->title('Temuan 5R Diselesaikan')
+                    ->body('Temuan yang Anda laporkan telah selesai ditangani.')
+                    ->actions([
+                        Action::make('view')
+                            ->label('Lihat Detail')
+                            ->button()
+                            ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id]))
+                    ])
+                    ->success()
+                    ->sendToDatabase($reporter);
+            }
+        }
+
+        return $abnormality;
+    }
+
+    /**
+     * Verify an abnormality.
+     */
+    public function verifyAbnormality(string $id, User $user): array
+    {
+        $record = $this->repository->findById($id);
+        $roles = $user->getRoleNames();
+        
+        $now = now();
+        $updated = false;
+        $isStaffVerification = false;
+        
+        if ($roles->contains('staff_penyelia') && !$record->verified_by_staff_id) {
+            $record->verified_by_staff_id = $user->id;
+            $record->verified_at_staff = $now;
+            $updated = true;
+            $isStaffVerification = true;
+        } elseif ($roles->contains('managerial_staff') && !$record->verified_by_ms_id) {
+            $record->verified_by_ms_id = $user->id;
+            $record->verified_at_ms = $now;
+            $updated = true;
+        } elseif ($roles->contains('super_admin')) {
+            if (!$record->verified_by_staff_id) {
+                $record->verified_by_staff_id = $user->id;
+                $record->verified_at_staff = $now;
+                $updated = true;
+                $isStaffVerification = true;
+            } elseif (!$record->verified_by_ms_id) {
+                $record->verified_by_ms_id = $user->id;
+                $record->verified_at_ms = $now;
+                $updated = true;
+            }
+        }
+        
+        if ($updated) {
+            $record->save();
+
+            Log::info('Abnormality: verified', [
+                'abnormality_id' => $id,
+                'verified_by' => $user->id,
+                'level' => $isStaffVerification ? 'staff' : 'manager',
+            ]);
+
+            // Notifikasi ke Managerial Staff & Super Admin jika diverifikasi oleh Staff Penyelia (eskalasi)
+            if ($isStaffVerification) {
+                $managers = User::role(['managerial_staff', 'super_admin'])->get();
+                if ($managers->isNotEmpty()) {
+                    Notification::make()
+                        ->title('Temuan 5R Menunggu Verifikasi Manajer')
+                        ->body('Staff telah memverifikasi temuan. Menunggu verifikasi Anda.')
+                        ->actions([
+                            Action::make('view')
+                                ->label('Lihat Detail')
+                                ->button()
+                                ->url(AbnormalityResource::getUrl('edit', ['record' => $record->id]))
+                        ])
+                        ->info()
+                        ->sendToDatabase($managers);
+                }
+            }
+
+            return ['success' => true, 'message' => 'Temuan berhasil diverifikasi'];
+        }
+
+        throw new UnauthorizedVerificationException();
     }
 }
