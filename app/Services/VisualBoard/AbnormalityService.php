@@ -2,14 +2,14 @@
 
 namespace App\Services\VisualBoard;
 
-use App\Domains\VisualBoard\Models\Abnormality;
-use App\Repositories\Contracts\AbnormalityRepositoryInterface;
 use App\Domains\Core\Models\User;
-use Filament\Notifications\Notification;
-use Filament\Actions\Action;
-use App\Filament\Resources\Abnormalities\AbnormalityResource;
-use Illuminate\Support\Facades\Log;
 use App\Domains\VisualBoard\Exceptions\UnauthorizedVerificationException;
+use App\Domains\VisualBoard\Models\Abnormality;
+use App\Filament\Resources\Abnormalities\AbnormalityResource;
+use App\Repositories\Contracts\AbnormalityRepositoryInterface;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class AbnormalityService
 {
@@ -47,7 +47,7 @@ class AbnormalityService
                     Action::make('view')
                         ->label('Lihat Detail')
                         ->button()
-                        ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id]))
+                        ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id])),
                 ])
                 ->success()
                 ->sendToDatabase($recipients);
@@ -109,7 +109,7 @@ class AbnormalityService
                         Action::make('view')
                             ->label('Lihat Detail')
                             ->button()
-                            ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id]))
+                            ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id])),
                     ])
                     ->success()
                     ->sendToDatabase($reporter);
@@ -137,7 +137,7 @@ class AbnormalityService
                         Action::make('view')
                             ->label('Lihat Detail')
                             ->button()
-                            ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id]))
+                            ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id])),
                     ])
                     ->success()
                     ->sendToDatabase($reporter);
@@ -154,33 +154,33 @@ class AbnormalityService
     {
         $record = $this->repository->findById($id);
         $roles = $user->getRoleNames();
-        
+
         $now = now();
         $updated = false;
         $isStaffVerification = false;
-        
-        if ($roles->contains('staff_penyelia') && !$record->verified_by_staff_id) {
+
+        if ($roles->contains('staff_penyelia') && ! $record->verified_by_staff_id) {
             $record->verified_by_staff_id = $user->id;
             $record->verified_at_staff = $now;
             $updated = true;
             $isStaffVerification = true;
-        } elseif ($roles->contains('managerial_staff') && !$record->verified_by_ms_id) {
+        } elseif ($roles->contains('managerial_staff') && ! $record->verified_by_ms_id) {
             $record->verified_by_ms_id = $user->id;
             $record->verified_at_ms = $now;
             $updated = true;
         } elseif ($roles->contains('super_admin')) {
-            if (!$record->verified_by_staff_id) {
+            if (! $record->verified_by_staff_id) {
                 $record->verified_by_staff_id = $user->id;
                 $record->verified_at_staff = $now;
                 $updated = true;
                 $isStaffVerification = true;
-            } elseif (!$record->verified_by_ms_id) {
+            } elseif (! $record->verified_by_ms_id) {
                 $record->verified_by_ms_id = $user->id;
                 $record->verified_at_ms = $now;
                 $updated = true;
             }
         }
-        
+
         if ($updated) {
             $record->save();
 
@@ -201,7 +201,7 @@ class AbnormalityService
                             Action::make('view')
                                 ->label('Lihat Detail')
                                 ->button()
-                                ->url(AbnormalityResource::getUrl('edit', ['record' => $record->id]))
+                                ->url(AbnormalityResource::getUrl('edit', ['record' => $record->id])),
                         ])
                         ->info()
                         ->sendToDatabase($managers);
@@ -211,6 +211,6 @@ class AbnormalityService
             return ['success' => true, 'message' => 'Temuan berhasil diverifikasi'];
         }
 
-        throw new UnauthorizedVerificationException();
+        throw new UnauthorizedVerificationException;
     }
 }

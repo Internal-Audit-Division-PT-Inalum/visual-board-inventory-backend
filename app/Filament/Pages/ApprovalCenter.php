@@ -2,12 +2,14 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\PendingAbnormalitiesTable;
+use App\Filament\Widgets\PendingMonthlySchedulesTable;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 
 class ApprovalCenter extends Page
 {
-    public function getTitle(): string|\Illuminate\Contracts\Support\Htmlable
+    public function getTitle(): string|Htmlable
     {
         return 'Approval Center';
     }
@@ -32,8 +34,6 @@ class ApprovalCenter extends Page
         return 'Visual Board 5R';
     }
 
-
-
     public function getHeading(): string|Htmlable
     {
         return 'Approval Center';
@@ -42,8 +42,8 @@ class ApprovalCenter extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            \App\Filament\Widgets\PendingMonthlySchedulesTable::class,
-            \App\Filament\Widgets\PendingAbnormalitiesTable::class,
+            PendingMonthlySchedulesTable::class,
+            PendingAbnormalitiesTable::class,
         ];
     }
 }

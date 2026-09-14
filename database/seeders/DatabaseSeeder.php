@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Domains\Core\Models\User;
-use Spatie\Permission\Models\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -40,7 +39,7 @@ class DatabaseSeeder extends Seeder
         // 4. Dummy Data dengan Environment Guard
         if (app()->environment('local', 'testing', 'staging')) {
             $this->command->warn('Menjalankan Factory Dummy Data untuk Environment: ' . app()->environment());
-            
+
             $this->call([
                 HRSeeder::class,
                 PortalSeeder::class,

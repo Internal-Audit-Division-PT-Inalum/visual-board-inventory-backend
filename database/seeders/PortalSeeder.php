@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Domains\Portal\Models\Bulletin;
+use Illuminate\Database\Seeder;
 
 class PortalSeeder extends Seeder
 {

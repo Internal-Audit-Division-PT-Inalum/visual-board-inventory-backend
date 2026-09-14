@@ -14,7 +14,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Zone extends Model implements HasMedia
 {
-    use HasFactory, HasUlid, SoftDeletes, InteractsWithMedia;
+    use HasFactory, HasUlid, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -46,6 +46,6 @@ class Zone extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('standard_images')
-             ->useFallbackUrl('/images/default-zone.png');
+            ->useFallbackUrl('/images/default-zone.png');
     }
 }

@@ -3,17 +3,17 @@
 namespace App\Filament\Widgets;
 
 use App\Domains\VisualBoard\Models\Abnormality;
+use App\Services\VisualBoard\AbnormalityService;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Builder;
-use Carbon\Carbon;
-use Filament\Notifications\Notification;
 
 class PendingAbnormalitiesTable extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
-    
+    protected int|string|array $columnSpan = 'full';
+
     protected static ?string $heading = 'Temuan 5R (Menunggu Verifikasi)';
 
     public function table(Table $table): Table
@@ -39,8 +39,13 @@ class PendingAbnormalitiesTable extends BaseWidget
                 Tables\Columns\TextColumn::make('verification_status')
                     ->label('Status Verifikasi')
                     ->getStateUsing(function (Abnormality $record) {
-                        if ($record->verified_by_ms_id) return 'Verified by MS';
-                        if ($record->verified_by_staff_id) return 'Verified by Staff';
+                        if ($record->verified_by_ms_id) {
+                            return 'Verified by MS';
+                        }
+                        if ($record->verified_by_staff_id) {
+                            return 'Verified by Staff';
+                        }
+
                         return 'Menunggu Verifikasi';
                     })
                     ->badge()
@@ -51,15 +56,16 @@ class PendingAbnormalitiesTable extends BaseWidget
                     }),
             ])
             ->actions([
-                \Filament\Actions\Action::make('verify')
+                Action::make('verify')
                     ->label('Verifikasi')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
                     ->action(function (Abnormality $record) {
                         $user = auth()->user();
+
                         try {
-                            $result = app(\App\Services\VisualBoard\AbnormalityService::class)->verifyAbnormality($record->id, $user);
+                            $result = app(AbnormalityService::class)->verifyAbnormality($record->id, $user);
                             Notification::make()
                                 ->title($result['message'])
                                 ->success()
@@ -70,7 +76,7 @@ class PendingAbnormalitiesTable extends BaseWidget
                                 ->danger()
                                 ->send();
                         }
-                    })
+                    }),
             ]);
     }
 }

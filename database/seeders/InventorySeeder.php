@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Domains\Inventory\Models\Location;
-use App\Domains\Inventory\Models\Item;
 use App\Domains\Inventory\Models\InventoryLedger;
+use App\Domains\Inventory\Models\Item;
+use App\Domains\Inventory\Models\Location;
+use Illuminate\Database\Seeder;
 
 class InventorySeeder extends Seeder
 {

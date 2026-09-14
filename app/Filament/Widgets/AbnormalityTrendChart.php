@@ -4,12 +4,13 @@ namespace App\Filament\Widgets;
 
 use App\Domains\VisualBoard\Models\Abnormality;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AbnormalityTrendChart extends ChartWidget
 {
     protected ?string $heading = 'Tren Abnormalitas (5R)';
+
     protected static ?int $sort = 2;
 
     protected function getData(): array
@@ -47,8 +48,12 @@ class AbnormalityTrendChart extends ChartWidget
         // Build arrays
         $xData = array_fill(1, 12, 0);
         $oData = array_fill(1, 12, 0);
-        foreach ($newFindings as $month => $count) { $xData[(int)$month] = $count; }
-        foreach ($resolvedFindings as $month => $count) { $oData[(int)$month] = $count; }
+        foreach ($newFindings as $month => $count) {
+            $xData[(int) $month] = $count;
+        }
+        foreach ($resolvedFindings as $month => $count) {
+            $oData[(int) $month] = $count;
+        }
 
         return [
             'datasets' => [

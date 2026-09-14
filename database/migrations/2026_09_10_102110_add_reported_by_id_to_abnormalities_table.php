@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::table('abnormalities', function (Blueprint $table) {
             $table->foreignUlid('reported_by_id')
-                  ->nullable()
-                  ->after('pic_id')
-                  ->constrained('users')
-                  ->nullOnDelete();
+                ->nullable()
+                ->after('pic_id')
+                ->constrained('users')
+                ->nullOnDelete();
         });
     }
 

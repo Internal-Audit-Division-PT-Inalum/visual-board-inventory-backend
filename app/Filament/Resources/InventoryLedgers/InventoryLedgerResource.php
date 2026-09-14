@@ -6,10 +6,8 @@ use App\Domains\Inventory\Models\InventoryLedger;
 use App\Filament\Resources\InventoryLedgers\Pages\ListInventoryLedgers;
 use App\Filament\Resources\InventoryLedgers\Schemas\InventoryLedgerForm;
 use App\Filament\Resources\InventoryLedgers\Tables\InventoryLedgersTable;
-use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 

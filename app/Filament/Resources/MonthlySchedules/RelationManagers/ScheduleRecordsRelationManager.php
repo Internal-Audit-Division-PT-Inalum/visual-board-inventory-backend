@@ -2,18 +2,17 @@
 
 namespace App\Filament\Resources\MonthlySchedules\RelationManagers;
 
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ViewField;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
-use Filament\Tables;
-use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\CreateAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Table;
 
 class ScheduleRecordsRelationManager extends RelationManager
 {
@@ -56,10 +55,11 @@ class ScheduleRecordsRelationManager extends RelationManager
                     ->label('Status Pengisian')
                     ->getStateUsing(function ($record) {
                         $state = $record->days_data;
-                        if (!is_array($state) || empty(array_filter($state))) {
+                        if (! is_array($state) || empty(array_filter($state))) {
                             return 'Belum ada isian';
                         }
                         $count = count(array_filter($state));
+
                         return "{$count} hari terisi";
                     })
                     ->badge()
@@ -84,4 +84,3 @@ class ScheduleRecordsRelationManager extends RelationManager
             ]);
     }
 }
-

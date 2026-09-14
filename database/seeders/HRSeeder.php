@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Domains\HR\Models\Department;
 use App\Domains\HR\Models\Employee;
 use App\Domains\HR\Models\EmployeeAttendance;
+use Illuminate\Database\Seeder;
 
 class HRSeeder extends Seeder
 {

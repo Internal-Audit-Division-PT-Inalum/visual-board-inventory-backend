@@ -36,12 +36,12 @@ class AbnormalityStatsOverview extends BaseWidget
                 ->description('Total abnormality dilaporkan bulan ini')
                 ->descriptionIcon('heroicon-m-clipboard-document-list')
                 ->color('danger'),
-            
+
             Stat::make('O — Selesai (Resolved)', $resolved)
                 ->description("{$percentage}% tingkat penyelesaian")
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
-            
+
             Stat::make('△ — Belum Selesai', $open)
                 ->description('Akumulasi (Open/In Progress)')
                 ->descriptionIcon('heroicon-m-exclamation-circle')

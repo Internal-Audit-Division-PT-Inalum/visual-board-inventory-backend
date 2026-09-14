@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Domains\HR\Models\EmployeeAttendance;
 use App\Domains\HR\Models\Employee;
+use App\Domains\HR\Models\EmployeeAttendance;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmployeeAttendanceFactory extends Factory

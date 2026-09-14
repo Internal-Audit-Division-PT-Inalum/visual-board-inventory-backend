@@ -4,15 +4,16 @@ namespace App\Filament\Widgets;
 
 use App\Domains\VisualBoard\Models\MonthlySchedule;
 use App\Services\VisualBoard\MonthlyScheduleService;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Filament\Notifications\Notification;
 
 class PendingMonthlySchedulesTable extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
-    
+    protected int|string|array $columnSpan = 'full';
+
     protected static ?string $heading = 'Jadwal Bulanan (Menunggu Approval)';
 
     public function table(Table $table): Table
@@ -34,10 +35,19 @@ class PendingMonthlySchedulesTable extends BaseWidget
                     ->label('Status Approval')
                     ->getStateUsing(function (MonthlySchedule $record) {
                         $data = $record->approval_data ?? [];
-                        if (isset($data['vp_signed'])) return 'Approved by VP';
-                        if (isset($data['manager_signed'])) return 'Approved by Manager';
-                        if (isset($data['staff_signed'])) return 'Approved by Staff';
-                        if (isset($data['pic_signed'])) return 'Approved by PIC';
+                        if (isset($data['vp_signed'])) {
+                            return 'Approved by VP';
+                        }
+                        if (isset($data['manager_signed'])) {
+                            return 'Approved by Manager';
+                        }
+                        if (isset($data['staff_signed'])) {
+                            return 'Approved by Staff';
+                        }
+                        if (isset($data['pic_signed'])) {
+                            return 'Approved by PIC';
+                        }
+
                         return 'Menunggu PIC';
                     })
                     ->badge()
@@ -50,7 +60,7 @@ class PendingMonthlySchedulesTable extends BaseWidget
                     }),
             ])
             ->actions([
-                \Filament\Actions\Action::make('approve')
+                Action::make('approve')
                     ->label('Approve')
                     ->icon('heroicon-o-check')
                     ->color('success')
@@ -71,8 +81,7 @@ class PendingMonthlySchedulesTable extends BaseWidget
                                 ->danger()
                                 ->send();
                         }
-                    })
+                    }),
             ]);
     }
 }
-

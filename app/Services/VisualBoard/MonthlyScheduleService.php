@@ -3,11 +3,10 @@
 namespace App\Services\VisualBoard;
 
 use App\Domains\Core\Models\User;
-use App\Domains\VisualBoard\Models\MonthlySchedule;
+use App\Filament\Resources\MonthlySchedules\MonthlyScheduleResource;
 use App\Repositories\Contracts\MonthlyScheduleRepositoryInterface;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
-use App\Filament\Resources\MonthlySchedules\MonthlyScheduleResource;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -27,7 +26,7 @@ class MonthlyScheduleService
     {
         $record = $this->repository->findById($id);
 
-        if (!$record) {
+        if (! $record) {
             Log::warning('MonthlySchedule: approval attempted on non-existent record', [
                 'schedule_id' => $id,
                 'user_id' => $user->id,
@@ -45,27 +44,27 @@ class MonthlyScheduleService
         $now = Carbon::now()->toIso8601String();
         $approvedLevel = null;
 
-        if ($roles->contains('pelaksana_5r') && !isset($data['pic_signed'])) {
+        if ($roles->contains('pelaksana_5r') && ! isset($data['pic_signed'])) {
             $data['pic_signed'] = ['user_id' => $user->id, 'signed_at' => $now];
             $approvedLevel = 'pic';
-        } elseif ($roles->contains('staff_penyelia') && !isset($data['staff_signed'])) {
+        } elseif ($roles->contains('staff_penyelia') && ! isset($data['staff_signed'])) {
             $data['staff_signed'] = ['user_id' => $user->id, 'signed_at' => $now];
             $approvedLevel = 'staff';
-        } elseif ($roles->contains('managerial_staff') && !isset($data['manager_signed'])) {
+        } elseif ($roles->contains('managerial_staff') && ! isset($data['manager_signed'])) {
             $data['manager_signed'] = ['user_id' => $user->id, 'signed_at' => $now];
             $approvedLevel = 'manager';
         } elseif ($roles->contains('super_admin')) {
             // Super admin mengisi level approval berikutnya yang kosong
-            if (!isset($data['pic_signed'])) {
+            if (! isset($data['pic_signed'])) {
                 $data['pic_signed'] = ['user_id' => $user->id, 'signed_at' => $now];
                 $approvedLevel = 'pic';
-            } elseif (!isset($data['staff_signed'])) {
+            } elseif (! isset($data['staff_signed'])) {
                 $data['staff_signed'] = ['user_id' => $user->id, 'signed_at' => $now];
                 $approvedLevel = 'staff';
-            } elseif (!isset($data['manager_signed'])) {
+            } elseif (! isset($data['manager_signed'])) {
                 $data['manager_signed'] = ['user_id' => $user->id, 'signed_at' => $now];
                 $approvedLevel = 'manager';
-            } elseif (!isset($data['vp_signed'])) {
+            } elseif (! isset($data['vp_signed'])) {
                 $data['vp_signed'] = ['user_id' => $user->id, 'signed_at' => $now];
                 $approvedLevel = 'vp';
             }
@@ -107,7 +106,7 @@ class MonthlyScheduleService
                         Action::make('view')
                             ->label('Lihat Jadwal')
                             ->button()
-                            ->url(MonthlyScheduleResource::getUrl('edit', ['record' => $record->id]))
+                            ->url(MonthlyScheduleResource::getUrl('edit', ['record' => $record->id])),
                     ])
                     ->success()
                     ->sendToDatabase($pelaksana);
