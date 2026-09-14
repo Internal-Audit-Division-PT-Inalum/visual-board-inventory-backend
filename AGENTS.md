@@ -14,7 +14,12 @@ Selalu patuhi pedoman yang tertulis di dalam file ini dan `GEMINI.md` saat beker
 composer install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate:fresh --seed # Akan meng-generate tabel, permission (Filament Shield), dan Super Admin (admin@admin.com / password)
+php artisan migrate:fresh --seed
+# Seed ini akan:
+# 1. Membuat Super Admin (admin@admin.com / password)
+# 2. Membuat 3 role operasional: pelaksana_5r, staff_penyelia, managerial_staff
+# 3. Men-generate permission Filament Shield (via Gate, bukan shield:generate)
+# 4. Menjalankan modular seeders: HRSeeder, PortalSeeder, VisualBoardSeeder, InventorySeeder
 npm install && npm run build
 ```
 
@@ -34,7 +39,7 @@ php artisan scribe:generate
 
 ## Stack & Package Kunci
 
-- Laravel 13, PHP 8.3
+- Laravel 13, PHP 8.4
 - Filament 5 + `bezhansalleh/filament-shield` (RBAC di admin panel)
 - Sanctum (auth API)
 - Spatie: `laravel-permission`, `laravel-medialibrary`, `laravel-activitylog`,
@@ -45,6 +50,13 @@ php artisan scribe:generate
 > **PERINGATAN KRUSIAL SPATIE PERMISSION & SHIELD:**
 > 1. Tabel `model_has_roles` dan `model_has_permissions` pada _migration_ bawaan Spatie telah **dimodifikasi secara kustom** untuk menggunakan tipe `$table->ulid('model_id')`. Jangan pernah menjalankan ulang `php artisan vendor:publish --tag="permission-migrations"` atau `shield:setup` karena akan merusak skema ini (kembali ke bigint) dan membuat sistem *crash* (Postgres Type Mismatch).
 > 2. Kofigurasi *Super Admin* Filament Shield menggunakan `define_via_gate = true`. Hak akses penuh diberikan otomatis melalui Laravel Gate. **Dilarang** memanggil `Artisan::call('shield:generate')` di dalam `DatabaseSeeder.php`. Pembentukan *Super Admin* di seeder murni memakai OOP Eloquent sederhana.
+
+> **PERINGATAN ROLE OPERASIONAL 5R:**
+> Sistem memiliki 4 role aktif: `super_admin`, `pelaksana_5r`, `staff_penyelia`,
+> `managerial_staff`. Semua role ini WAJIB dibuat via Eloquent `Role::firstOrCreate()`
+> di dalam `DatabaseSeeder.php`. Dilarang menggunakan `shield:generate` atau artisan
+> command manual untuk membuat role. Lihat `GEMINI.md` §5 (Hierarki Peran Operasional)
+> untuk detail tanggung jawab tiap role.
 
 ## Konvensi Kode (ikuti pola yang sudah ada, jangan buat gaya baru)
 
@@ -60,6 +72,7 @@ php artisan scribe:generate
   (tanyakan ke user kalau ragu, jangan menebak).
 - **Kolom JSONB**: dipakai untuk data semi-terstruktur yang berubah-ubah shape-nya
   (`days_data`, `approval_data`). Jangan diubah jadi tabel relasional tanpa persetujuan.
+  Kontrak shape wajib ada di `GEMINI.md` §5A.
 - **Repository binding**: didaftarkan manual di `App\Providers\AppServiceProvider::register()`.
   Repository baru = interface di `Repositories/Contracts`, implementasi di
   `Repositories/Eloquent`, lalu `$this->app->bind(...)` di AppServiceProvider.
@@ -83,26 +96,63 @@ php artisan scribe:generate
 - **Cache key naming**: format `{domain}:{resource}:{identifier}`. Contoh:
   `visual-board:kiosk:dashboard`, `inventory:item:{ulid}:stock`.
   Cache hanya di Service layer. Lihat `GEMINI.md` §7 untuk strategi invalidasi.
-- **Aturan Filament 5.7 (Backoffice UI)**:
-  - **Separation of Concerns**: Jangan deklarasikan array `form()` dan `table()` di dalam class `...Resource.php` jika sudah ada direktori `Schemas/` dan `Tables/`. Lakukan modifikasi hanya di file form/table yang bersangkutan.
-  - **Lokalisasi Harga Mati**: Seluruh komponen (form, tabel, filter) **WAJIB** memakai modifier `->label('Terjemahan Bahasa Indonesia')`. Tidak boleh ada bahasa Inggris untuk kolom kecuali ID.
-  - **UX Tabel**: Kolom utama (seperti nama, kode, status) wajib memakai modifier `->searchable()` dan `->sortable()` untuk mempermudah pencarian oleh Admin.
-  - **Pengelolaan Media/File**: Dilarang membuat sistem upload manual. Seluruh upload gambar/dokumen pada form Filament WAJIB menggunakan integrasi bawaan `\Filament\Forms\Components\SpatieMediaLibraryFileUpload`, dan Model bersangkutan wajib mengimplementasikan interface `Spatie\MediaLibrary\HasMedia` beserta trait `InteractsWithMedia`.
+- **Notifikasi**: hanya dari Service layer via
+  `Filament\Notifications\Notification::make()->sendToDatabase()`.
+  Lihat `GEMINI.md` §8A untuk skenario notifikasi yang sah.
+  Dilarang mengirim notifikasi dari Controller, Observer, atau Middleware.
+
+### Aturan Filament (Backoffice UI)
+
+- **Separation of Concerns**: Jangan deklarasikan array `form()` dan `table()` di dalam class `...Resource.php` jika sudah ada direktori `Schemas/` dan `Tables/`. Lakukan modifikasi hanya di file form/table yang bersangkutan.
+- **Lokalisasi Harga Mati**: Seluruh komponen (form, tabel, filter) **WAJIB** memakai modifier `->label('Terjemahan Bahasa Indonesia')`. Tidak boleh ada bahasa Inggris untuk kolom kecuali ID.
+- **UX Tabel**: Kolom utama (seperti nama, kode, status) wajib memakai modifier `->searchable()` dan `->sortable()` untuk mempermudah pencarian oleh Admin.
+- **Pengelolaan Media/File**: Dilarang membuat sistem upload manual. Seluruh upload gambar/dokumen pada form Filament WAJIB menggunakan integrasi bawaan `\Filament\Forms\Components\SpatieMediaLibraryFileUpload`, dan Model bersangkutan wajib mengimplementasikan interface `Spatie\MediaLibrary\HasMedia` beserta trait `InteractsWithMedia`.
+- **Komponen Form untuk Kolom JSONB**: Dilarang menggunakan `TextInput` biasa untuk field bertipe JSONB. Gunakan `KeyValue`, `Repeater`, atau komponen kustom Livewire yang sesuai dengan struktur data. Kontrak shape JSONB ada di `GEMINI.md` §5A.
+- **Komponen Form untuk Kolom Enum**: Dilarang menggunakan `TextInput` biasa untuk field bertipe enum di migration. Wajib menggunakan `Select::make()->options([...])` dengan opsi yang di-hardcode sesuai enum di migration. Contoh: `Select::make('status')->options(['draft' => 'Draft', 'in_progress' => 'Sedang Berjalan', 'completed' => 'Selesai'])`.
+- **Penamaan Relasi pada RelationManager**: Nama property `$relationship` di RelationManager **HARUS** persis sama dengan nama method relasi di Model. Contoh: jika Model punya `scheduleRecords()` maka RelationManager harus `protected static string $relationship = 'scheduleRecords';`. Mismatch akan menyebabkan `BadMethodCallException`.
+
+### Aturan Seeder & Factory
+
+- **Modular Seeders**: Setiap domain memiliki seeder sendiri (`HRSeeder`, `PortalSeeder`, `VisualBoardSeeder`, `InventorySeeder`). Semua didaftarkan di `DatabaseSeeder`.
+- **Environment Guard**: Seluruh modular seeder **WAJIB** dibungkus dengan pengecekan environment di dalam `DatabaseSeeder`:
+  ```php
+  if (app()->environment('local', 'testing')) {
+      $this->call([HRSeeder::class, PortalSeeder::class, ...]);
+  }
+  ```
+  Seeder tidak boleh berjalan di production.
+- **Factory per Model**: Setiap Model WAJIB memiliki factory di `database/factories/`. Gunakan factory di seeder dan test, jangan insert manual.
+- **Idempoten**: Gunakan `firstOrCreate` atau `updateOrCreate` untuk data master (role, Super Admin) agar bisa dijalankan berulang tanpa error duplikasi.
+
+### Aturan Widget Filament
+
+- **Lokasi file**: Widget ditempatkan di `app/Filament/Widgets/`.
+- **Penamaan**: Format `{Domain}{Feature}Widget.php`. Contoh: `AbnormalityTrendChart.php`, `AbnormalityStatsOverview.php`.
+- **Registrasi**: Widget didaftarkan di panel provider atau di halaman dashboard Filament.
+- **Data source**: Query untuk widget HARUS melalui Repository atau Service, bukan raw query langsung di widget class.
 
 ## Peta Direktori (taruh file baru di tempat yang tepat)
 
 ```
 app/Domains/{Domain}/Models/          # Eloquent model per domain
 app/Domains/{Domain}/Exceptions/      # Custom domain exceptions (§6 GEMINI.md)
+app/Domains/{Domain}/Policies/        # Policy per model (otorisasi Filament)
 app/Repositories/Contracts/           # Interface repository
 app/Repositories/Eloquent/            # Implementasi repository
-app/Services/{Domain}/                # Business logic
+app/Services/{Domain}/                # Business logic + notifikasi
 app/Http/Controllers/Api/{Domain}/    # Controller tipis
 app/Http/Requests/{Domain}/           # FormRequest validasi
 app/Http/Resources/Api/{Domain}/      # JSON Resource
 app/Shared/                           # Concerns & Responses lintas-domain
+app/Filament/Resources/{Entity}/      # Filament Resource per entitas
+app/Filament/Resources/{Entity}/Schemas/   # Form schema terpisah
+app/Filament/Resources/{Entity}/Tables/    # Table schema terpisah
+app/Filament/Resources/{Entity}/Pages/     # Custom pages
+app/Filament/Resources/{Entity}/RelationManagers/  # Relation managers
+app/Filament/Widgets/                 # Dashboard widgets (chart, stats)
 database/migrations/                  # urut kronologis, jangan edit migration lama yang sudah jalan
 database/factories/                   # satu factory per model
+database/seeders/                     # modular seeder per domain + DatabaseSeeder
 routes/api/{domain}.php               # route per domain
 tests/Feature/Api/{Domain}/           # Pest feature test per domain
 ```
@@ -117,10 +167,26 @@ tests/Feature/Api/{Domain}/           # Pest feature test per domain
 6. Pest feature test hijau di `tests/Feature/Api/{Domain}/`.
 7. `pint --dirty` dan `phpstan analyse` bersih.
 8. `php artisan scribe:generate` dijalankan ulang kalau bentuk endpoint berubah.
+9. Factory dibuat/diperbarui jika ada model baru atau perubahan kolom.
+10. Seeder domain diperbarui jika ada model/kolom baru yang perlu data dummy.
 
-## Tugas Konkret yang Belum Dikerjakan (Fase 5 — API Endpoints)
+## Tugas Konkret yang Belum Dikerjakan
 
-Prioritas berikutnya adalah membangun API endpoints terpusat untuk melayani aplikasi frontend dan Kiosk:
+### Fase 4.7 — Penutupan Gap Konvensional → Digital (PRIORITAS AKTIF)
+
+Berdasarkan gap analysis terhadap 9 dokumen kertas konvensional PT Inalum:
+
+1. **P1 — Kolom `reported_by_id`**: Tambahkan ke `abnormalities` + update form Filament.
+2. **P2 — Role Operasional**: Definisikan `pelaksana_5r`, `staff_penyelia`, `managerial_staff` via Seeder.
+3. **P3 — Grid Harian 31 Hari**: Bangun ulang `ScheduleRecordsRelationManager` dengan komponen grid yang merepresentasikan ceklis harian.
+4. **P4 — Polish Form MonthlySchedule**: Ganti `TextInput` biasa menjadi `Select` untuk field enum dan `Select` relationship untuk `created_by`.
+5. **P5 — Widget Dashboard Trend**: Bangun chart + stats overview untuk tren abnormality bulanan.
+6. **P6 — Workflow Approval Bertingkat**: Implementasi paraf digital multi-level (PIC→Staff→Manager→VP) pada jadwal dan abnormality.
+7. **P7 — Field `kaizen_report`**: Tambahkan ke `abnormalities` untuk konten laporan Kaizen.
+8. **P8 — Notifikasi Database Filament**: Notifikasi otomatis antar-role saat temuan dilaporkan/diverifikasi/di-resolve.
+9. **P9 — Standard Image per Zona**: Upload foto standar ruangan via Spatie Media Library.
+
+### Fase 5 — API Endpoints & Postman (MENUNGGU FASE 4.7)
 
 1. **API Domain HR / Organization**:
    - Pembuatan FormRequests, Resources, dan API Controllers untuk Entitas Department, Employee, dan EmployeeAttendance.
@@ -150,3 +216,5 @@ Prioritas berikutnya adalah membangun API endpoints terpusat untuk melayani apli
 - Jangan jalankan `migrate:fresh` atau `migrate:rollback` di environment yang bukan lokal/testing.
 - Jangan commit `.env`.
 - Jangan menambah package composer/npm baru tanpa konfirmasi ke user.
+- Jangan mengubah kontrak data JSONB di §5A `GEMINI.md` tanpa persetujuan user.
+
