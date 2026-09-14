@@ -15,7 +15,7 @@ class UpdateDailyStatusRequest extends FormRequest
     {
         return [
             'day' => ['required', 'integer', 'min:1', 'max:31'],
-            'status' => ['required', 'string', 'in:rencana,ok,ok_5r,abnormal,libur'],
+            'status' => ['required', 'string', 'in:rencana,ok_tanpa_5r,ok_dengan_5r,abnormal,libur'],
         ];
     }
 }

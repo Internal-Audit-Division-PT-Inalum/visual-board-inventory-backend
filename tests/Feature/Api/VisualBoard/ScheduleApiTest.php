@@ -62,14 +62,14 @@ it('updates daily 5R status safely and prevents race conditions', function () {
     $this->actingAs($this->user)
         ->patchJson("/api/v1/visual-board/schedule-records/{$this->record->id}/update-day", [
             'day' => 15,
-            'status' => 'ok_5r',
+            'status' => 'ok_dengan_5r',
         ])
         ->assertStatus(200)
         ->assertJsonPath('success', true)
         ->assertJsonPath('message', 'Status harian 5R berhasil diperbarui.');
 
     expect(ScheduleRecord::find($this->record->id)->days_data['15'])
-        ->toBe('ok_5r');
+        ->toBe('ok_dengan_5r');
 });
 
 it('rejects update request if day or status is out of bounds', function () {
