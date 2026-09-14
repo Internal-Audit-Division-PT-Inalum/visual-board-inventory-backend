@@ -20,11 +20,11 @@ class AbnormalityResource extends Resource
 {
     protected static ?string $model = Abnormality::class;
 
-    protected static ?string $modelLabel = 'Abnormalitas';
+    protected static ?string $modelLabel = 'Temuan 5R';
 
-    protected static ?string $pluralModelLabel = 'Daftar Abnormalitas';
+    protected static ?string $pluralModelLabel = 'Daftar Temuan';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 

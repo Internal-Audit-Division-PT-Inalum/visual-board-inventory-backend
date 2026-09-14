@@ -22,9 +22,9 @@ class InspectionCriteriaResource extends Resource
 
     protected static ?string $modelLabel = 'Kriteria Inspeksi';
 
-    protected static ?string $pluralModelLabel = 'Kriteria Inspeksi';
+    protected static ?string $pluralModelLabel = 'Daftar Kriteria';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 

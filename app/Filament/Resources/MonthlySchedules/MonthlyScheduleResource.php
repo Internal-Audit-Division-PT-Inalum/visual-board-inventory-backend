@@ -24,9 +24,9 @@ class MonthlyScheduleResource extends Resource
 
     protected static ?string $modelLabel = 'Jadwal Bulanan';
 
-    protected static ?string $pluralModelLabel = 'Jadwal Bulanan';
+    protected static ?string $pluralModelLabel = 'Daftar Jadwal';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 

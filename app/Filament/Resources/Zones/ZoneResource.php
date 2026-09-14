@@ -24,7 +24,7 @@ class ZoneResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Zona';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 
