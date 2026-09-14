@@ -24,7 +24,7 @@ class MonthlyScheduleRepository extends BaseRepository implements MonthlySchedul
     public function getScheduleWithRecords(string $scheduleId): ?Model
     {
         return $this->model
-            ->with(['records.criteria', 'zone.picUtama', 'zone.picPengganti'])
+            ->with(['scheduleRecords.criteria', 'zone.picUtama', 'zone.picPengganti'])
             ->find($scheduleId);
     }
 }

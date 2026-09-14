@@ -20,8 +20,8 @@ class ScheduleResource extends JsonResource
                 'area' => $this->zone->area ?? null,
                 'pic_utama' => $this->zone->picUtama->name ?? null,
             ],
-            'records' => $this->whenLoaded('records', function () {
-                return $this->records->map(function ($record) {
+            'records' => $this->whenLoaded('scheduleRecords', function () {
+                return $this->scheduleRecords->map(function ($record) {
                     return [
                         'record_id' => $record->id,
                         'criteria_group' => $record->criteria->item_group ?? null,
