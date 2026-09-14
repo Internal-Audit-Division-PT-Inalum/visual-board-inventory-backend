@@ -37,7 +37,7 @@ class MonthlySchedule extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function records(): HasMany
+    public function scheduleRecords(): HasMany
     {
         return $this->hasMany(ScheduleRecord::class);
     }

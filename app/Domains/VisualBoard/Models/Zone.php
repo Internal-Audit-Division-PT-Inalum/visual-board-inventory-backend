@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Zone extends Model
+class Zone extends Model implements HasMedia
 {
-    use HasFactory, HasUlid, SoftDeletes;
+    use HasFactory, HasUlid, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -39,5 +41,11 @@ class Zone extends Model
     public function criterias(): HasMany
     {
         return $this->hasMany(InspectionCriteria::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('standard_images')
+             ->useFallbackUrl('/images/default-zone.png');
     }
 }
