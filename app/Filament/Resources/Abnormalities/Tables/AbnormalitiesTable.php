@@ -9,6 +9,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -27,6 +28,12 @@ class AbnormalitiesTable
                     ->label('Zona')
                     ->searchable()
                     ->sortable(),
+                SpatieMediaLibraryImageColumn::make('evidence_photos')
+                    ->label('Foto Bukti')
+                    ->collection('evidence_photos')
+                    ->circular()
+                    ->stacked()
+                    ->limit(2),
                 TextColumn::make('monthlySchedule.id')
                     ->label('Jadwal Bulanan')
                     ->searchable()
@@ -50,6 +57,10 @@ class AbnormalitiesTable
                 TextColumn::make('pic.name')
                     ->label('PIC')
                     ->searchable(),
+                TextColumn::make('reportedBy.name')
+                    ->label('Penemu')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('status')
                     ->label('Status')
                     ->searchable()
