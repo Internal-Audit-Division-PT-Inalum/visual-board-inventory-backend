@@ -17,13 +17,13 @@ class InventoryLedgerResource extends Resource
 {
     protected static ?string $model = InventoryLedger::class;
 
-    protected static ?string $modelLabel = 'Riwayat Inventaris';
+    protected static ?string $modelLabel = 'Riwayat Transaksi';
 
-    protected static ?string $pluralModelLabel = 'Riwayat Inventaris';
+    protected static ?string $pluralModelLabel = 'Riwayat Transaksi';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Manajemen Inventaris';
+    protected static string|\UnitEnum|null $navigationGroup = 'Inventory';
 
     protected static ?string $recordTitleAttribute = 'id';
 

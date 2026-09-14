@@ -20,13 +20,13 @@ class ItemResource extends Resource
 {
     protected static ?string $model = Item::class;
 
-    protected static ?string $modelLabel = 'Barang';
+    protected static ?string $modelLabel = 'Barang (Item)';
 
     protected static ?string $pluralModelLabel = 'Daftar Barang';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Manajemen Inventaris';
+    protected static string|\UnitEnum|null $navigationGroup = 'Inventory';
 
     protected static ?string $recordTitleAttribute = 'name';
 

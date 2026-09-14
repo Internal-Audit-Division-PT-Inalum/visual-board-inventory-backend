@@ -20,13 +20,13 @@ class LocationResource extends Resource
 {
     protected static ?string $model = Location::class;
 
-    protected static ?string $modelLabel = 'Lokasi';
+    protected static ?string $modelLabel = 'Lokasi Barang';
 
     protected static ?string $pluralModelLabel = 'Daftar Lokasi';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Manajemen Inventaris';
+    protected static string|\UnitEnum|null $navigationGroup = 'Inventory';
 
     protected static ?string $recordTitleAttribute = 'name';
 
