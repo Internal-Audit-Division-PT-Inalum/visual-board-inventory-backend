@@ -12,7 +12,7 @@ class ZoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Zona ' . $this->faker->unique()->numberBetween(1, 10) . ' - ' . $this->faker->word(),
+            'name' => 'Zona ' . $this->faker->unique()->numberBetween(1, 1000) . ' - ' . $this->faker->word(),
             'area' => 'Ruang ' . $this->faker->company(),
             'is_active' => true,
         ];
