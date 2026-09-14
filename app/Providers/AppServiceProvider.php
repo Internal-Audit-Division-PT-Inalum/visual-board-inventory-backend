@@ -30,16 +30,22 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Visual Board domain
-        $this->app->bind(
-            MonthlyScheduleRepositoryInterface::class,
-            MonthlyScheduleRepository::class
-        );
+        $this->app->bind(MonthlyScheduleRepositoryInterface::class, MonthlyScheduleRepository::class);
         $this->app->bind(AbnormalityRepositoryInterface::class, AbnormalityRepository::class);
         $this->app->bind(ZoneRepositoryInterface::class, ZoneRepository::class);
+        $this->app->bind(SchedulePicRepositoryInterface::class, SchedulePicRepository::class);
 
         // Inventory domain
         $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
         $this->app->bind(ItemRepositoryInterface::class, ItemRepository::class);
+
+        // HR domain
+        $this->app->bind(DepartmentRepositoryInterface::class, DepartmentRepository::class);
+        $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
+        $this->app->bind(EmployeeAttendanceRepositoryInterface::class, EmployeeAttendanceRepository::class);
+
+        // Portal domain
+        $this->app->bind(BulletinRepositoryInterface::class, BulletinRepository::class);
     }
 
     public function boot(): void
@@ -49,14 +55,5 @@ class AppServiceProvider extends ServiceProvider
 
             return 'Database\\Factories\\' . $modelName . 'Factory';
         });
-        $this->app->bind(DepartmentRepositoryInterface::class, DepartmentRepository::class);
-        $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
-        $this->app->bind(EmployeeAttendanceRepositoryInterface::class, EmployeeAttendanceRepository::class);
-
-        // Portal Repositories
-        $this->app->bind(BulletinRepositoryInterface::class, BulletinRepository::class);
-
-        // Visual Board Phase 2.5 Repositories
-        $this->app->bind(SchedulePicRepositoryInterface::class, SchedulePicRepository::class);
     }
 }
