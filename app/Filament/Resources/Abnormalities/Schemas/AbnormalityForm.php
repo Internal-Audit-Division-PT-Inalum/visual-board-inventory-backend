@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Schemas\Schema;
 
 class AbnormalityForm
@@ -26,8 +27,14 @@ class AbnormalityForm
                     ->relationship('monthlySchedule', 'id')
                     ->searchable()
                     ->preload(),
-                TextInput::make('inspection_criteria_id')
-                    ->label('ID Kriteria Inspeksi'),
+                Select::make('inspection_criteria_id')
+                    ->label('Kriteria Inspeksi (Grup / Standar)')
+                    ->relationship('criteria', 'description')
+                    ->getOptionLabelFromRecordUsing(
+                        fn ($record) => "[{$record->item_group}] {$record->criteria_code} — {$record->description}"
+                    )
+                    ->searchable()
+                    ->preload(),
                 DatePicker::make('date_found')
                     ->label('Tanggal Ditemukan')
                     ->required(),
@@ -50,6 +57,11 @@ class AbnormalityForm
                     ->relationship('pic', 'name')
                     ->searchable()
                     ->preload(),
+                Select::make('reported_by_id')
+                    ->label('Penemu (Ditemukan Oleh)')
+                    ->relationship('reportedBy', 'name')
+                    ->searchable()
+                    ->preload(),
                 Select::make('status')
                     ->label('Status')
                     ->options([
@@ -66,7 +78,28 @@ class AbnormalityForm
                     ->default(0),
                 Toggle::make('is_kaizen')
                     ->label('Kaizen (Improvement)')
+                    ->live()
                     ->required(),
+                SpatieMediaLibraryFileUpload::make('kaizen_reports')
+                    ->label('Dokumen Laporan Kaizen (PDF/Excel)')
+                    ->collection('kaizen_reports')
+                    ->acceptedFileTypes(['application/pdf', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                    ->visible(fn ($get) => $get('is_kaizen'))
+                    ->columnSpanFull(),
+                SpatieMediaLibraryFileUpload::make('evidence_photos')
+                    ->label('Foto Bukti Temuan (Sebelum Perbaikan)')
+                    ->collection('evidence_photos')
+                    ->image()
+                    ->imageEditor()
+                    ->multiple()
+                    ->columnSpanFull(),
+                SpatieMediaLibraryFileUpload::make('resolution_photos')
+                    ->label('Foto Setelah Perbaikan')
+                    ->collection('resolution_photos')
+                    ->image()
+                    ->imageEditor()
+                    ->multiple()
+                    ->columnSpanFull(),
             ]);
     }
 }
