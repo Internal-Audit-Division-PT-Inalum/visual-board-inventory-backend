@@ -213,4 +213,20 @@ class AbnormalityService
 
         throw new UnauthorizedVerificationException;
     }
+
+    /**
+     * Delete an abnormality (soft delete).
+     */
+    public function deleteAbnormality(string $id): void
+    {
+        $abnormality = $this->repository->findById($id);
+        if ($abnormality) {
+            $abnormality->delete();
+
+            Log::info('Abnormality: deleted', [
+                'abnormality_id' => $id,
+                'deleted_by' => auth()->id() ?? 'system',
+            ]);
+        }
+    }
 }
