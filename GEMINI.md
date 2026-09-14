@@ -6,12 +6,19 @@ Untuk perintah operasional (setup, test, lint, definition-of-done), lihat `AGENT
 
 ## 1. Konteks Proyek
 
-Backend Laravel untuk sistem internal manufaktur (client: PT Inalum) dengan dua domain:
+Backend Laravel untuk sistem internal manufaktur (client: PT Inalum, Divisi IIA —
+Internal Audit) dengan **lima domain bisnis**:
 
+- **Core** — Fondasi autentikasi, otorisasi (RBAC), dan manajemen pengguna.
 - **Visual Board 5R** — papan kepatuhan 5R digital (Ringkas, Rapi, Resik, Rawat, Rajin)
   yang ditampilkan di TV Kiosk pabrik + dashboard tren masalah (Abnormality).
+  Mencakup penjadwalan bulanan, ceklis harian, rotasi PIC, dan pelaporan temuan.
 - **Inventory ATK** — sistem keluar-masuk barang (consumable & asset) via scan QR
   di smartphone, dengan audit trail lengkap.
+- **HR (Human Resources)** — struktur organisasi hierarkis (Departemen), profil
+  pegawai, dan pencatatan presensi harian.
+- **Portal** — mading digital / papan pengumuman internal untuk siaran informasi
+  dan bulletin ke seluruh area pabrik.
 
 Konsumen API: (1) TV Kiosk read-only (auto-refresh tiap 15 detik), (2) Filament
 admin panel untuk staff Divisi IIA, (3) React frontend (rencana, belum dibangun).
@@ -30,7 +37,8 @@ Aturan tanggung jawab per layer (jangan dilanggar walau demi "kepraktisan"):
 - **Repository**: HANYA akses data (CRUD, query builder). Tidak boleh ada validasi
   bisnis, kalkulasi, atau caching di sini.
 - **Service**: tempat "otak" aplikasi — validasi aturan bisnis, transaksi database,
-  caching, kalkulasi/agregasi. Controller tidak boleh punya logika bisnis sendiri.
+  caching, kalkulasi/agregasi, dan **pengiriman notifikasi**. Controller tidak boleh
+  punya logika bisnis sendiri.
 - **Controller**: tipis. Hanya: terima request tervalidasi → panggil Service →
   bungkus hasil dengan `App\Shared\Responses\ApiResponse` → return.
 - **FormRequest**: satu-satunya tempat validasi input client.
@@ -43,15 +51,17 @@ Aturan tanggung jawab per layer (jangan dilanggar walau demi "kepraktisan"):
 
 | Fase | Status | Catatan |
 |---|---|---|
-| 1. Fondasi & Arsitektur | Selesai | Domain dirs, ApiResponse, BaseRepository, Sanctum, Media config sudah ada |
-| 2. Domain Inventory | Selesai | `locations`, `items`, `inventory_ledgers`: Selesai dan ditest. |
-| 3. Domain Visual Board | Selesai | Zone, InspectionCriteria, MonthlySchedule, ScheduleRecord, Abnormality selesai. |
-| 4. Backoffice Filament | Inti selesai | Panel + Shield terpasang, 7 Resources dibuat. Tapi butuh Ekstensi Domain (Gap Analysis). |
-| 4.5 Ekstensi Domain (HR & Portal) | Selesai | Fondasi HR, Portal, & rotasi PIC terpasang (Migration, Model, Repo, Service, Filament). |
-| 5. API Endpoints & Postman | Perlu Dikerjakan | Scribe sudah siap, endpoint Kiosk belum lengkap karena menunggu integrasi domain baru. |
+| 1. Fondasi & Arsitektur | ✅ Selesai | Domain dirs, ApiResponse, BaseRepository, Sanctum, Media config sudah ada |
+| 2. Domain Inventory | ✅ Selesai | `locations`, `items`, `inventory_ledgers`: Selesai dan ditest. |
+| 3. Domain Visual Board | ✅ Selesai | Zone, InspectionCriteria, MonthlySchedule, ScheduleRecord, Abnormality selesai. |
+| 4. Backoffice Filament | ✅ Selesai | Panel + Shield terpasang, 12 Resources dibuat untuk semua domain. |
+| 4.5 Ekstensi Domain (HR & Portal) | ✅ Selesai | Fondasi HR, Portal, & rotasi PIC terpasang (Migration, Model, Repo, Service, Filament). |
+| 4.6 Dummy Data Seeding | ✅ Selesai | Modular Seeders + Factory untuk seluruh domain. Environment Guard aktif. |
+| **4.7 Penutupan Gap Konvensional → Digital** | ✅ Selesai | Menyesuaikan arsitektur agar 100% merepresentasikan formulir kertas 5R PT Inalum. |
+| 5. API Endpoints & Postman | 🔄 Prioritas Aktif | Scribe sudah siap, endpoint Kiosk belum lengkap karena menunggu Fase 4.7 selesai. |
 
-Prioritas kerja saat ini: **Fase 5 (Pengembangan API Endpoint Terpusat)** 
-sebelum melangkah ke integrasi Frontend.
+Prioritas kerja saat ini: **Fase 5 (API Endpoints & Postman)**
+berdasarkan Gap Analysis terhadap 9 dokumen kertas konvensional PT Inalum.
 
 ## 4. Batasan & Larangan Keras
 
@@ -61,27 +71,110 @@ sebelum melangkah ke integrasi Frontend.
 - **Jangan** mengubah struktur kolom JSONB (`monthly_schedules.approval_data`,
   `schedule_records.days_data`) menjadi tabel relasional tanpa migration + backfill
   plan yang eksplisit disetujui manusia — ini keputusan desain sadar, bukan kebetulan.
-- **Jangan** menimpa `AGENTS.md`/`CLAUDE.md` begitu saja — keduanya saat ini berisi
-  stub instalasi Laravel Boost. Lihat catatan penanganan di `AGENTS.md`.
+  Lihat §5A untuk kontrak data JSONB yang sah.
 - **Jangan** memakai `response()->json()` mentah di controller — selalu lewat
   `App\Shared\Responses\ApiResponse::success()`/`::error()`.
 - Perubahan pada skema database (migration baru/ubah kolom) yang bisa memengaruhi
   data produksi harus diberi tahu ke user sebelum dijalankan, bukan langsung `migrate`.
+- **Jangan** mengirim notifikasi dari Controller, Observer, atau Middleware.
+  Notifikasi hanya boleh dikirim dari **Service layer** (lihat §8A).
 
 ## 5. Istilah Domain (jaga konsistensi penamaan di kode & komentar)
 
-- **5R** = versi Indonesia dari 5S (Ringkas, Rapi, Resik, Rawat, Rajin).
-- Status harian pada `ScheduleRecord`: `rencana`, `ok_tanpa_5r`, `ok_dengan_5r`, `abnormal`. (Mengikuti standar matriks).
-- **PIC** = Person In Charge. Hierarki otorisasi: Pelaksana (Staff) → Penyelia → Managerial (MS). Pada rotasi harian 5R, terdapat **PIC Utama** dan **PIC Pengganti**.
+### Taksonomi 5R (5S versi Indonesia)
+
+| Kode | Nama | Definisi | Sifat Inspeksi |
+|---|---|---|---|
+| R-1 | **RINGKAS** | Membuang barang yang tidak diperlukan | Fisik (ceklis per item) |
+| R-2 | **RAPI** | Menyusun barang agar mudah diakses; deteksi penyimpangan | Fisik (ceklis per item) |
+| R-3 | **RESIK** | Membersihkan area kerja secara menyeluruh | Fisik (ceklis per item) |
+| R-4 | **RAWAT** | Menjaga standar kondisi 3R secara konsisten | Perilaku/habitual |
+| R-5 | **RAJIN** | Membudayakan kedisiplinan; pencegahan degradasi | Perilaku/habitual |
+
+> R-1 hingga R-3 adalah standar yang **secara langsung bisa diceklis** pada formulir
+> Schedule/Check Sheet. R-4 dan R-5 bersifat perilaku dan biasanya dinilai secara
+> periodik, bukan per-item harian. Kolom `inspection_criterias.criteria_code` mampu
+> menampung semua kode R-1 sampai R-5.
+
+### Simbol Status Harian pada Check Sheet / Schedule Record
+
+| Simbol | Key di JSONB `days_data` | Arti |
+|---|---|---|
+| ○ | `rencana` | Direncanakan/dijadwalkan |
+| ◎ | `ok_tanpa_5r` | Sudah OK, tidak perlu tindakan 5R |
+| △ | `ok_dengan_5r` | OK setelah melakukan tindakan 5R |
+| ☒ | `abnormal` | Ditemukan temuan abnormality |
+
+### Hierarki Peran Operasional 5R
+
+| Peran | Role RBAC | Tanggung Jawab Utama | Durasi Aktivitas |
+|---|---|---|---|
+| Petugas/PIC (Pelaksana) | `pelaksana_5r` | Melakukan pengecekan fisik 5R harian | 30 menit |
+| Staff (Penyelia) | `staff_penyelia` | Memverifikasi hasil 5R; menindaklanjuti temuan | 15 menit |
+| Managerial Staff (MS) | `managerial_staff` | Memonitor di SSM-SEP; koordinasi lintas seksi | Ongoing |
+| Administrator Sistem | `super_admin` | Full access ke seluruh panel Filament | — |
+
+### Glosarium Umum
+
+- **5R** = versi Indonesia dari 5S. Lihat tabel taksonomi di atas.
+- **PIC** = Person In Charge. Pada rotasi harian 5R, terdapat **PIC Utama** dan
+  **PIC Pengganti**. PIC Utama di-assign per Zona (`zones.pic_utama_id`) dan bisa
+  di-override per hari melalui `schedule_pics`.
+- **Abnormality** = temuan masalah di lapangan, dilacak dari `open` → `in_progress`
+  → `resolved` dengan target penyelesaian dan aktualisasi (`target_date`,
+  `actual_resolution_date`). Memiliki dua peran terkait:
+  - `pic_id` = penanggung jawab **penyelesaian** temuan
+  - `reported_by_id` = orang yang **menemukan** temuan di lapangan
+- **Kaizen** = Perbaikan berkelanjutan. Jika `is_kaizen = true`, temuan dianggap
+  sebagai peluang improvement. Konten laporan disimpan di `kaizen_report`.
+- **Check Sheet** = formulir ceklis harian yang dibawa Pelaksana saat pengecekan
+  fisik. Secara data merupakan **subset harian** dari `schedule_records.days_data`.
+- **Schedule Bulanan** = tabel grid 31 hari yang menampilkan perencanaan dan
+  realisasi per kriteria inspeksi per zona per bulan.
 - **Departemen** = Struktur organisasi hierarkis. Entitas ini mengelompokkan Karyawan.
-- **Akses Dashboard Admin**: Sistem wajib menggunakan integrasi `spatie/laravel-permission` (melalui `bezhanSalleh/filament-shield`). Pembuatan user `Super Admin` dan *generate* seluruh *permission* Resource mutlak dilakukan secara otomatis saat eksekusi `php artisan migrate:fresh --seed` via `DatabaseSeeder`. Dilarang meminta User menjalankan *command* *seeding* manual atau *script* kustom.
-- **Dilarang memakai raw SQL** untuk data bisnis, gunakan Eloquent/Repository.
-- **Single Source of Truth**: Dokumentasi ini (GEMINI.md dan AGENTS.md) adalah acuan utama. Dilarang mengubah aturan tanpa pesetujuan arsitek/User.
-- **Mading / Portal Hub** = papan informasi digital untuk karyawan, berisi *Attendance* dan *Bulletin*.
-- **Abnormality** = temuan masalah di lapangan, dilacak dari `open` → `in_progress` → `resolved`
-  dengan target penyelesaian dan aktualisasi (`target_date`, `actual_resolution_date`).
-- **Kaizen** = Jika `is_kaizen = true`, temuan ini dianggap perbaikan berkelanjutan.
+- **Mading / Portal Hub** = papan informasi digital untuk karyawan, berisi
+  *Attendance* dan *Bulletin*.
 - **Ledger** = jejak audit setiap pengambilan/penambahan barang di Inventory.
+- **Akses Dashboard Admin**: Sistem wajib menggunakan integrasi `spatie/laravel-permission`
+  (melalui `bezhanSalleh/filament-shield`). Pembuatan user `Super Admin`, role operasional
+  (`pelaksana_5r`, `staff_penyelia`, `managerial_staff`), dan seluruh permission Resource
+  mutlak dilakukan secara otomatis saat eksekusi `php artisan migrate:fresh --seed` via
+  `DatabaseSeeder`. Dilarang meminta User menjalankan command seeding manual.
+- **Dilarang memakai raw SQL** untuk data bisnis, gunakan Eloquent/Repository.
+- **Single Source of Truth**: Dokumentasi ini (GEMINI.md dan AGENTS.md) adalah acuan
+  utama. Dilarang mengubah aturan tanpa persetujuan arsitek/User.
+
+## 5A. Kontrak Data JSONB (Data Shape Contracts)
+
+Kolom JSONB digunakan untuk data semi-terstruktur yang sifatnya dinamis. Berikut
+adalah **kontrak wajib** untuk setiap kolom JSONB yang ada — agent dilarang mengubah
+shape ini tanpa persetujuan:
+
+### `schedule_records.days_data`
+```json
+{
+    "1": "rencana",
+    "2": "ok_tanpa_5r",
+    "8": "abnormal",
+    "15": "ok_dengan_5r"
+}
+```
+- Key: string tanggal "1" sampai "31"
+- Value: salah satu dari 4 status — `rencana`, `ok_tanpa_5r`, `ok_dengan_5r`, `abnormal`
+- Tanggal yang tidak diisi berarti **tidak ada aktivitas** di hari itu (libur/tidak dijadwalkan)
+
+### `monthly_schedules.approval_data`
+```json
+{
+    "pic_signed":     { "user_id": "01abc...", "signed_at": "2026-09-10T08:00:00Z" },
+    "staff_signed":   { "user_id": "01def...", "signed_at": "2026-09-10T09:00:00Z" },
+    "manager_signed": { "user_id": "01ghi...", "signed_at": "2026-09-10T10:00:00Z" },
+    "vp_signed":      { "user_id": "01jkl...", "signed_at": "2026-09-10T11:00:00Z" }
+}
+```
+- Setiap level approval bersifat **opsional** (nullable) sampai ditandatangani
+- Urutan approval: PIC → Staff → Manager → VP
+- `user_id` = ULID user yang menandatangani, `signed_at` = timestamp ISO-8601
 
 ## 6. Error Handling Strategy
 
@@ -187,6 +280,27 @@ Log::info('Inventory: item taken', [
 - **Jangan** log di Repository layer — logging hanya terjadi di Service layer
   (konsisten dengan prinsip: Repository murni akses data).
 
+## 8A. Notifikasi & Eskalasi
+
+Notifikasi antar-role dipicu **hanya dari Service layer** menggunakan
+`Filament\Notifications\Notification::make()->sendToDatabase()`.
+
+### Skenario Notifikasi yang Sah
+
+| Pemicu | Penerima | Deskripsi |
+|---|---|---|
+| Pelaksana melaporkan abnormality | `staff_penyelia` | Temuan baru perlu diverifikasi |
+| Staff memverifikasi temuan sulit | `managerial_staff` | Eskalasi — perlu koordinasi lintas seksi |
+| Abnormality resolved | Pelaksana (`reported_by_id`) | Temuan yang ia temukan telah diselesaikan |
+| Jadwal bulanan di-approve | `pelaksana_5r` pada zona terkait | Jadwal baru siap dieksekusi |
+
+### Larangan Notifikasi
+
+- **Jangan** mengirim notifikasi dari Controller, Observer, atau Middleware.
+- **Jangan** mengirim notifikasi di dalam loop — batch-kan jika perlu.
+- **Jangan** mengirim notifikasi untuk operasi CRUD biasa (create/update/delete)
+  kecuali ada implikasi bisnis yang eksplisit (lihat tabel di atas).
+
 ## 9. Kapan Harus Berhenti dan Bertanya ke User
 
 - Sebelum menjalankan migration yang mengubah/menghapus kolom pada tabel yang sudah
@@ -194,5 +308,27 @@ Log::info('Inventory: item taken', [
 - Sebelum mengubah kontrak `RepositoryInterface`/`ServiceInterface` yang sudah dipakai
   di lebih dari satu tempat.
 - Sebelum menambah dependency composer/npm baru.
+- Sebelum mengubah kontrak data JSONB yang didefinisikan di §5A.
 - Ketika instruksi di dokumen roadmap (yang dilampirkan user) tampak bertentangan
   dengan kondisi kode yang sudah ada — laporkan selisihnya, jangan diam-diam pilih salah satu.
+
+## 10. Acuan Dokumen Konvensional PT Inalum
+
+Sistem ini dibangun untuk mendigitalisasi 9 dokumen kertas konvensional berikut.
+Setiap perubahan arsitektur harus **mempertahankan atau meningkatkan** kesesuaian
+pemetaan terhadap dokumen-dokumen ini:
+
+| # | Nama Dokumen | Domain Digital | Entitas Utama |
+|---|---|---|---|
+| 1 | Schedule Aktifitas 5R (Zona 1) | VisualBoard | `monthly_schedules` + `schedule_records` |
+| 2 | Schedule Aktifitas 5R (Zona 2) | VisualBoard | `monthly_schedules` + `schedule_records` |
+| 3 | Schedule Aktifitas 5R (Zona 3) | VisualBoard | `monthly_schedules` + `schedule_records` |
+| 4 | Laporan & Progress Temuan Abnormality | VisualBoard | `abnormalities` |
+| 5 | Trend Abnormality 5S SIA-SCQ | VisualBoard | `abnormalities` (agregat) |
+| 6 | Basic Rule Pelaksanaan 5R | Core (RBAC) | `roles`, `users` |
+| 7 | Check Sheet Aktifitas 5R (Zona 1&2) | VisualBoard | `schedule_records.days_data` (subset harian) |
+| 8 | Check Sheet Aktifitas 5R (Zona 3&4) | VisualBoard | `schedule_records.days_data` (subset harian) |
+| 9 | Flow Proses Aktifitas 5R | Lintas Domain | Workflow MS → Staff → Pelaksana |
+
+> Dokumen analisis gap lengkap tersedia sebagai artifact proyek. Referensikan
+> dokumen tersebut sebelum merancang fitur baru yang menyentuh domain VisualBoard.
