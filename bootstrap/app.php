@@ -2,6 +2,8 @@
 
 use App\Domains\Inventory\Exceptions\InsufficientStockException;
 use App\Domains\Inventory\Exceptions\InvalidItemOperationException;
+use App\Domains\VisualBoard\Exceptions\ScheduleNotFoundException;
+use App\Domains\VisualBoard\Exceptions\UnauthorizedVerificationException;
 use App\Shared\Responses\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -94,6 +96,26 @@ return Application::configure(basePath: dirname(__DIR__))
                     $e->getMessage(),
                     [],
                     422
+                );
+            }
+        });
+
+        $exceptions->render(function (ScheduleNotFoundException $e, Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return ApiResponse::error(
+                    $e->getMessage(),
+                    [],
+                    404
+                );
+            }
+        });
+
+        $exceptions->render(function (UnauthorizedVerificationException $e, Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return ApiResponse::error(
+                    $e->getMessage(),
+                    [],
+                    403
                 );
             }
         });
