@@ -3,9 +3,16 @@
 use App\Domains\Core\Models\User;
 use App\Domains\VisualBoard\Models\Abnormality;
 use App\Domains\VisualBoard\Models\Zone;
+use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
+    Role::firstOrCreate(['name' => 'staff_penyelia', 'guard_name' => 'web']);
+    Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+    Role::firstOrCreate(['name' => 'managerial_staff', 'guard_name' => 'web']);
+
     $this->user = User::factory()->create();
+    $this->user->assignRole('staff_penyelia');
+
     $this->zone = Zone::factory()->create();
     $this->abnormality = Abnormality::factory()->create([
         'zone_id' => $this->zone->id,
