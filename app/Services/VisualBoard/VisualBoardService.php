@@ -6,6 +6,7 @@ use App\Repositories\Contracts\AbnormalityRepositoryInterface;
 use App\Repositories\Contracts\ZoneRepositoryInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class VisualBoardService
 {
@@ -26,6 +27,11 @@ class VisualBoardService
             $zones = $this->zoneRepository->getAllWithPics();
             $abnormalitySummary = $this->abnormalityRepository->getSummaryByMonth($now->month, $now->year);
             $latestUnresolved = $this->abnormalityRepository->getLatestUnresolved(5);
+
+            Log::info('VisualBoard: kiosk data cache miss — rebuilding', [
+                'month' => $now->format('Y-m'),
+                'zones_count' => $zones->count(),
+            ]);
 
             return [
                 'organization_structure' => $zones,
