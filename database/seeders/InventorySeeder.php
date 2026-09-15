@@ -11,9 +11,9 @@ class InventorySeeder extends Seeder
 {
     public function run(): void
     {
-        Location::factory(3)->create()->each(function (Location $location) {
+        Location::factory(2)->create()->each(function (Location $location) {
             Item::factory(5)->create(['location_id' => $location->id])->each(function (Item $item) {
-                InventoryLedger::factory(5)->create(['item_id' => $item->id]);
+                InventoryLedger::factory(3)->create(['item_id' => $item->id]);
             });
         });
     }

@@ -9,6 +9,6 @@ class PortalSeeder extends Seeder
 {
     public function run(): void
     {
-        Bulletin::factory(15)->create();
+        Bulletin::factory(5)->create();
     }
 }
