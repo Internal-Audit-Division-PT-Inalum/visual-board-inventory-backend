@@ -36,7 +36,64 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"success":true,"message":"Berhasil memuat data Kiosk Dashboard.","data":{"organization_structure":[],"abnormality_trend":{"month":"September 2026","summary":{"open":0,"in_progress":0,"resolved":0}},"open_problems":[]},"meta":[]}'
+        content: '{"success":true,"message":"Berhasil memuat data Kiosk Dashboard.","data":{"organization_structure":[{"id":"01m2etwk8szzftm477bpekbnpd","name":"Zona 303 - id","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwk8vre2w6q4n1kw72h5j","name":"Zona 945 - et","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwk8vre2w6q4n1kw72h5k","name":"Zona 682 - et","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkaxqmwvf8svnhmfe4x7","name":"Zona 818 - doloribus","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkayt04qh7aj09p0nk8q","name":"Zona 192 - est","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkb0xy5ew7k0nqkq06aq","name":"Zona 340 - voluptatem","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkb2ekp01erne1bjgat5","name":"Zona 372 - ea","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkb4ng8rmbz8ayyme1tg","name":"Zona 226 - veritatis","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkb53pfgyzatvzg7bymy","name":"Zona 926 - vel","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkb60jhp38419ftabbs2","name":"Zona 183 - magni","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkb8x588tg390gksz2rs","name":"Zona 57 - ipsa","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkbagef71m2q25nhkvqd","name":"Zona 165 - debitis","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkbb5j1kq95s53csy6ny","name":"Zona 797 - error","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkd0g8tjpyaxk9cqzgak","name":"Zona 531 - reprehenderit","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkd2gbgr7fp1h0ax24cn","name":"Zona 569 - occaecati","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkd3rjkx4hhvk3yqcq4y","name":"Zona 920 - veniam","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkd62jtz7ngr380satda","name":"Zona 841 - in","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkd83yya9bb5nr3f627b","name":"Zona 658 - consectetur","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkd913m4zhgf7b2yb08r","name":"Zona 98 - corporis","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkdbrwha2dzc819e15cb","name":"Zona 45 - et","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkdc5kt8jn62gvaf125n","name":"Zona 922 - vel","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkdeskm5bypgnn9gstwt","name":"Zona 685 - neque","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkdf5h3v4fw46qxq8n6k","name":"Zona 220 - natus","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkegkwgkmw8j6r6gqdqv","name":"Zona 758 - velit","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkeh1cfeny1a7h4h0w3y","name":"Zona 71 - blanditiis","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkeksnfxcqcn4g0wqj24","name":"Zona 923 - sunt","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwken5e55jfaar0cf061k","name":"Zona 496 - aperiam","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkeqv5w7fmzm981xpc4s","name":"Zona 717 - laudantium","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkes14r2y7atbpgp0bgg","name":"Zona 367 - nesciunt","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwketsav9npyj0qwcn2bh","name":"Zona 819 - soluta","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkewp4rt5j1hbth4kjdv","name":"Zona 845 - aut","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkexn5fa4nfmfbfahfe5","name":"Zona 286 - qui","pic_utama":null,"pic_pengganti":null},{"id":"01m2etwkez1ytq09d65ve6kvjy","name":"Zona 628 - porro","pic_utama":null,"pic_pengganti":null}],"abnormality_trend":{"month":"September 2026","summary":{"open":26,"in_progress":0,"resolved":0}},"open_problems":[{"id":"01m2etwkfd5zyxz62am5mpgwpr","zone_id":"01m2etwk8vre2w6q4n1kw72h5k","monthly_schedule_id":null,"inspection_criteria_id":null,"date_found":"2026-09-11","problem_description":"Sint totam non neque doloremque.","countermeasure_plan":null,"countermeasure_actual":null,"pic_id":null,"status":"open","progress_percentage":0,"is_kaizen":false,"created_at":"2026-09-14T02:10:41.000000Z","updated_at":"2026-09-14T02:10:41.000000Z","zone":{"id":"01m2etwk8vre2w6q4n1kw72h5k","name":"Zona 682 - et"},"pic":null},{"id":"01m2etwkdxcmvb9x7bpfswkh90","zone_id":"01m2etwk8vre2w6q4n1kw72h5j","monthly_schedule_id":null,"inspection_criteria_id":null,"date_found":"2026-09-11","problem_description":"Facilis pariatur aut molestias corrupti molestias aliquid.","countermeasure_plan":null,"countermeasure_actual":null,"pic_id":null,"status":"open","progress_percentage":0,"is_kaizen":false,"created_at":"2026-09-14T02:10:41.000000Z","updated_at":"2026-09-14T02:10:41.000000Z","zone":{"id":"01m2etwk8vre2w6q4n1kw72h5j","name":"Zona 945 - et"},"pic":null},{"id":"01m2etwkdw1fxaapy8wsqjpgcg","zone_id":"01m2etwk8vre2w6q4n1kw72h5j","monthly_schedule_id":null,"inspection_criteria_id":null,"date_found":"2026-09-11","problem_description":"Delectus perspiciatis est est qui.","countermeasure_plan":null,"countermeasure_actual":null,"pic_id":null,"status":"open","progress_percentage":0,"is_kaizen":false,"created_at":"2026-09-14T02:10:41.000000Z","updated_at":"2026-09-14T02:10:41.000000Z","zone":{"id":"01m2etwk8vre2w6q4n1kw72h5j","name":"Zona 945 - et"},"pic":null},{"id":"01m2etwkfcs5y4x046vka2kehh","zone_id":"01m2etwk8vre2w6q4n1kw72h5k","monthly_schedule_id":null,"inspection_criteria_id":null,"date_found":"2026-09-11","problem_description":"Voluptatem provident nemo dignissimos perferendis dolores est.","countermeasure_plan":null,"countermeasure_actual":null,"pic_id":null,"status":"open","progress_percentage":0,"is_kaizen":false,"created_at":"2026-09-14T02:10:41.000000Z","updated_at":"2026-09-14T02:10:41.000000Z","zone":{"id":"01m2etwk8vre2w6q4n1kw72h5k","name":"Zona 682 - et"},"pic":null},{"id":"01m2etwke6dhx8mc34qw4zbyab","zone_id":"01m2etwk8vre2w6q4n1kw72h5j","monthly_schedule_id":null,"inspection_criteria_id":null,"date_found":"2026-09-10","problem_description":"Id voluptatem aliquam exercitationem quisquam minus praesentium cum.","countermeasure_plan":null,"countermeasure_actual":null,"pic_id":null,"status":"open","progress_percentage":0,"is_kaizen":false,"created_at":"2026-09-14T02:10:41.000000Z","updated_at":"2026-09-14T02:10:41.000000Z","zone":{"id":"01m2etwk8vre2w6q4n1kw72h5j","name":"Zona 945 - et"},"pic":null}]},"meta":[]}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/visual-board/zones/scan/{zonaId}'
+    metadata:
+      custom: []
+      groupName: 'Visual Board Domain'
+      groupDescription: ''
+      subgroup: |-
+        Pemindaian Zona (Scanner)
+
+        Endpoint API untuk mengambil ceklis harian berdasarkan pemindaian Barcode / QR Code Zona.
+      subgroupDescription: ''
+      title: 'Scan Barcode Zona'
+      description: |-
+        Mengambil data Check Sheet (Jadwal + Kriteria Inspeksi) hari ini untuk suatu Zona tertentu.
+        Akan mengembalikan error (422/404) jika zona tidak ditemukan atau jadwal bulan ini belum dibuat.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      zonaId:
+        custom: []
+        name: zonaId
+        description: 'ULID (barcode) dari zona.'
+        required: true
+        example: 01H...
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      zonaId: 01H...
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"success":false,"message":"Unauthenticated. Silakan login terlebih dahulu.","errors":[],"meta":[]}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
@@ -160,8 +217,8 @@ endpoints:
         type: string
         enumValues:
           - rencana
-          - ok
-          - ok_5r
+          - ok_tanpa_5r
+          - ok_dengan_5r
           - abnormal
           - libur
         exampleWasSpecified: false
@@ -284,7 +341,7 @@ endpoints:
         name: date_found
         description: 'Must be a valid date.'
         required: true
-        example: '2026-09-09T01:59:18'
+        example: '2026-09-14T15:35:09'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -317,7 +374,7 @@ endpoints:
         name: is_kaizen
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -325,10 +382,10 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       zone_id: architecto
-      date_found: '2026-09-09T01:59:18'
+      date_found: '2026-09-14T15:35:09'
       problem_description: 'n'
       countermeasure_plan: g
-      is_kaizen: false
+      is_kaizen: true
     fileParameters: []
     responses: []
     responseFields: []
