@@ -222,14 +222,12 @@ Endpoint API Read-Only untuk mengambil pengumuman mading pada TV Kiosk.</a>
                     <a href="#visual-board-domain">Visual Board Domain</a>
                 </li>
                                     <ul id="tocify-subheader-visual-board-domain" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="visual-board-domain-kiosk-dashboard-endpoint-api-agregasi-data-untuk-konsumsi-read-only-pada-layar-tv-kiosk-modul-13">
-                                <a href="#visual-board-domain-kiosk-dashboard-endpoint-api-agregasi-data-untuk-konsumsi-read-only-pada-layar-tv-kiosk-modul-13">Kiosk Dashboard
-
-Endpoint API agregasi data untuk konsumsi Read-Only pada layar TV Kiosk (Modul 1.3).</a>
+                                                    <li class="tocify-item level-2" data-unique="visual-board-domain-kiosk-scanner-tanpa-auth">
+                                <a href="#visual-board-domain-kiosk-scanner-tanpa-auth">Kiosk Scanner (Tanpa Auth)</a>
                             </li>
-                                                            <ul id="tocify-subheader-visual-board-domain-kiosk-dashboard-endpoint-api-agregasi-data-untuk-konsumsi-read-only-pada-layar-tv-kiosk-modul-13" class="tocify-subheader">
-                                                                            <li class="tocify-item level-3" data-unique="visual-board-domain-GETapi-v1-visual-board-kiosk">
-                                            <a href="#visual-board-domain-GETapi-v1-visual-board-kiosk">Data Kiosk Dashboard</a>
+                                                            <ul id="tocify-subheader-visual-board-domain-kiosk-scanner-tanpa-auth" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="visual-board-domain-GETapi-v1-visual-board-kiosk-workstations--id-">
+                                            <a href="#visual-board-domain-GETapi-v1-visual-board-kiosk-workstations--id-">Data Standar Meja (Workstation)</a>
                                         </li>
                                                                     </ul>
                                                                                 <li class="tocify-item level-2" data-unique="visual-board-domain-pemindaian-zona-scanner-endpoint-api-untuk-mengambil-ceklis-harian-berdasarkan-pemindaian-barcode-qr-code-zona">
@@ -277,6 +275,26 @@ Endpoint untuk mencatat dan mengelola masalah (abnormality) dari inspeksi 5R har
                                             <a href="#visual-board-domain-PATCHapi-v1-visual-board-abnormalities--id--progress">Update Progress Abnormality</a>
                                         </li>
                                                                     </ul>
+                                                                                <li class="tocify-item level-2" data-unique="visual-board-domain-workstation-meja-admin">
+                                <a href="#visual-board-domain-workstation-meja-admin">Workstation / Meja (Admin)</a>
+                            </li>
+                                                            <ul id="tocify-subheader-visual-board-domain-workstation-meja-admin" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="visual-board-domain-GETapi-v1-visual-board-workstations">
+                                            <a href="#visual-board-domain-GETapi-v1-visual-board-workstations">GET api/v1/visual-board/workstations</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="visual-board-domain-POSTapi-v1-visual-board-workstations">
+                                            <a href="#visual-board-domain-POSTapi-v1-visual-board-workstations">POST api/v1/visual-board/workstations</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="visual-board-domain-GETapi-v1-visual-board-workstations--id-">
+                                            <a href="#visual-board-domain-GETapi-v1-visual-board-workstations--id-">GET api/v1/visual-board/workstations/{id}</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="visual-board-domain-PUTapi-v1-visual-board-workstations--id-">
+                                            <a href="#visual-board-domain-PUTapi-v1-visual-board-workstations--id-">PUT api/v1/visual-board/workstations/{id}</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="visual-board-domain-DELETEapi-v1-visual-board-workstations--id-">
+                                            <a href="#visual-board-domain-DELETEapi-v1-visual-board-workstations--id-">DELETE api/v1/visual-board/workstations/{id}</a>
+                                        </li>
+                                                                    </ul>
                                                                         </ul>
                             </ul>
             </div>
@@ -288,7 +306,7 @@ Endpoint untuk mencatat dan mengelola masalah (abnormality) dari inspeksi 5R har
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: September 14, 2026</li>
+        <li>Last updated: September 15, 2026</li>
     </ul>
 </div>
 
@@ -2633,7 +2651,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"name\": \"b\",
     \"code\": \"n\",
     \"description\": \"Animi quos velit et fugiat.\",
-    \"is_active\": false
+    \"is_active\": true
 }"
 </code></pre></div>
 
@@ -2652,7 +2670,7 @@ let body = {
     "name": "b",
     "code": "n",
     "description": "Animi quos velit et fugiat.",
-    "is_active": false
+    "is_active": true
 };
 
 fetch(url, {
@@ -2822,7 +2840,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
         </form>
 
@@ -4780,32 +4798,29 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     
 
-                        <h2 id="visual-board-domain-kiosk-dashboard-endpoint-api-agregasi-data-untuk-konsumsi-read-only-pada-layar-tv-kiosk-modul-13">Kiosk Dashboard
-
-Endpoint API agregasi data untuk konsumsi Read-Only pada layar TV Kiosk (Modul 1.3).</h2>
-                                                    <h2 id="visual-board-domain-GETapi-v1-visual-board-kiosk">Data Kiosk Dashboard</h2>
+                        <h2 id="visual-board-domain-kiosk-scanner-tanpa-auth">Kiosk Scanner (Tanpa Auth)</h2>
+                                                    <h2 id="visual-board-domain-GETapi-v1-visual-board-kiosk-workstations--id-">Data Standar Meja (Workstation)</h2>
 
 <p>
 </p>
 
-<p>Endpoint ini mengambil agregasi struktur organisasi, tren masalah bulanan,
-dan daftar masalah yang belum terselesaikan. Hasil dari kueri ini di-cache
-secara otomatis selama 1 menit.</p>
+<p>Digunakan saat pekerja melakukan scan barcode yang tertempel di meja.
+Mengembalikan data meja, foto standar 5R, serta daftar ATK yang seharusnya ada.</p>
 
-<span id="example-requests-GETapi-v1-visual-board-kiosk">
+<span id="example-requests-GETapi-v1-visual-board-kiosk-workstations--id-">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost:8000/api/v1/visual-board/kiosk" \
+    --get "http://localhost:8000/api/v1/visual-board/kiosk/workstations/architecto" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8000/api/v1/visual-board/kiosk"
+    "http://localhost:8000/api/v1/visual-board/kiosk/workstations/architecto"
 );
 
 const headers = {
@@ -4821,9 +4836,9 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-GETapi-v1-visual-board-kiosk">
+<span id="example-responses-GETapi-v1-visual-board-kiosk-workstations--id-">
             <blockquote>
-            <p>Example response (200):</p>
+            <p>Example response (404):</p>
         </blockquote>
                 <details class="annotation">
             <summary style="cursor: pointer;">
@@ -4835,366 +4850,50 @@ access-control-allow-origin: *
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;success&quot;: true,
-    &quot;message&quot;: &quot;Berhasil memuat data Kiosk Dashboard.&quot;,
-    &quot;data&quot;: {
-        &quot;organization_structure&quot;: [
-            {
-                &quot;id&quot;: &quot;01m2etwk8szzftm477bpekbnpd&quot;,
-                &quot;name&quot;: &quot;Zona 303 - id&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5j&quot;,
-                &quot;name&quot;: &quot;Zona 945 - et&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5k&quot;,
-                &quot;name&quot;: &quot;Zona 682 - et&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkaxqmwvf8svnhmfe4x7&quot;,
-                &quot;name&quot;: &quot;Zona 818 - doloribus&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkayt04qh7aj09p0nk8q&quot;,
-                &quot;name&quot;: &quot;Zona 192 - est&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkb0xy5ew7k0nqkq06aq&quot;,
-                &quot;name&quot;: &quot;Zona 340 - voluptatem&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkb2ekp01erne1bjgat5&quot;,
-                &quot;name&quot;: &quot;Zona 372 - ea&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkb4ng8rmbz8ayyme1tg&quot;,
-                &quot;name&quot;: &quot;Zona 226 - veritatis&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkb53pfgyzatvzg7bymy&quot;,
-                &quot;name&quot;: &quot;Zona 926 - vel&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkb60jhp38419ftabbs2&quot;,
-                &quot;name&quot;: &quot;Zona 183 - magni&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkb8x588tg390gksz2rs&quot;,
-                &quot;name&quot;: &quot;Zona 57 - ipsa&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkbagef71m2q25nhkvqd&quot;,
-                &quot;name&quot;: &quot;Zona 165 - debitis&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkbb5j1kq95s53csy6ny&quot;,
-                &quot;name&quot;: &quot;Zona 797 - error&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkd0g8tjpyaxk9cqzgak&quot;,
-                &quot;name&quot;: &quot;Zona 531 - reprehenderit&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkd2gbgr7fp1h0ax24cn&quot;,
-                &quot;name&quot;: &quot;Zona 569 - occaecati&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkd3rjkx4hhvk3yqcq4y&quot;,
-                &quot;name&quot;: &quot;Zona 920 - veniam&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkd62jtz7ngr380satda&quot;,
-                &quot;name&quot;: &quot;Zona 841 - in&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkd83yya9bb5nr3f627b&quot;,
-                &quot;name&quot;: &quot;Zona 658 - consectetur&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkd913m4zhgf7b2yb08r&quot;,
-                &quot;name&quot;: &quot;Zona 98 - corporis&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkdbrwha2dzc819e15cb&quot;,
-                &quot;name&quot;: &quot;Zona 45 - et&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkdc5kt8jn62gvaf125n&quot;,
-                &quot;name&quot;: &quot;Zona 922 - vel&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkdeskm5bypgnn9gstwt&quot;,
-                &quot;name&quot;: &quot;Zona 685 - neque&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkdf5h3v4fw46qxq8n6k&quot;,
-                &quot;name&quot;: &quot;Zona 220 - natus&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkegkwgkmw8j6r6gqdqv&quot;,
-                &quot;name&quot;: &quot;Zona 758 - velit&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkeh1cfeny1a7h4h0w3y&quot;,
-                &quot;name&quot;: &quot;Zona 71 - blanditiis&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkeksnfxcqcn4g0wqj24&quot;,
-                &quot;name&quot;: &quot;Zona 923 - sunt&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwken5e55jfaar0cf061k&quot;,
-                &quot;name&quot;: &quot;Zona 496 - aperiam&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkeqv5w7fmzm981xpc4s&quot;,
-                &quot;name&quot;: &quot;Zona 717 - laudantium&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkes14r2y7atbpgp0bgg&quot;,
-                &quot;name&quot;: &quot;Zona 367 - nesciunt&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwketsav9npyj0qwcn2bh&quot;,
-                &quot;name&quot;: &quot;Zona 819 - soluta&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkewp4rt5j1hbth4kjdv&quot;,
-                &quot;name&quot;: &quot;Zona 845 - aut&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkexn5fa4nfmfbfahfe5&quot;,
-                &quot;name&quot;: &quot;Zona 286 - qui&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkez1ytq09d65ve6kvjy&quot;,
-                &quot;name&quot;: &quot;Zona 628 - porro&quot;,
-                &quot;pic_utama&quot;: null,
-                &quot;pic_pengganti&quot;: null
-            }
-        ],
-        &quot;abnormality_trend&quot;: {
-            &quot;month&quot;: &quot;September 2026&quot;,
-            &quot;summary&quot;: {
-                &quot;open&quot;: 26,
-                &quot;in_progress&quot;: 0,
-                &quot;resolved&quot;: 0
-            }
-        },
-        &quot;open_problems&quot;: [
-            {
-                &quot;id&quot;: &quot;01m2etwkfd5zyxz62am5mpgwpr&quot;,
-                &quot;zone_id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5k&quot;,
-                &quot;monthly_schedule_id&quot;: null,
-                &quot;inspection_criteria_id&quot;: null,
-                &quot;date_found&quot;: &quot;2026-09-11&quot;,
-                &quot;problem_description&quot;: &quot;Sint totam non neque doloremque.&quot;,
-                &quot;countermeasure_plan&quot;: null,
-                &quot;countermeasure_actual&quot;: null,
-                &quot;pic_id&quot;: null,
-                &quot;status&quot;: &quot;open&quot;,
-                &quot;progress_percentage&quot;: 0,
-                &quot;is_kaizen&quot;: false,
-                &quot;created_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;updated_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;zone&quot;: {
-                    &quot;id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5k&quot;,
-                    &quot;name&quot;: &quot;Zona 682 - et&quot;
-                },
-                &quot;pic&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkdxcmvb9x7bpfswkh90&quot;,
-                &quot;zone_id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5j&quot;,
-                &quot;monthly_schedule_id&quot;: null,
-                &quot;inspection_criteria_id&quot;: null,
-                &quot;date_found&quot;: &quot;2026-09-11&quot;,
-                &quot;problem_description&quot;: &quot;Facilis pariatur aut molestias corrupti molestias aliquid.&quot;,
-                &quot;countermeasure_plan&quot;: null,
-                &quot;countermeasure_actual&quot;: null,
-                &quot;pic_id&quot;: null,
-                &quot;status&quot;: &quot;open&quot;,
-                &quot;progress_percentage&quot;: 0,
-                &quot;is_kaizen&quot;: false,
-                &quot;created_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;updated_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;zone&quot;: {
-                    &quot;id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5j&quot;,
-                    &quot;name&quot;: &quot;Zona 945 - et&quot;
-                },
-                &quot;pic&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkdw1fxaapy8wsqjpgcg&quot;,
-                &quot;zone_id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5j&quot;,
-                &quot;monthly_schedule_id&quot;: null,
-                &quot;inspection_criteria_id&quot;: null,
-                &quot;date_found&quot;: &quot;2026-09-11&quot;,
-                &quot;problem_description&quot;: &quot;Delectus perspiciatis est est qui.&quot;,
-                &quot;countermeasure_plan&quot;: null,
-                &quot;countermeasure_actual&quot;: null,
-                &quot;pic_id&quot;: null,
-                &quot;status&quot;: &quot;open&quot;,
-                &quot;progress_percentage&quot;: 0,
-                &quot;is_kaizen&quot;: false,
-                &quot;created_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;updated_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;zone&quot;: {
-                    &quot;id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5j&quot;,
-                    &quot;name&quot;: &quot;Zona 945 - et&quot;
-                },
-                &quot;pic&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwkfcs5y4x046vka2kehh&quot;,
-                &quot;zone_id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5k&quot;,
-                &quot;monthly_schedule_id&quot;: null,
-                &quot;inspection_criteria_id&quot;: null,
-                &quot;date_found&quot;: &quot;2026-09-11&quot;,
-                &quot;problem_description&quot;: &quot;Voluptatem provident nemo dignissimos perferendis dolores est.&quot;,
-                &quot;countermeasure_plan&quot;: null,
-                &quot;countermeasure_actual&quot;: null,
-                &quot;pic_id&quot;: null,
-                &quot;status&quot;: &quot;open&quot;,
-                &quot;progress_percentage&quot;: 0,
-                &quot;is_kaizen&quot;: false,
-                &quot;created_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;updated_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;zone&quot;: {
-                    &quot;id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5k&quot;,
-                    &quot;name&quot;: &quot;Zona 682 - et&quot;
-                },
-                &quot;pic&quot;: null
-            },
-            {
-                &quot;id&quot;: &quot;01m2etwke6dhx8mc34qw4zbyab&quot;,
-                &quot;zone_id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5j&quot;,
-                &quot;monthly_schedule_id&quot;: null,
-                &quot;inspection_criteria_id&quot;: null,
-                &quot;date_found&quot;: &quot;2026-09-10&quot;,
-                &quot;problem_description&quot;: &quot;Id voluptatem aliquam exercitationem quisquam minus praesentium cum.&quot;,
-                &quot;countermeasure_plan&quot;: null,
-                &quot;countermeasure_actual&quot;: null,
-                &quot;pic_id&quot;: null,
-                &quot;status&quot;: &quot;open&quot;,
-                &quot;progress_percentage&quot;: 0,
-                &quot;is_kaizen&quot;: false,
-                &quot;created_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;updated_at&quot;: &quot;2026-09-14T02:10:41.000000Z&quot;,
-                &quot;zone&quot;: {
-                    &quot;id&quot;: &quot;01m2etwk8vre2w6q4n1kw72h5j&quot;,
-                    &quot;name&quot;: &quot;Zona 945 - et&quot;
-                },
-                &quot;pic&quot;: null
-            }
-        ]
-    },
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Data Meja tidak ditemukan.&quot;,
+    &quot;errors&quot;: [],
     &quot;meta&quot;: []
 }</code>
  </pre>
     </span>
-<span id="execution-results-GETapi-v1-visual-board-kiosk" hidden>
+<span id="execution-results-GETapi-v1-visual-board-kiosk-workstations--id-" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-visual-board-kiosk"></span>:
+                id="execution-response-status-GETapi-v1-visual-board-kiosk-workstations--id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-visual-board-kiosk"
+    <pre class="json"><code id="execution-response-content-GETapi-v1-visual-board-kiosk-workstations--id-"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-visual-board-kiosk" hidden>
+<span id="execution-error-GETapi-v1-visual-board-kiosk-workstations--id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-visual-board-kiosk">
+    <pre><code id="execution-error-message-GETapi-v1-visual-board-kiosk-workstations--id-">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-GETapi-v1-visual-board-kiosk" data-method="GET"
-      data-path="api/v1/visual-board/kiosk"
+<form id="form-GETapi-v1-visual-board-kiosk-workstations--id-" data-method="GET"
+      data-path="api/v1/visual-board/kiosk/workstations/{id}"
       data-authed="0"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-visual-board-kiosk', this);">
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-visual-board-kiosk-workstations--id-', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-visual-board-kiosk"
-                    onclick="tryItOut('GETapi-v1-visual-board-kiosk');">Try it out ⚡
+                    id="btn-tryout-GETapi-v1-visual-board-kiosk-workstations--id-"
+                    onclick="tryItOut('GETapi-v1-visual-board-kiosk-workstations--id-');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-visual-board-kiosk"
-                    onclick="cancelTryOut('GETapi-v1-visual-board-kiosk');" hidden>Cancel 🛑
+                    id="btn-canceltryout-GETapi-v1-visual-board-kiosk-workstations--id-"
+                    onclick="cancelTryOut('GETapi-v1-visual-board-kiosk-workstations--id-');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-visual-board-kiosk"
+                    id="btn-executetryout-GETapi-v1-visual-board-kiosk-workstations--id-"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -5202,7 +4901,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-green">GET</small>
-            <b><code>api/v1/visual-board/kiosk</code></b>
+            <b><code>api/v1/visual-board/kiosk/workstations/{id}</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -5211,7 +4910,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-visual-board-kiosk"
+                              name="Content-Type"                data-endpoint="GETapi-v1-visual-board-kiosk-workstations--id-"
                value="application/json"
                data-component="header">
     <br>
@@ -5223,13 +4922,26 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-visual-board-kiosk"
+                              name="Accept"                data-endpoint="GETapi-v1-visual-board-kiosk-workstations--id-"
                value="application/json"
                data-component="header">
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="GETapi-v1-visual-board-kiosk-workstations--id-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the workstation. Example: <code>architecto</code></p>
+            </div>
+                    </form>
 
                                 <h2 id="visual-board-domain-pemindaian-zona-scanner-endpoint-api-untuk-mengambil-ceklis-harian-berdasarkan-pemindaian-barcode-qr-code-zona">Pemindaian Zona (Scanner)
 
@@ -5542,7 +5254,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"day\": 1,
-    \"status\": \"libur\"
+    \"status\": \"abnormal\"
 }"
 </code></pre></div>
 
@@ -5559,7 +5271,7 @@ const headers = {
 
 let body = {
     "day": 1,
-    "status": "libur"
+    "status": "abnormal"
 };
 
 fetch(url, {
@@ -5676,10 +5388,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="status"                data-endpoint="PATCHapi-v1-visual-board-schedule-records--recordId--update-day"
-               value="libur"
+               value="abnormal"
                data-component="body">
     <br>
-<p>Example: <code>libur</code></p>
+<p>Example: <code>abnormal</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>rencana</code></li> <li><code>ok_tanpa_5r</code></li> <li><code>ok_dengan_5r</code></li> <li><code>abnormal</code></li> <li><code>libur</code></li></ul>
         </div>
@@ -5836,10 +5548,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"zone_id\": \"architecto\",
-    \"date_found\": \"2026-09-14T15:35:09\",
+    \"date_found\": \"2026-09-15T09:30:27\",
     \"problem_description\": \"n\",
     \"countermeasure_plan\": \"g\",
-    \"is_kaizen\": true
+    \"is_kaizen\": false
 }"
 </code></pre></div>
 
@@ -5856,10 +5568,10 @@ const headers = {
 
 let body = {
     "zone_id": "architecto",
-    "date_found": "2026-09-14T15:35:09",
+    "date_found": "2026-09-15T09:30:27",
     "problem_description": "n",
     "countermeasure_plan": "g",
-    "is_kaizen": true
+    "is_kaizen": false
 };
 
 fetch(url, {
@@ -5987,10 +5699,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="date_found"                data-endpoint="POSTapi-v1-visual-board-abnormalities"
-               value="2026-09-14T15:35:09"
+               value="2026-09-15T09:30:27"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-09-14T15:35:09</code></p>
+<p>Must be a valid date. Example: <code>2026-09-15T09:30:27</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>problem_description</code></b>&nbsp;&nbsp;
@@ -6036,7 +5748,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
         </form>
 
@@ -6478,6 +6190,789 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Must match an existing stored value.</p>
         </div>
         </form>
+
+                                <h2 id="visual-board-domain-workstation-meja-admin">Workstation / Meja (Admin)</h2>
+                                                    <h2 id="visual-board-domain-GETapi-v1-visual-board-workstations">GET api/v1/visual-board/workstations</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-visual-board-workstations">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost:8000/api/v1/visual-board/workstations" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/v1/visual-board/workstations"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-visual-board-workstations">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+access-control-allow-origin: *
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Unauthenticated. Silakan login terlebih dahulu.&quot;,
+    &quot;errors&quot;: [],
+    &quot;meta&quot;: []
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-visual-board-workstations" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-visual-board-workstations"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-visual-board-workstations"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-visual-board-workstations" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-visual-board-workstations">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-visual-board-workstations" data-method="GET"
+      data-path="api/v1/visual-board/workstations"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-visual-board-workstations', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-visual-board-workstations"
+                    onclick="tryItOut('GETapi-v1-visual-board-workstations');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-visual-board-workstations"
+                    onclick="cancelTryOut('GETapi-v1-visual-board-workstations');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-visual-board-workstations"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/visual-board/workstations</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v1-visual-board-workstations"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v1-visual-board-workstations"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="visual-board-domain-POSTapi-v1-visual-board-workstations">POST api/v1/visual-board/workstations</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-visual-board-workstations">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost:8000/api/v1/visual-board/workstations" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"zone_id\": \"architecto\",
+    \"employee_id\": \"architecto\",
+    \"name\": \"n\",
+    \"is_active\": false
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/v1/visual-board/workstations"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "zone_id": "architecto",
+    "employee_id": "architecto",
+    "name": "n",
+    "is_active": false
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-visual-board-workstations">
+</span>
+<span id="execution-results-POSTapi-v1-visual-board-workstations" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-visual-board-workstations"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-visual-board-workstations"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-visual-board-workstations" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-visual-board-workstations">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-visual-board-workstations" data-method="POST"
+      data-path="api/v1/visual-board/workstations"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-visual-board-workstations', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-visual-board-workstations"
+                    onclick="tryItOut('POSTapi-v1-visual-board-workstations');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-visual-board-workstations"
+                    onclick="cancelTryOut('POSTapi-v1-visual-board-workstations');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-visual-board-workstations"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/visual-board/workstations</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-visual-board-workstations"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-visual-board-workstations"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>zone_id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="zone_id"                data-endpoint="POSTapi-v1-visual-board-workstations"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Must match an existing stored value. Example: <code>architecto</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>employee_id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="employee_id"                data-endpoint="POSTapi-v1-visual-board-workstations"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Must match an existing stored value. Example: <code>architecto</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="name"                data-endpoint="POSTapi-v1-visual-board-workstations"
+               value="n"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>n</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>is_active</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="POSTapi-v1-visual-board-workstations" style="display: none">
+            <input type="radio" name="is_active"
+                   value="true"
+                   data-endpoint="POSTapi-v1-visual-board-workstations"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-v1-visual-board-workstations" style="display: none">
+            <input type="radio" name="is_active"
+                   value="false"
+                   data-endpoint="POSTapi-v1-visual-board-workstations"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>false</code></p>
+        </div>
+        </form>
+
+                    <h2 id="visual-board-domain-GETapi-v1-visual-board-workstations--id-">GET api/v1/visual-board/workstations/{id}</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-visual-board-workstations--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost:8000/api/v1/visual-board/workstations/architecto" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/v1/visual-board/workstations/architecto"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-visual-board-workstations--id-">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+access-control-allow-origin: *
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Unauthenticated. Silakan login terlebih dahulu.&quot;,
+    &quot;errors&quot;: [],
+    &quot;meta&quot;: []
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-visual-board-workstations--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-visual-board-workstations--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-visual-board-workstations--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-visual-board-workstations--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-visual-board-workstations--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-visual-board-workstations--id-" data-method="GET"
+      data-path="api/v1/visual-board/workstations/{id}"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-visual-board-workstations--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-visual-board-workstations--id-"
+                    onclick="tryItOut('GETapi-v1-visual-board-workstations--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-visual-board-workstations--id-"
+                    onclick="cancelTryOut('GETapi-v1-visual-board-workstations--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-visual-board-workstations--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/visual-board/workstations/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v1-visual-board-workstations--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v1-visual-board-workstations--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="GETapi-v1-visual-board-workstations--id-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the workstation. Example: <code>architecto</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="visual-board-domain-PUTapi-v1-visual-board-workstations--id-">PUT api/v1/visual-board/workstations/{id}</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-PUTapi-v1-visual-board-workstations--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://localhost:8000/api/v1/visual-board/workstations/architecto" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"zone_id\": \"architecto\",
+    \"employee_id\": \"architecto\",
+    \"name\": \"n\",
+    \"is_active\": true
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/v1/visual-board/workstations/architecto"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "zone_id": "architecto",
+    "employee_id": "architecto",
+    "name": "n",
+    "is_active": true
+};
+
+fetch(url, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTapi-v1-visual-board-workstations--id-">
+</span>
+<span id="execution-results-PUTapi-v1-visual-board-workstations--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTapi-v1-visual-board-workstations--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-v1-visual-board-workstations--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTapi-v1-visual-board-workstations--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-v1-visual-board-workstations--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTapi-v1-visual-board-workstations--id-" data-method="PUT"
+      data-path="api/v1/visual-board/workstations/{id}"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTapi-v1-visual-board-workstations--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTapi-v1-visual-board-workstations--id-"
+                    onclick="tryItOut('PUTapi-v1-visual-board-workstations--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTapi-v1-visual-board-workstations--id-"
+                    onclick="cancelTryOut('PUTapi-v1-visual-board-workstations--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTapi-v1-visual-board-workstations--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/v1/visual-board/workstations/{id}</code></b>
+        </p>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>api/v1/visual-board/workstations/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PUTapi-v1-visual-board-workstations--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PUTapi-v1-visual-board-workstations--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="PUTapi-v1-visual-board-workstations--id-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the workstation. Example: <code>architecto</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>zone_id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="zone_id"                data-endpoint="PUTapi-v1-visual-board-workstations--id-"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Must match an existing stored value. Example: <code>architecto</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>employee_id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="employee_id"                data-endpoint="PUTapi-v1-visual-board-workstations--id-"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Must match an existing stored value. Example: <code>architecto</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="name"                data-endpoint="PUTapi-v1-visual-board-workstations--id-"
+               value="n"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>n</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>is_active</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="PUTapi-v1-visual-board-workstations--id-" style="display: none">
+            <input type="radio" name="is_active"
+                   value="true"
+                   data-endpoint="PUTapi-v1-visual-board-workstations--id-"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="PUTapi-v1-visual-board-workstations--id-" style="display: none">
+            <input type="radio" name="is_active"
+                   value="false"
+                   data-endpoint="PUTapi-v1-visual-board-workstations--id-"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>true</code></p>
+        </div>
+        </form>
+
+                    <h2 id="visual-board-domain-DELETEapi-v1-visual-board-workstations--id-">DELETE api/v1/visual-board/workstations/{id}</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-v1-visual-board-workstations--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "http://localhost:8000/api/v1/visual-board/workstations/architecto" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/v1/visual-board/workstations/architecto"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEapi-v1-visual-board-workstations--id-">
+</span>
+<span id="execution-results-DELETEapi-v1-visual-board-workstations--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-v1-visual-board-workstations--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-v1-visual-board-workstations--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-v1-visual-board-workstations--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-v1-visual-board-workstations--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-DELETEapi-v1-visual-board-workstations--id-" data-method="DELETE"
+      data-path="api/v1/visual-board/workstations/{id}"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-v1-visual-board-workstations--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-v1-visual-board-workstations--id-"
+                    onclick="tryItOut('DELETEapi-v1-visual-board-workstations--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-v1-visual-board-workstations--id-"
+                    onclick="cancelTryOut('DELETEapi-v1-visual-board-workstations--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-v1-visual-board-workstations--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/v1/visual-board/workstations/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="DELETEapi-v1-visual-board-workstations--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="DELETEapi-v1-visual-board-workstations--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="DELETEapi-v1-visual-board-workstations--id-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the workstation. Example: <code>architecto</code></p>
+            </div>
+                    </form>
 
             
 
