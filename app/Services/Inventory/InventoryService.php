@@ -17,10 +17,12 @@ class InventoryService
      * Ambil barang consumable dari stok.
      * WAJIB DB::transaction + lockForUpdate (GEMINI.md §2).
      */
-    public function takeItem(string $itemId, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null): InventoryLedger
+    public function takeItem(string $identifier, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null): InventoryLedger
     {
-        return DB::transaction(function () use ($itemId, $quantity, $userId, $notes, $referenceNumber) {
-            $item = Item::where('id', $itemId)->lockForUpdate()->first();
+        return DB::transaction(function () use ($identifier, $quantity, $userId, $notes, $referenceNumber) {
+            $item = Item::where(function ($q) use ($identifier) {
+                $q->where('id', $identifier)->orWhere('sku', $identifier);
+            })->lockForUpdate()->first();
 
             if (! $item) {
                 throw new NotFoundHttpException('Item tidak ditemukan.');
@@ -82,10 +84,12 @@ class InventoryService
      * Tambah stok barang consumable.
      * WAJIB DB::transaction + lockForUpdate (GEMINI.md §2).
      */
-    public function addItem(string $itemId, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null): InventoryLedger
+    public function addItem(string $identifier, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null): InventoryLedger
     {
-        return DB::transaction(function () use ($itemId, $quantity, $userId, $notes, $referenceNumber) {
-            $item = Item::where('id', $itemId)->lockForUpdate()->first();
+        return DB::transaction(function () use ($identifier, $quantity, $userId, $notes, $referenceNumber) {
+            $item = Item::where(function ($q) use ($identifier) {
+                $q->where('id', $identifier)->orWhere('sku', $identifier);
+            })->lockForUpdate()->first();
 
             if (! $item) {
                 throw new NotFoundHttpException('Item tidak ditemukan.');
@@ -130,10 +134,12 @@ class InventoryService
      * Pinjam barang asset.
      * WAJIB DB::transaction + lockForUpdate (GEMINI.md §2).
      */
-    public function borrowItem(string $itemId, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null): InventoryLedger
+    public function borrowItem(string $identifier, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null): InventoryLedger
     {
-        return DB::transaction(function () use ($itemId, $quantity, $userId, $notes, $referenceNumber) {
-            $item = Item::where('id', $itemId)->lockForUpdate()->first();
+        return DB::transaction(function () use ($identifier, $quantity, $userId, $notes, $referenceNumber) {
+            $item = Item::where(function ($q) use ($identifier) {
+                $q->where('id', $identifier)->orWhere('sku', $identifier);
+            })->lockForUpdate()->first();
 
             if (! $item) {
                 throw new NotFoundHttpException('Item tidak ditemukan.');
@@ -192,10 +198,12 @@ class InventoryService
      * Kembalikan barang asset.
      * WAJIB DB::transaction + lockForUpdate (GEMINI.md §2).
      */
-    public function returnItem(string $itemId, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null): InventoryLedger
+    public function returnItem(string $identifier, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null): InventoryLedger
     {
-        return DB::transaction(function () use ($itemId, $quantity, $userId, $notes, $referenceNumber) {
-            $item = Item::where('id', $itemId)->lockForUpdate()->first();
+        return DB::transaction(function () use ($identifier, $quantity, $userId, $notes, $referenceNumber) {
+            $item = Item::where(function ($q) use ($identifier) {
+                $q->where('id', $identifier)->orWhere('sku', $identifier);
+            })->lockForUpdate()->first();
 
             if (! $item) {
                 throw new NotFoundHttpException('Item tidak ditemukan.');
@@ -238,9 +246,11 @@ class InventoryService
     /**
      * Riwayat transaksi per item (paginated, terbaru di atas).
      */
-    public function getLedgerHistory(string $itemId, int $perPage = 15): LengthAwarePaginator
+    public function getLedgerHistory(string $identifier, int $perPage = 15): LengthAwarePaginator
     {
-        return InventoryLedger::where('item_id', $itemId)
+        $item = Item::where('id', $identifier)->orWhere('sku', $identifier)->firstOrFail();
+
+        return InventoryLedger::where('item_id', $item->id)
             ->with(['user'])
             ->latest()
             ->paginate($perPage);

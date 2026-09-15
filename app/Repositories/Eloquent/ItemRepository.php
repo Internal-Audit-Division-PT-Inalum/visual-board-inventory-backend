@@ -40,7 +40,9 @@ class ItemRepository implements ItemRepositoryInterface
 
     public function findById(string $id): ?Item
     {
-        return $this->model->with(['location'])->find($id);
+        return $this->model->with(['location'])->where(function ($q) use ($id) {
+            $q->where('id', $id)->orWhere('sku', $id);
+        })->first();
     }
 
     public function findBySku(string $sku): ?Item
