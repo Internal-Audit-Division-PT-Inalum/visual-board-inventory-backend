@@ -42,9 +42,9 @@ class DatabaseSeeder extends Seeder
 
             $this->call([
                 HRSeeder::class,
+                InventorySeeder::class,
                 PortalSeeder::class,
                 VisualBoardSeeder::class,
-                InventorySeeder::class,
             ]);
         } else {
             $this->command->info('Environment PRODUCTION terdeteksi. Dummy data dilewati demi keamanan.');
