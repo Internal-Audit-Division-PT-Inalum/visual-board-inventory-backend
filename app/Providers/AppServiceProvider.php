@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Domains\VisualBoard\Models\Abnormality;
+use App\Domains\VisualBoard\Observers\AbnormalityObserver;
 use App\Repositories\Contracts\AbnormalityRepositoryInterface;
 use App\Repositories\Contracts\BulletinRepositoryInterface;
 use App\Repositories\Contracts\DepartmentRepositoryInterface;
@@ -53,6 +55,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Abnormality::observe(AbnormalityObserver::class);
+
         Factory::guessFactoryNamesUsing(function (string $modelName) {
             $modelName = class_basename($modelName);
 
