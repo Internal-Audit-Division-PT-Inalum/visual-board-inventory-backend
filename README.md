@@ -17,9 +17,9 @@ Proyek ini adalah inti peladen (*Backend API*) untuk **Sistem Visual Board 5R & 
 ## 🏗️ Arsitektur & Teknologi
 Sistem ini mematuhi standar *Clean Architecture* dan **Domain-Driven Design (DDD)** untuk skalabilitas dan pemeliharaan jangka panjang.
 
-*   **Framework Utama:** Laravel 11.x
+*   **Framework Utama:** Laravel 13.x
 *   **Database:** PostgreSQL (Dioptimalkan untuk tipe data `JSONB`)
-*   **Admin Panel:** Filament v3 (dengan Filament Shield untuk *RBAC*)
+*   **Admin Panel:** Filament v5 (dengan Filament Shield untuk *RBAC*)
 *   **Dokumentasi API:** Scribe (Auto-generated Postman Collection)
 *   **Pengujian (Testing):** Pest & PHPUnit
 *   **Analisis Statis:** PHPStan (Level 0/Enterprise)
