@@ -1,58 +1,128 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
+  <h1>🛡️ Visual Board & Inventory System - Backend API</h1>
+  <p><strong>Sistem Manajemen Audit Internal 5R & Inventaris Gudang (PT INALUM)</strong></p>
+  <p>Dibangun dengan Arsitektur Skala Enterprise (Domain-Driven Design)</p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+  [![PHP Version](https://img.shields.io/badge/PHP-8.4+-blue.svg)](https://php.net)
+  [![Laravel Version](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+  [![Filament](https://img.shields.io/badge/Filament-3.x-yellow.svg)](https://filamentphp.com)
+  [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Ready-336791.svg)](https://postgresql.org)
+</div>
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📖 Deskripsi
+Proyek ini adalah inti peladen (*Backend API*) untuk **Sistem Visual Board 5R & Manajemen Inventaris**. Sistem ini menyediakan layanan API tingkat tinggi untuk integrasi lintas platform (*Mobile/Web Kiosk*), sekaligus menyediakan Dasbor Admin (*Filament Panel*) yang elegan untuk pengelolaan data operasional secara terpusat oleh Super Admin dan Manajemen.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🏗️ Arsitektur & Teknologi
+Sistem ini mematuhi standar *Clean Architecture* dan **Domain-Driven Design (DDD)** untuk skalabilitas dan pemeliharaan jangka panjang.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+*   **Framework Utama:** Laravel 11.x
+*   **Database:** PostgreSQL (Dioptimalkan untuk tipe data `JSONB`)
+*   **Admin Panel:** Filament v3 (dengan Filament Shield untuk *RBAC*)
+*   **Dokumentasi API:** Scribe (Auto-generated Postman Collection)
+*   **Pengujian (Testing):** Pest & PHPUnit
+*   **Analisis Statis:** PHPStan (Level 0/Enterprise)
+*   **Pemformatan Kode:** Laravel Pint
 
-## Learning Laravel
+### Struktur Domain (DDD)
+Sistem dipecah ke dalam beberapa area bisnis utama (`app/Domains/`):
+1.  **Core Domain:** Mengelola fondasi otentikasi (Users, Roles, Security).
+2.  **Visual Board Domain:** Mengelola entitas operasional 5R (Zones, Workstations, Abnormalities, Monthly Schedules).
+3.  **Inventory Domain:** Mengelola pergudangan (Items, Inventory Ledgers, Transactions).
+4.  **HR Domain:** Mengelola data kepegawaian (Departments, Employees, Attendances).
+5.  **Portal Domain:** Mengelola informasi mading digital (Bulletins/Kiosk).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Kebutuhan Sistem (Prerequisites)
+Pastikan komputer server/lokal Anda memiliki:
+*   PHP >= 8.4
+*   Composer >= 2.x
+*   PostgreSQL >= 14 (Sangat direkomendasikan karena struktur JSONB)
+*   Node.js & NPM (untuk *build asset* Filament jika diperlukan)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## ⚙️ Panduan Instalasi Lokal
+Ikuti langkah berikut untuk memasang aplikasi di lingkungan pengembangan atau *Local Server* (Intranet):
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+1. **Kloning Repositori**
+   ```bash
+   git clone https://github.com/Internal-Audit-Division-PT-Inalum/visual-board-inventory-backend.git
+   cd "visual-board-inventory-backend"
+   ```
 
+2. **Instalasi Dependensi**
+   ```bash
+   composer install
+   ```
+
+3. **Konfigurasi Environment**
+   Salin file `.env.example` menjadi `.env` lalu sesuaikan kredensial *database* (PostgreSQL disarankan) dan konfigurasi SMTP (untuk notifikasi email).
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Migrasi Database & Seeding**
+   Perintah ini akan membangun tabel dan memasukkan data tiruan (*dummy*) serta akun *Super Admin*.
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+5. **Menghubungkan Penyimpanan (Storage)**
+   ```bash
+   php artisan storage:link
+   ```
+
+---
+
+## 🛡️ Dasbor Manajemen (Filament Admin)
+Setelah instalasi selesai, jalankan server:
 ```bash
-composer require laravel/boost --dev
+php artisan serve
+```
+Akses Dasbor Admin melalui: `http://localhost:8000/admin`
 
-php artisan boost:install
+**Kredensial Default (Super Admin):**
+*   **Email:** `admin@admin.com`
+*   **Password:** `password`
+
+---
+
+## 📨 Pekerja Latar Belakang (Queue & Notifications)
+Sistem ini menggunakan *Observer* dan *Queue* untuk mengirim notifikasi email (*Targeted Alerts*) kepada PIC Zona secara asinkron agar tidak membebani performa API.
+Selama aplikasi berjalan di tahap produksi, pastikan *Queue Worker* selalu aktif:
+```bash
+php artisan queue:work
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 📚 Dokumentasi API
+Dokumentasi API lengkap digenerate secara otomatis menggunakan **Scribe**.
+Untuk melihat dokumentasi (UI HTML):
+Akses `http://localhost:8000/docs` di peramban Anda.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Untuk memperbarui dokumentasi setelah ada perubahan pada *Endpoint*:
+```bash
+php artisan scribe:generate
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🧪 Pengujian & Standar Kualitas (Testing & QA)
+Sistem ini dikawal ketat oleh pengujian terotomatisasi.
+*   **Menjalankan Unit/Feature Test:**
+    ```bash
+    php artisan test
+    ```
+*   **Analisis Kode Statis (Mendeteksi potensi *bug* gaib):**
+    ```bash
+    php vendor/bin/phpstan analyse app/ tests/
+    ```
+*   **Meratakan Format Kode (Linter):**
+    ```bash
+    php vendor/bin/pint
+    ```
