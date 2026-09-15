@@ -21,6 +21,7 @@ return [
 
     'shield_resource' => [
         'slug' => 'shield/roles',
+        'navigation_group' => 'Manajemen Akses',
         'show_model_path' => true,
         'cluster' => null,
         'tabs' => [
