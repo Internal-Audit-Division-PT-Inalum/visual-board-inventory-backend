@@ -4,8 +4,8 @@
   <p>Dibangun dengan Arsitektur Skala Enterprise (Domain-Driven Design)</p>
 
   [![PHP Version](https://img.shields.io/badge/PHP-8.4+-blue.svg)](https://php.net)
-  [![Laravel Version](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
-  [![Filament](https://img.shields.io/badge/Filament-3.x-yellow.svg)](https://filamentphp.com)
+  [![Laravel Version](https://img.shields.io/badge/Laravel-13.x-red.svg)](https://laravel.com)
+  [![Filament](https://img.shields.io/badge/Filament-5.x-yellow.svg)](https://filamentphp.com)
   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Ready-336791.svg)](https://postgresql.org)
 </div>
 
