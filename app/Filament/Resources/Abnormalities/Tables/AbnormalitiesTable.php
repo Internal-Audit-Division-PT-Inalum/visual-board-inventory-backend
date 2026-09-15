@@ -10,6 +10,7 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -95,6 +96,13 @@ class AbnormalitiesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'open' => 'Open',
+                        'in_progress' => 'In Progress',
+                        'resolved' => 'Resolved',
+                    ]),
                 TernaryFilter::make('is_kaizen')
                     ->label('Apakah Kaizen?'),
                 TrashedFilter::make(),
