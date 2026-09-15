@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Domains\HR\Models\Employee;
+use App\Domains\Inventory\Models\Item;
 use App\Domains\VisualBoard\Models\Abnormality;
 use App\Domains\VisualBoard\Models\InspectionCriteria;
 use App\Domains\VisualBoard\Models\MonthlySchedule;
@@ -9,8 +11,6 @@ use App\Domains\VisualBoard\Models\SchedulePic;
 use App\Domains\VisualBoard\Models\ScheduleRecord;
 use App\Domains\VisualBoard\Models\Workstation;
 use App\Domains\VisualBoard\Models\Zone;
-use App\Domains\Inventory\Models\Item;
-use App\Domains\HR\Models\Employee;
 use Illuminate\Database\Seeder;
 
 class VisualBoardSeeder extends Seeder
