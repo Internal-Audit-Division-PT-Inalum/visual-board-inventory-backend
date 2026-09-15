@@ -2,4 +2,9 @@
 
 namespace App\Repositories\Contracts;
 
-interface BulletinRepositoryInterface extends RepositoryInterface {}
+use Illuminate\Database\Eloquent\Collection;
+
+interface BulletinRepositoryInterface extends RepositoryInterface
+{
+    public function getActiveBulletins(int $limit = 10): Collection;
+}
