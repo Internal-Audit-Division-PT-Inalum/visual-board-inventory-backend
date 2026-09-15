@@ -26,6 +26,8 @@ class InspectionCriteriaResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 
+    protected static ?int $navigationSort = 3;
+
     protected static ?string $recordTitleAttribute = 'criteria';
 
     public static function form(Schema $schema): Schema

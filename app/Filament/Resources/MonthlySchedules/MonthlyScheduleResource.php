@@ -28,6 +28,8 @@ class MonthlyScheduleResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 
+    protected static ?int $navigationSort = 4;
+
     protected static ?string $recordTitleAttribute = 'month';
 
     public static function form(Schema $schema): Schema

@@ -26,7 +26,7 @@ class ApprovalCenter extends Page
 
     public static function getNavigationSort(): ?int
     {
-        return 10;
+        return 6;
     }
 
     public static function getNavigationGroup(): ?string

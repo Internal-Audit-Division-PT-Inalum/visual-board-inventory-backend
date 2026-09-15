@@ -20,9 +20,11 @@ class EmployeeResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Pegawai';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Human Resources';
+    protected static string|\UnitEnum|null $navigationGroup = 'Sumber Daya Manusia';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

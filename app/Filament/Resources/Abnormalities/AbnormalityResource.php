@@ -26,7 +26,9 @@ class AbnormalityResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 
-    protected static ?string $recordTitleAttribute = 'id';
+    protected static ?int $navigationSort = 5;
+
+    protected static ?string $recordTitleAttribute = 'description';
 
     public static function form(Schema $schema): Schema
     {
