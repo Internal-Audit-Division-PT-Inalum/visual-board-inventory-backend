@@ -26,7 +26,7 @@ class WorkstationForm
                         Components\Select::make('employee_id')
                             ->label('Pegawai (PIC Meja)')
                             ->relationship(
-                                name: 'employee', 
+                                name: 'employee',
                                 titleAttribute: 'namecode',
                                 modifyQueryUsing: fn ($query) => $query->join('users', 'users.id', '=', 'employees.user_id')->select('employees.*')->with('user')
                             )
