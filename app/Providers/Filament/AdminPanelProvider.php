@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
+            ->emailVerification()
             ->brandName('PT INALUM')
             ->colors([
                 'danger' => Color::Rose,
@@ -66,7 +67,8 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->plugins([
-                FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Manajemen Akses'),
             ])
             ->authMiddleware([
                 Authenticate::class,
