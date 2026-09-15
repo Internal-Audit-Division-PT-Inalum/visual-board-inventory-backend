@@ -14,10 +14,15 @@ class EmployeeAttendanceForm
         return $schema
             ->components([
                 Select::make('employee_id')
-                    ->label('Karyawan')
-                    ->relationship('employee', 'namecode')
+                    ->label('Pegawai')
+                    ->relationship(
+                        name: 'employee',
+                        titleAttribute: 'namecode',
+                        modifyQueryUsing: fn ($query) => $query->join('users', 'users.id', '=', 'employees.user_id')->select('employees.*')->with('user')
+                    )
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->user ? "{$record->user->name} ({$record->namecode})" : $record->namecode)
                     ->required()
-                    ->searchable()
+                    ->searchable(['employees.namecode', 'users.name'])
                     ->preload(),
                 DatePicker::make('date')
                     ->label('Tanggal')
