@@ -22,11 +22,11 @@ class InspectionCriteriaResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Kriteria';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
-
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 
-    protected static ?int $navigationSort = 3;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
+
+    protected static ?int $navigationSort = 13;
 
     protected static ?string $recordTitleAttribute = 'criteria';
 
