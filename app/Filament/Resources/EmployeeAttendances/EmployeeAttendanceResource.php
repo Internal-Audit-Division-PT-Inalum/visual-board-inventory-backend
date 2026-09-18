@@ -20,11 +20,11 @@ class EmployeeAttendanceResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Data Kehadiran';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
-
     protected static string|\UnitEnum|null $navigationGroup = 'Sumber Daya Manusia';
 
-    protected static ?int $navigationSort = 3;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-finger-print';
+
+    protected static ?int $navigationSort = 43;
 
     protected static ?string $recordTitleAttribute = 'date';
 

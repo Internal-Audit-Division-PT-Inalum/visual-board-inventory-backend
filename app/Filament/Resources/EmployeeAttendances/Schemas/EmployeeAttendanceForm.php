@@ -33,7 +33,7 @@ class EmployeeAttendanceForm
                         'present' => 'Hadir',
                         'leave' => 'Cuti',
                         'sick' => 'Sakit',
-                        'trip' => 'Perjalanan Dinas',
+                        'business_trip' => 'Perjalanan Dinas',
                     ])
                     ->required()
                     ->searchable(),

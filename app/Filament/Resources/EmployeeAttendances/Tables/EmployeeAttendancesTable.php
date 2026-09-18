@@ -14,9 +14,10 @@ class EmployeeAttendancesTable
     {
         return $table
             ->columns([
-                TextColumn::make('employee.namecode')
+                TextColumn::make('employee.user.name')
                     ->label('Karyawan')
-                    ->searchable()
+                    ->description(fn ($record) => $record->employee->namecode)
+                    ->searchable(['employees.namecode', 'users.name'])
                     ->sortable(),
                 TextColumn::make('date')
                     ->label('Tanggal')
@@ -25,11 +26,18 @@ class EmployeeAttendancesTable
                 TextColumn::make('status')
                     ->label('Status Kehadiran')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'present' => 'Hadir',
+                        'leave' => 'Cuti',
+                        'sick' => 'Sakit',
+                        'business_trip' => 'Perjalanan Dinas',
+                        default => $state,
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'present' => 'success',
                         'leave' => 'warning',
                         'sick' => 'danger',
-                        'trip' => 'info',
+                        'business_trip' => 'info',
                         default => 'gray',
                     })
                     ->searchable(),
