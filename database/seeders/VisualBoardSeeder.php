@@ -17,7 +17,7 @@ class VisualBoardSeeder extends Seeder
 {
     public function run(): void
     {
-        Zone::factory(2)->create()->each(function (Zone $zone) {
+        Zone::factory(3)->create()->each(function (Zone $zone) {
             InspectionCriteria::factory(3)->create(['zone_id' => $zone->id]);
 
             // Create workstations for this zone
