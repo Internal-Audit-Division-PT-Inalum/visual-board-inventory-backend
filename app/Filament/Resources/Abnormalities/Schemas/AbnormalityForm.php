@@ -21,23 +21,20 @@ class AbnormalityForm
                     ->relationship('zone', 'name')
                     ->searchable()
                     ->preload()
-                    ->required(),
-                Select::make('monthly_schedule_id')
-                    ->label('Jadwal Bulanan')
-                    ->relationship('monthlySchedule', 'id')
-                    ->searchable()
-                    ->preload(),
-                Select::make('inspection_criteria_id')
-                    ->label('Kriteria Inspeksi (Grup / Standar)')
-                    ->relationship('criteria', 'description')
-                    ->getOptionLabelFromRecordUsing(
-                        fn ($record) => "[{$record->item_group}] {$record->criteria_code} — {$record->description}"
-                    )
-                    ->searchable()
-                    ->preload(),
+                    ->required()
+                    ->columnSpan(1),
                 DatePicker::make('date_found')
                     ->label('Tanggal Ditemukan')
-                    ->required(),
+                    ->required()
+                    ->columnSpan(1),
+                TextInput::make('finder_name')
+                    ->label('Nama Penemu')
+                    ->maxLength(100)
+                    ->columnSpan(1),
+                TextInput::make('group_name')
+                    ->label('Grup/Tim')
+                    ->maxLength(100)
+                    ->columnSpan(1),
                 DatePicker::make('target_date')
                     ->label('Target Selesai'),
                 DatePicker::make('actual_resolution_date')
@@ -80,6 +77,20 @@ class AbnormalityForm
                     ->label('Kaizen (Improvement)')
                     ->live()
                     ->required(),
+                DatePicker::make('planned_date')
+                    ->label('Tanggal Rencana Penanggulangan')
+                    ->columnSpan(1),
+                DatePicker::make('actual_date')
+                    ->label('Tanggal Aktual Selesai')
+                    ->columnSpan(1),
+                TextInput::make('signed_by_staff')
+                    ->label('Tanda Tangan Staff (Nama)')
+                    ->maxLength(100)
+                    ->columnSpan(1),
+                TextInput::make('signed_by_ms')
+                    ->label('Tanda Tangan MS/Supervisor (Nama)')
+                    ->maxLength(100)
+                    ->columnSpan(1),
                 SpatieMediaLibraryFileUpload::make('kaizen_reports')
                     ->label('Dokumen Laporan Kaizen (PDF/Excel)')
                     ->collection('kaizen_reports')

@@ -22,11 +22,11 @@ class AbnormalityResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Temuan';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
-
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 
-    protected static ?int $navigationSort = 5;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
+
+    protected static ?int $navigationSort = 15;
 
     protected static ?string $recordTitleAttribute = 'description';
 
