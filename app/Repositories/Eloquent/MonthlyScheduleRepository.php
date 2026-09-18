@@ -21,6 +21,14 @@ class MonthlyScheduleRepository extends BaseRepository implements MonthlySchedul
             ->first();
     }
 
+    public function getAllByPeriod(string $periodMonth)
+    {
+        return $this->model
+            ->with(['scheduleRecords.criteria', 'zone.picUtama', 'zone.picPengganti'])
+            ->where('period_month', $periodMonth)
+            ->get();
+    }
+
     public function getScheduleWithRecords(string $scheduleId): ?Model
     {
         return $this->model
