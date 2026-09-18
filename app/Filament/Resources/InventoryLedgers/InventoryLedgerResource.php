@@ -19,11 +19,11 @@ class InventoryLedgerResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Riwayat Transaksi';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
-
     protected static string|\UnitEnum|null $navigationGroup = 'Inventaris';
 
-    protected static ?int $navigationSort = 3;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
+
+    protected static ?int $navigationSort = 23;
 
     protected static ?string $recordTitleAttribute = 'transaction_type';
 
