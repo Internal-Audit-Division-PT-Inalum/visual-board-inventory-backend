@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\VisualBoard\AbnormalityController;
+use App\Http\Controllers\Api\VisualBoard\KioskGeneralController;
 use App\Http\Controllers\Api\VisualBoard\KioskWorkstationController;
 use App\Http\Controllers\Api\VisualBoard\ScheduleController;
 use App\Http\Controllers\Api\VisualBoard\VisualBoardController;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('kiosk')->group(function () {
     Route::get('/', [VisualBoardController::class, 'index']);
     Route::get('/workstations/{id}', [KioskWorkstationController::class, 'show']);
+    Route::get('/trend-abnormality', [KioskGeneralController::class, 'trendAbnormality']);
+    Route::get('/general-documents', [KioskGeneralController::class, 'generalDocuments']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
