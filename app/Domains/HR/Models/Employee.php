@@ -19,6 +19,11 @@ class Employee extends Model
         'department_id',
         'namecode',
         'position_title',
+        'hierarchy_level',
+    ];
+
+    protected $casts = [
+        'hierarchy_level' => 'integer',
     ];
 
     public function user(): BelongsTo
