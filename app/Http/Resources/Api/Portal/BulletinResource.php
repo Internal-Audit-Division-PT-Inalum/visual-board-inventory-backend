@@ -14,7 +14,9 @@ class BulletinResource extends JsonResource
             'title' => $this->title,
             'content' => $this->content,
             'type' => $this->type,
-            'published_at' => $this->published_at?->format('Y-m-d H:i:s'),
+            'image_url' => $this->image_url ? asset('storage/' . $this->image_url) : null,
+            'document_url' => $this->document_url ? url('/api/v1/portal/kiosk/bulletins/' . $this->id . '/document') : null,
+            'published_at' => $this->published_at ? $this->published_at->format('Y-m-d H:i:s') : $this->created_at->format('Y-m-d H:i:s'),
             'author' => $this->whenLoaded('author', fn () => $this->author->name),
         ];
     }
