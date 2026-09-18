@@ -7,6 +7,7 @@ use App\Http\Resources\Api\VisualBoard\VisualBoardResource;
 use App\Services\VisualBoard\VisualBoardService;
 use App\Shared\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
  * @group Visual Board Domain
@@ -28,9 +29,12 @@ class VisualBoardController extends Controller
      * dan daftar masalah yang belum terselesaikan. Hasil dari kueri ini di-cache
      * secara otomatis selama 1 menit.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $data = $this->visualBoardService->getKioskData();
+        $month = $request->query('month') ? (int) $request->query('month') : null;
+        $year = $request->query('year') ? (int) $request->query('year') : null;
+
+        $data = $this->visualBoardService->getKioskData($month, $year);
 
         return ApiResponse::success(
             new VisualBoardResource($data),
