@@ -12,4 +12,16 @@ class ZoneRepository implements ZoneRepositoryInterface
     {
         return Zone::with(['picUtama:id,name', 'picPengganti:id,name'])->get();
     }
+
+    public function getAllActive(): Collection
+    {
+        return Zone::with(['picUtama:id,name', 'picPengganti:id,name'])
+            ->where('is_active', true)
+            ->get();
+    }
+
+    public function findById(string $id): ?Zone
+    {
+        return Zone::find($id);
+    }
 }
