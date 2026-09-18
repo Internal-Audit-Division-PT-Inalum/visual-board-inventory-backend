@@ -4,8 +4,8 @@
   <p>Dibangun dengan Arsitektur Skala Enterprise menggunakan pendekatan Domain-Driven Design (DDD)</p>
 
   [![PHP Version](https://img.shields.io/badge/PHP-8.4+-blue.svg)](https://php.net)
-  [![Laravel Version](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
-  [![Filament](https://img.shields.io/badge/Filament-3.x-yellow.svg)](https://filamentphp.com)
+  [![Laravel Version](https://img.shields.io/badge/Laravel-13.x-red.svg)](https://laravel.com)
+  [![Filament](https://img.shields.io/badge/Filament-5.x-yellow.svg)](https://filamentphp.com)
   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Ready-336791.svg)](https://postgresql.org)
 </div>
 
@@ -19,7 +19,7 @@ Sistem ini dirancang untuk melayani dua kebutuhan operasional utama:
 2. **Dasbor Manajemen (CMS Backend):** Menyediakan antarmuka admin visual yang elegan untuk mengelola pendataan (*master data*), memantau tren temuan (*abnormalities*), mendistribusikan jadwal audit piket bulanan, serta memproses arus barang logistik di gudang secara rapi.
 
 ## 🏗️ Arsitektur & Teknologi
-Untuk memastikan sistem bisa dirawat lintas tim tanpa mengubah tatanan *spaghetti code* di kemudian hari, kami menerapkan **Domain-Driven Design (DDD)** yang didukung oleh pola *Repository & Service*.
+Untuk memastikan sistem bisa dirawat lintas tim tanpa mengubah tatanan *spaghetti code* di kemudian hari, proyek ini menerapkan **Domain-Driven Design (DDD)** yang didukung oleh pola *Repository & Service*.
 
 **Teknologi Utama:**
 *   **Framework:** Laravel (PHP 8.4+)
