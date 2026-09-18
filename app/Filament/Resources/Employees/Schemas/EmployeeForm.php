@@ -31,6 +31,18 @@ class EmployeeForm
                 TextInput::make('position_title')
                     ->label('Jabatan')
                     ->maxLength(255),
+                Select::make('hierarchy_level')
+                    ->label('Level Jabatan (Hierarki)')
+                    ->options([
+                        1 => 'Level 1 (Pucuk Pimpinan / Kepala Divisi)',
+                        2 => 'Level 2 (Manajemen Menengah / Kepala Departemen)',
+                        3 => 'Level 3 (Pelaksana Utama / Lead Auditor)',
+                        4 => 'Level 4 (Pelaksana Lapangan / Auditor)',
+                        5 => 'Level 5 (Administratif / Staf Pendukung)',
+                    ])
+                    ->default(5)
+                    ->required()
+                    ->helperText('Angka lebih kecil berarti posisi lebih tinggi di struktur organisasi (tampil paling atas).'),
                 Toggle::make('is_active')
                     ->label('Status Aktif')
                     ->default(true)

@@ -26,6 +26,17 @@ class EmployeesTable
                 TextColumn::make('position_title')
                     ->label('Jabatan')
                     ->searchable(),
+                TextColumn::make('hierarchy_level')
+                    ->label('Level')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn (int $state): string => match ($state) {
+                        1 => 'danger',
+                        2 => 'warning',
+                        3 => 'success',
+                        4 => 'info',
+                        default => 'gray',
+                    }),
                 TextColumn::make('user.name')
                     ->label('Akun Pengguna')
                     ->searchable()
