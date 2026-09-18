@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Bulletins\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -31,6 +32,20 @@ class BulletinForm
                 Textarea::make('content')
                     ->label('Isi Pengumuman')
                     ->required()
+                    ->columnSpanFull(),
+                FileUpload::make('image_url')
+                    ->label('Poster / Gambar (Opsional)')
+                    ->image()
+                    ->disk('public')
+                    ->directory('bulletins')
+                    ->maxSize(5120)
+                    ->columnSpanFull(),
+                FileUpload::make('document_url')
+                    ->label('Lampiran Dokumen PDF (Opsional)')
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->disk('public')
+                    ->directory('bulletins_docs')
+                    ->maxSize(10240)
                     ->columnSpanFull(),
                 Select::make('created_by')
                     ->label('Penulis (User)')

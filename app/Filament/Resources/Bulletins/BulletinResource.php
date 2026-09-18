@@ -20,9 +20,13 @@ class BulletinResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Informasi';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Portal & Mading';
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-megaphone';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Portal';
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $navigationLabel = 'Daftar Pengumuman';
 
     public static function form(Schema $schema): Schema
     {
