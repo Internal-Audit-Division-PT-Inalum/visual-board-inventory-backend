@@ -44,4 +44,28 @@ interface AbnormalityRepositoryInterface
      * Get the latest unresolved abnormalities.
      */
     public function getLatestUnresolved(int $limit = 5): Collection;
+
+    /**
+     * Get count of abnormalities resolved today.
+     */
+    public function getResolvedTodayCount(): int;
+
+    /**
+     * Get Kaizen champions (top 3 PICs with most resolved kaizen abnormalities).
+     */
+    public function getKaizenChampions(): array;
+
+    /**
+     * Get Abnormality trend (alert count) for the last N days.
+     */
+    public function getAbnormalityTrend(int $days = 7): array;
+
+    /**
+     * Get monthly trend matrix for a given year, grouped by zone name and month.
+     * Menghitung otomatis dari tabel abnormalities sebagai Single Source of Truth.
+     * Menggantikan input manual dari tabel trend_abnormalities.
+     *
+     * @return array<int, array{zone_label: string, months: array<int, array{temuan: int, tindak_lanjut: int, belum_selesai: int}>}>
+     */
+    public function getMonthlyTrendMatrix(int $year): array;
 }
