@@ -20,11 +20,11 @@ class UserResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Pengguna';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
-
     protected static string|\UnitEnum|null $navigationGroup = 'Manajemen Akses';
 
-    protected static ?int $navigationSort = 1;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
+
+    protected static ?int $navigationSort = 51;
 
     public static function form(Schema $schema): Schema
     {

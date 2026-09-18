@@ -22,11 +22,11 @@ class ItemResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Barang';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';
-
     protected static string|\UnitEnum|null $navigationGroup = 'Inventaris';
 
-    protected static ?int $navigationSort = 2;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';
+
+    protected static ?int $navigationSort = 22;
 
     protected static ?string $recordTitleAttribute = 'name';
 

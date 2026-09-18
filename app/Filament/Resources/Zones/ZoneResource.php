@@ -22,11 +22,11 @@ class ZoneResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Zona';
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
-
     protected static string|\UnitEnum|null $navigationGroup = 'Visual Board 5R';
 
-    protected static ?int $navigationSort = 1;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
+
+    protected static ?int $navigationSort = 11;
 
     protected static ?string $recordTitleAttribute = 'name';
 
