@@ -4,7 +4,6 @@ namespace App\Services\Portal;
 
 use App\Repositories\Contracts\BulletinRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Cache;
 
 class PortalService
 {
@@ -16,10 +15,8 @@ class PortalService
      * Get active bulletins for the Kiosk.
      * Results are cached for 5 minutes to reduce database load from multiple TVs.
      */
-    public function getKioskBulletins(int $limit = 10): Collection
+    public function getKioskBulletins(int $limit = 10, ?string $type = null): Collection
     {
-        return Cache::remember("portal:kiosk:bulletins:{$limit}", 300, function () use ($limit) {
-            return $this->bulletinRepository->getActiveBulletins($limit);
-        });
+        return $this->bulletinRepository->getActiveBulletins($limit, $type);
     }
 }
