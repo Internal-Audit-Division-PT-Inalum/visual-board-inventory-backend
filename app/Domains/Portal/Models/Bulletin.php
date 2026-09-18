@@ -20,6 +20,8 @@ class Bulletin extends Model
         'is_active',
         'published_at',
         'created_by',
+        'image_url',
+        'document_url',
     ];
 
     protected $casts = [
