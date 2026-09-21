@@ -62,6 +62,7 @@ class GeneralDocumentForm
                 SpatieMediaLibraryFileUpload::make('document')
                     ->label('Upload Dokumen (PDF / Gambar)')
                     ->collection('document')
+                    ->disk('public')
                     ->required()
                     ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(10240) // 10MB
