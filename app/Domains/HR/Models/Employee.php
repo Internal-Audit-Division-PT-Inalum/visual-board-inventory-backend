@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Employee extends Model
+class Employee extends Model implements HasMedia
 {
-    use HasFactory, HasUlid, SoftDeletes;
+    use HasFactory, HasUlid, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -39,5 +41,12 @@ class Employee extends Model
     public function attendances(): HasMany
     {
         return $this->hasMany(EmployeeAttendance::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')
+            ->singleFile()
+            ->useDisk('public');
     }
 }
