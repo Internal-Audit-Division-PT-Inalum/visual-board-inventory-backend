@@ -1,146 +1,341 @@
 <div align="center">
-  <h1>🛡️ Visual Board & Inventory System - Backend API</h1>
-  <p><strong>Sistem Manajemen Audit Internal 5R & Inventaris Gudang (PT INALUM)</strong></p>
-  <p>Dibangun dengan Arsitektur Skala Enterprise menggunakan pendekatan Domain-Driven Design (DDD)</p>
 
-  [![PHP Version](https://img.shields.io/badge/PHP-8.4+-blue.svg)](https://php.net)
-  [![Laravel Version](https://img.shields.io/badge/Laravel-13.x-red.svg)](https://laravel.com)
-  [![Filament](https://img.shields.io/badge/Filament-5.x-yellow.svg)](https://filamentphp.com)
-  [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Ready-336791.svg)](https://postgresql.org)
+<img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="320" alt="Laravel Logo" />
+
+# visual-board-inventory-backend
+
+**RESTful API & Sistem Manajemen — Visual Board 5R & Inventaris Gudang PT INALUM**
+
+[![PHP](https://img.shields.io/badge/PHP-8.4+-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
+[![Filament](https://img.shields.io/badge/Filament-5.x-FDAE4B?logo=filament&logoColor=white)](https://filamentphp.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Ready-336791?logo=postgresql&logoColor=white)](https://postgresql.org/)
+[![Tests](https://img.shields.io/badge/Tests-Pest%20PHP-brightgreen?logo=php)](https://pestphp.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+*Sistem peladen skala Enterprise (Backend Monolith) yang menggerakkan platform tata kelola 5R PT INALUM — melayani Kiosk REST API yang sangat cepat dan panel admin Filament dengan kontrol akses granular (RBAC).*
+
 </div>
 
 ---
 
-## 📖 Deskripsi Proyek
-Repositori ini berisi *source code* untuk layanan peladen (*Backend API*) dari proyek **Sistem Visual Board 5R & Manajemen Inventaris** PT INALUM. 
+## Table of Contents
 
-Sistem ini dirancang untuk melayani dua kebutuhan operasional utama:
-1. **API Kiosk / Layar Publik:** Menyediakan *endpoint* JSON yang sangat responsif untuk menampilkan data metrik operasional harian, status kehadiran (*attendance*), tren matriks kelengkapan audit, dokumen panduan/SOP, hingga mading digital (*bulletins*) secara *real-time* di monitor layar pabrik.
-2. **Dasbor Manajemen (CMS Backend):** Menyediakan antarmuka admin visual yang elegan untuk mengelola pendataan (*master data*), memantau tren temuan (*abnormalities*), mendistribusikan jadwal audit piket bulanan, serta memproses arus barang logistik di gudang secara rapi.
-
-## 🏗️ Arsitektur & Teknologi
-Untuk memastikan sistem bisa dirawat lintas tim tanpa mengubah tatanan *spaghetti code* di kemudian hari, proyek ini menerapkan **Domain-Driven Design (DDD)** yang didukung oleh pola *Repository & Service*.
-
-**Teknologi Utama:**
-*   **Framework:** Laravel (PHP 8.4+)
-*   **Database:** PostgreSQL (Wajib digunakan karena kami mengandalkan manipulasi tipe data `JSONB` yang ekstensif untuk matriks jadwal).
-*   **Dasbor Internal:** Filament PHP (dilengkapi dengan *Filament Shield* untuk hierarki *Role-Based Access Control* tingkat spesifik).
-*   **Dokumentasi:** Scribe (Otomatis menghasilkan dokumentasi API dan *Postman Collection*).
-*   **Penjamin Mutu (QA):** Pest (Unit/Feature Testing) & PHPStan (Static Analysis).
-
-### Bedah Struktur Domain
-Kode tidak lagi digabung dalam satu folder besar `app/Models` secara berantakan. Sistem telah dipecah menjadi beberapa "Domain" bisnis independen di dalam direktori `app/Domains/` dan dikendalikan lewat `app/Services/`:
-
-1. **Visual Board Domain:** Inti fungsionalitas 5R. Menangani hierarki area (Zona & Workstation), pembuatan piket (*Monthly Schedules*), pelaporan temuan (*Abnormalities*), kalkulasi tren kelulusan audit (*Trend Abnormalities*), serta seluruh dokumen terpusat (*General Documents* & Struktur Organisasi).
-2. **HR Domain:** Bertanggung jawab atas pengelolaan entitas karyawan, hierarki tingkat jabatan (Manajer/Supervisor/Eksekutor), dan data absen Kiosk.
-3. **Portal Domain:** Mengurus fungsi penyampaian informasi massal (*broadcast*), termasuk Mading Pengumuman (*Bulletins*) dan Tautan Eksternal Pintas (*Quick Links*) yang disajikan di layar Kiosk.
-4. **Inventory Domain:** Menangani siklus hidup logistik, mulai dari pengaturan rak penyimpanan, data barang (*Items*), kriteria uji kelayakan, hingga jurnal transaksi gudang (*Inventory Ledgers*).
-5. **Telemetry (External Service):** Penghubung terintegrasi untuk membaca suplai metrik harian dari sistem eksternal perusahaan (SCADA / SAP / Sistem Keselamatan K3) guna menampilkan statistik kecepatan penyelesaian dan Hari Bebas Kecelakaan (*Safety Streak Days*).
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Environment Configuration](#environment-configuration)
+- [Database](#database)
+- [API Reference](#api-reference)
+- [Admin Panel](#admin-panel)
+- [Roles & Permissions](#roles--permissions)
+- [Testing & QA](#testing--qa)
+- [API Documentation](#api-documentation)
+- [Deployment](#deployment)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [Security](#security)
 
 ---
 
-## 🚀 Kebutuhan Sistem
-Sebelum menekan tombol *clone*, pastikan mesin server atau laptop pengembang sudah terpasang alat-alat berikut:
-*   PHP >= 8.4
-*   Composer >= 2.x
-*   PostgreSQL >= 14
-*   Node.js & NPM (Opsional, khusus jika Anda berencana meng-*compile* ulang kustomisasi tema visual CSS dari Filament).
+## Overview
+
+`visual-board-inventory-backend` adalah tulang punggung peladen (*server-side backbone*) dari proyek **Sistem Visual Board 5R & Manajemen Inventaris** PT INALUM. Sistem ini mengekspos *RESTful API* berversi yang dikonsumsi oleh aplikasi layar publik (*Frontend Kiosk*) dan menyediakan dasbor manajemen berbasis *Filament* yang digunakan oleh staf internal untuk mengelola master data, dokumen SOP, jadwal audit, dan inventaris gudang.
+
+Aplikasi ini dibangun menggunakan arsitektur **Domain-Driven Design (DDD)** yang ditopang oleh pola **Service–Repository**, berjalan di atas Laravel 13 dengan PHP 8.4+, dan menggunakan **PostgreSQL** untuk manajemen relasional dan manipulasi tipe data `JSONB` yang ekstensif.
 
 ---
 
-## ⚙️ Panduan Menjalankan Aplikasi di Lokal
-Panduan langkah demi langkah untuk mempersiapkan lingkungan pengembangan:
+## Architecture
 
-1. **Kloning Repositori**
-   ```bash
-   git clone https://github.com/Internal-Audit-Division-PT-Inalum/visual-board-inventory-backend.git
-   cd visual-board-inventory-backend
-   ```
-
-2. **Tarik Dependensi (Composer)**
-   ```bash
-   composer install
-   ```
-
-3. **Atur Environment Variables**
-   Gandakan file contoh *environment*. Sesuaikan konfigurasi akun *database* PostgreSQL dan kredensial SMTP (jika ingin mencoba fitur notifikasi *email*).
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-4. **Siapkan Database (Kosong / Tanpa Dummy)**
-   Perintah ini akan menjalankan seluruh *migration* skema tabel, sekaligus mengisi *database* hanya dengan profil akun bawaan (Super Admin) dan *Role/Permissions*. **Sistem ini sengaja dikosongkan dari data tiruan (dummy)** untuk memastikan lingkungan bersih sebelum *input* data aktual secara manual.
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
-
-5. **Buka Akses Penyimpanan Publik (Storage)**
-   Jalankan ini agar aset gambar profil, foto lampiran 5R, atau brosur PDF mading bisa diakses melalui URL publik dari internet atau API.
-   ```bash
-   php artisan storage:link
-   ```
+```text
+┌────────────────────────────────────────────────────────────┐
+│                     Client Layer                           │
+│        Frontend Kiosk SPA        Filament Admin Panel      │
+│        (React 19 / Vite)           (Internal Staff)        │
+└────────────────┬───────────────────────┬───────────────────┘
+                 │ REST API (v1)         │ Web Panel
+┌────────────────▼───────────────────────▼───────────────────┐
+│                     Laravel Application                     │
+│                                                             │
+│  ┌───────────┐  ┌───────────┐  ┌────────────────────────┐  │
+│  │   Routes  │  │  Filament │  │   Middleware Stack     │  │
+│  │  api.php  │  │  Panel    │  │  (Sanctum, CORS, dll.) │  │
+│  └─────┬─────┘  └─────┬─────┘  └────────────────────────┘  │
+│        │              │                                      │
+│  ┌─────▼──────────────▼──────────────────────────────────┐  │
+│  │                HTTP Controllers (API)                  │  │
+│  │   KioskAttendance · KioskWorkstation · VisualBoard     │  │
+│  │   PortalBulletins · InventoryLedger                    │  │
+│  └──────────────────────┬────────────────────────────────┘  │
+│                         │                                    │
+│  ┌──────────────────────▼────────────────────────────────┐  │
+│  │               Service Layer                           │  │
+│  │  Business logic, validasi orkestrasi, dan             │  │
+│  │  kalkulasi metrik dasbor.                             │  │
+│  └──────────────────────┬────────────────────────────────┘  │
+│                         │                                    │
+│  ┌──────────────────────▼────────────────────────────────┐  │
+│  │            Repository Layer (Eloquent)                 │  │
+│  │  Mengimplementasikan RepositoryInterface per domain.  │  │
+│  │  Kueri spesifik & isolasi akses ke Database.          │  │
+│  └──────────────────────┬────────────────────────────────┘  │
+│                         │                                    │
+│  ┌──────────────────────▼────────────────────────────────┐  │
+│  │             Data / Infrastructure Layer                │  │
+│  │  PostgreSQL · Laravel Queue · File Storage (Public)    │  │
+│  └────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 🛡️ Masuk ke Dasbor Admin
-Jalankan peladen uji coba bawaan Laravel:
+## Features
+
+### Public Kiosk API (Frontend)
+- **Visual Board Metriks** — *Endpoint* terpusat untuk menarik gabungan skor audit bulanan, tren 5R, dan *Safety Streak Days* dari Telemetri.
+- **Manajemen Area (Workstation)** — *Endpoint* spesifik untuk menampilkan daftar area kerja pabrik beserta penugasan karyawan penjaganya.
+- **Mading Digital (Bulletins)** — Menyuplai daftar *carousel/slider* pengumuman harian dengan dukungan pembaca PDF bawaan.
+- **Presensi Pintar (Kiosk Attendance)** — API pelaporan status kehadiran (*hadir, sakit, cuti*) yang diurutkan secara hierarkis (dari Pimpinan ke Pelaksana) lengkap dengan URL foto profil.
+- **Pelaporan Temuan (Abnormalities)** — Pengajuan temuan audit seketika dari lapangan dengan kemampuan unggah gambar kerusakan.
+
+### Admin Panel (Filament)
+- **Executive Dashboard** — Dasbor responsif dengan *widget* metrik statistik dinamis yang menghitung langsung dari pangkalan data secara *real-time*.
+- **Manajemen Dokumen Tunggal (General Documents)** — Pengelolaan file PDF tersentralisasi untuk semua kebutuhan (SOP, Struktur Organisasi, Peta Area).
+- **Penjadwalan 5R (Monthly Schedules)** — Matriks alokasi piket harian yang kompleks.
+- **Inventaris Gudang (Inventory)** — Pencatatan logistik keluar-masuk barang, penataan rak, dan ambang batas ketersediaan barang.
+- **RBAC Super Ketat** — Hierarki kontrol peran dan izin (Super Admin, Manajer Area, Staf) yang dikelola lewat Filament Shield.
+
+### Platform & Infrastructure
+- **Domain-Driven Design (DDD)** — Pemecahan kode ke dalam modul: `HR`, `VisualBoard`, `Portal`, dan `Inventory`.
+- **API Resources** — Pembentukan respons JSON yang konsisten, aman, dan versi terkendali.
+- **Background Jobs** — *Laravel Queue* untuk pemrosesan asinkron (kalkulasi tren 5R berbeban tinggi atau notifikasi).
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Version |
+|---|---|---|
+| Language | PHP | ^8.4 |
+| Framework | Laravel | ^13.x |
+| Admin Panel | Filament | ^5.x |
+| Database | PostgreSQL | — |
+| Authentication | Laravel Sanctum | ^4.x |
+| RBAC | Filament Shield | ^3.x |
+| API Docs | Knuckles Scribe | ^4.x |
+| Testing | Pest PHP | ^3.x |
+| Static Analysis | PHPStan | ^2.x |
+| Code Style | Laravel Pint | ^1.x |
+
+---
+
+## Prerequisites
+
+Pastikan peranti lunak berikut telah terpasang sebelum memulai:
+
+| Tool | Minimum Version |
+|---|---|
+| PHP | 8.4+ |
+| Composer | 2.x |
+| Node.js | 20.x LTS (Untuk kompilasi aset Filament) |
+| PostgreSQL | 14+ |
+
+---
+
+## Getting Started
+
+### 1. Kloning Repositori
+
+```bash
+git clone https://github.com/Internal-Audit-Division-PT-Inalum/visual-board-inventory-backend.git
+cd visual-board-inventory-backend
+```
+
+### 2. Instalasi Dependensi
+
+```bash
+composer install
+npm install && npm run build
+```
+
+### 3. Konfigurasi Lingkungan
+
+Gandakan fail `.env.example` menjadi `.env` dan hasilkan kunci aplikasi.
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Ubah konfigurasi *database* PostgreSQL Anda di dalam fail `.env`.
+
+### 4. Setup Database & Penyimpanan
+
+Sistem ini dirancang untuk beroperasi di lingkungan produksi yang steril. Perintah ini **TIDAK** akan memasukkan data tiruan (dummy data), melainkan hanya struktur tabel dan kredensial dasar Super Admin.
+
+```bash
+php artisan migrate:fresh --seed
+php artisan storage:link
+```
+
+### 5. Jalankan Development Server
+
 ```bash
 php artisan serve
 ```
-Buka peramban (browser) dan akses alamat administrasi di: `http://localhost:8000/admin`
-
-**Akses Pengguna Bawaan (Super Admin):**
-*   **Email:** `admin@admin.com`
-*   **Kata Sandi:** `password`
-
-Gunakan panel ini untuk mengelola hierarki peran (Role & Permissions), mengisi dokumen SOP baru, menambah berita mading, dan memeriksa kinerja audit lintas departemen.
 
 ---
 
-## 📚 Membaca Dokumentasi API
-Komunikasi data ke aplikasi *Mobile* atau tampilan Web Kiosk *Frontend* menggunakan *RESTful JSON API*. 
-Dokumentasi seluruh *endpoint* diproduksi secara dinamis.
+## Environment Configuration
 
-*   **Akses UI Dokumentasi HTML:**
-    Jalankan server dan buka `http://localhost:8000/docs`.
-*   **Perbarui Dokumentasi (Jika Anda menambah fitur):**
-    ```bash
-    php artisan scribe:generate
-    ```
+Sesuaikan variabel kritikal berikut di fail `.env` Anda:
 
-**Beberapa API Kunci:**
-*   `GET /api/visual-board/kiosk` - Pusat pengumpulan metrik dasbor layar utama (menarik gabungan matriks tren bulanan, dokumen penting, *abnormality* terakhir, dan telemetri kinerja K3).
-*   `GET /api/visual-board/workstations` - Endpoint dinamis untuk menampilkan stasiun kerja dan asosiasi karyawan yang bertugas di dalamnya.
-*   `GET /api/portal/bulletins` - Umpan informasi mading *slider* dinamis.
+```dotenv
+APP_NAME="Visual Board Backend"
+APP_ENV=local
+APP_KEY=
+APP_URL=http://localhost:8000
 
----
+# Database
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=inalum_visual_board
+DB_USERNAME=postgres
+DB_PASSWORD=secret
 
-## 📨 *Background Workers* (Pemrosesan Asinkron)
-Agar antarmuka Kiosk tidak *loading* lama akibat perhitungan kalkulasi kalkulator skor Audit atau proses pengiriman *email* ke manajer zona, sistem ini memindahkan pekerjaan berat ke belakang layar menggunakan *Laravel Queue*.
+# Storage
+FILESYSTEM_DISK=public
 
-Jika aplikasi ini sudah mengudara di *server* operasional, pastikan daemon ini berjalan secara stabil (disarankan dibungkus dengan *Supervisor*):
-```bash
-php artisan queue:work
+# Queue & Cache
+QUEUE_CONNECTION=database
+CACHE_STORE=database
 ```
 
 ---
 
-## 🧪 Area *Quality Assurance* (Penjaminan Kualitas Kode)
-Bagi para *developer*, repositori ini memberlakukan standar kode tertulis. Anda wajib mengecek kondisi kode Anda dengan daftar perintah berikut sebelum membuat *Pull Request* atau *Commit*:
+## Database
 
-1. **Jalankan *Test Suite* Otomatis:**
-   Buktikan bahwa restrukturisasi atau penambahan fitur tidak mematahkan kontrak API yang sudah ada.
-   ```bash
-   php artisan test
-   ```
-2. **Scan Struktur & Tipe Data (Static Analysis):**
-   Mendeteksi jebakan *fatal error*, *class* hilang, atau pemanggilan *method* gaib.
-   ```bash
-   php vendor/bin/phpstan analyse app/ tests/ --memory-limit=2G
-   ```
-3. **Merapikan Standar Pengetikan (Lint/Format):**
-   Membersihkan kode dari selipan *space* yang salah format (memenuhi *PSR-12*).
-   ```bash
-   php vendor/bin/pint
-   ```
+Sistem memecah tabel berdasarkan Domain Bisnis. Beberapa tabel krusial meliputi:
+
+| Nama Tabel | Domain | Keterangan |
+|---|---|---|
+| `employees` | HR | Data karyawan lengkap dengan `hierarchy_level` |
+| `general_documents` | VisualBoard | Dokumen terpusat (SOP, Struktur, Peta Area) |
+| `workstations` & `workstation_items` | VisualBoard | Pemetaan stasiun kerja dan asetnya |
+| `monthly_schedules` | VisualBoard | Matriks jadwal piket 5R |
+| `abnormalities` | VisualBoard | Temuan penyimpangan 5R (kondisi tidak normal) |
+| `bulletins` | Portal | Berita mading digital Kiosk |
+| `inventory_items` | Inventory | Daftar logistik gudang |
+
+---
+
+## API Reference
+
+Base URL: `http://localhost:8000/api`
+
+### 📊 Visual Board Kiosk
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/visual-board/kiosk` | Mengambil seluruh matriks dan data metrik harian layar publik |
+| `GET` | `/visual-board/workstations` | Menampilkan seluruh stasiun kerja dan karyawan yang ditugaskan |
+| `POST` | `/visual-board/abnormalities` | Melaporkan temuan kondisi tidak normal (dengan foto) |
+
+### 👥 HR & Attendance
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/hr/kiosk/attendance` | Mengambil data presensi berurut hierarki level kepemimpinan |
+| `POST` | `/hr/kiosk/attendance/scan` | Menyimpan hasil pindaian QR Code kehadiran |
+
+### 📢 Portal (Mading)
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/portal/bulletins` | Mendapatkan *carousel* pengumuman mading aktif |
+| `GET` | `/portal/quick-links` | Tautan sistem eksternal untuk QR Code akses cepat |
+
+*(Dokumentasi API interaktif penuh dapat di-generate melalui Scribe).*
+
+---
+
+## Admin Panel
+
+Panel kontrol Filament dapat diakses melalui rute `/admin`.
+
+**Akses Akun Default (Super Admin):**
+- **Email:** `admin@admin.com`
+- **Sandi:** `password`
+
+### Fitur Dasbor Utama
+- **Executive Stat Cards:** Metrik dihitung secara dinamis dari tabel `MonthlySchedule` (Misal: "Jadwal Inspeksi Disetujui").
+- **Manajemen Hierarki Karyawan:** Pemeringkatan level pemimpin agar API merespons dengan presisi.
+- **Pusat Kendali Dokumen (General Documents):** Mengunggah file .pdf yang langsung dibaca oleh penampil universal di Frontend.
+
+---
+
+## Testing & QA
+
+Proyek ini menjunjung tinggi jaminan kualitas (QA) sebelum rilis (*Production-ready*).
+
+### 1. Static Analysis (PHPStan)
+Mendeteksi *fatal error* atau inkonsistensi tipe data:
+```bash
+php vendor/bin/phpstan analyse app/ tests/ --memory-limit=2G
+```
+
+### 2. Code Style Enforcer (Laravel Pint)
+Memaksa seluruh basis kode sesuai standar PSR-12 secara piksel sempurna:
+```bash
+php vendor/bin/pint
+```
+
+---
+
+## API Documentation
+
+Dokumentasi otomatis menggunakan Scribe:
+```bash
+php artisan scribe:generate
+```
+Akses UI di: `http://localhost:8000/docs`
+
+---
+
+## Project Structure
+
+```text
+visual-board-inventory-backend/
+├── app/
+│   ├── Domains/                 # Pemisahan Entitas Model & Eloquent (DDD)
+│   │   ├── HR/
+│   │   ├── Inventory/
+│   │   ├── Portal/
+│   │   └── VisualBoard/
+│   ├── Filament/                # Antarmuka Admin Panel & Widgets
+│   ├── Http/
+│   │   ├── Controllers/Api/     # Endpoint Controller Khusus Kiosk
+│   │   ├── Requests/            # Validasi Payload
+│   │   └── Resources/           # Pembungkus Standardisasi JSON
+│   ├── Repositories/            # Logic Kueri Database Terisolasi (Contracts & Eloquent)
+│   └── Services/                # Logika Bisnis & Kalkulasi Metrik
+├── database/
+│   ├── migrations/              # Sejarah skema tabel
+│   └── seeders/                 # Hanya data esensial produksi (Super Admin)
+├── routes/
+│   ├── api.php                  # Rute sentral API
+│   ├── api/                     # Pemecahan rute per domain bisnis
+│   └── web.php
+└── tests/                       # Repositori Pest PHP Testing
+```
+
+---
+
+<div align="center">
+Sistem ini dirancang untuk bertahan dalam pengujian industri operasional tinggi. ⚙️ PT INALUM Internal Audit.
+</div>
