@@ -48,6 +48,7 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
                 'name' => $attendance->employee->user->name ?? $attendance->employee->namecode,
                 'position' => $attendance->employee->position_title ?? 'Staff',
                 'leave_type' => $leaveType,
+                'avatar_url' => $attendance->employee->getFirstMediaUrl('avatar') ? asset($attendance->employee->getFirstMediaUrl('avatar')) : null,
             ];
         })->values()->toArray();
 
@@ -64,6 +65,7 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
                 'role_label' => $emp->position_title ?? 'Staff',
                 'unit' => $emp->department->name ?? 'Divisi IIA',
                 'hierarchy_level' => $emp->hierarchy_level,
+                'avatar_url' => $emp->getFirstMediaUrl('avatar') ? asset($emp->getFirstMediaUrl('avatar')) : null,
             ];
         })->values()->toArray();
 
