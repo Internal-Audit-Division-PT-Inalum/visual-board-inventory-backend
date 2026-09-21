@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('kiosk')->group(function () {
     Route::get('/', [VisualBoardController::class, 'index']);
     Route::get('/workstations/{id}', [KioskWorkstationController::class, 'show']);
+    Route::get('/workstations/by-employee/{employee_id}', [KioskWorkstationController::class, 'showByEmployee']);
     Route::get('/trend-abnormality', [KioskGeneralController::class, 'trendAbnormality']);
     Route::get('/general-documents', [KioskGeneralController::class, 'generalDocuments']);
 });

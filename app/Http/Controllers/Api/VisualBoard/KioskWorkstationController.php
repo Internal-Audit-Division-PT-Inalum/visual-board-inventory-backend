@@ -38,4 +38,23 @@ class KioskWorkstationController extends Controller
             'Berhasil memuat standar meja.'
         );
     }
+
+    /**
+     * Data Standar Meja by Employee
+     *
+     * Digunakan saat melihat standar meja melalui Tab Organisasi.
+     */
+    public function showByEmployee(string $employeeId): JsonResponse
+    {
+        $workstation = $this->service->getKioskWorkstationByEmployee($employeeId);
+
+        if (! $workstation) {
+            return ApiResponse::error('Data Meja tidak ditemukan untuk karyawan ini.', [], 404);
+        }
+
+        return ApiResponse::success(
+            new WorkstationResource($workstation),
+            'Berhasil memuat standar meja karyawan.'
+        );
+    }
 }
