@@ -8,9 +8,6 @@ use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         // 1. Buat Role Super Admin (Tanpa shield:generate)
@@ -37,18 +34,5 @@ class DatabaseSeeder extends Seeder
             $admin->assignRole($role);
         }
 
-        // 4. Dummy Data dengan Environment Guard
-        if (app()->environment('local', 'testing', 'staging')) {
-            $this->command->warn('Menjalankan Factory Dummy Data untuk Environment: ' . app()->environment());
-
-            $this->call([
-                HRSeeder::class,
-                InventorySeeder::class,
-                PortalSeeder::class,
-                VisualBoardSeeder::class,
-            ]);
-        } else {
-            $this->command->info('Environment PRODUCTION terdeteksi. Dummy data dilewati demi keamanan.');
-        }
     }
 }
