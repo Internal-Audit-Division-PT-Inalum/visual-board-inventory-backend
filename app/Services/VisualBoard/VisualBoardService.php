@@ -2,6 +2,7 @@
 
 namespace App\Services\VisualBoard;
 
+use App\Domains\HR\Models\Employee;
 use App\Domains\VisualBoard\Models\GeneralDocument;
 use App\Repositories\Contracts\AbnormalityRepositoryInterface;
 use App\Repositories\Contracts\MonthlyScheduleRepositoryInterface;
@@ -111,7 +112,22 @@ class VisualBoardService
             'month' => $targetDate->format('Y-m'),
         ]);
 
+        // Ambil data PIC (Penanggung Jawab) - Kepala Divisi IIA
+        $pic = Employee::with('media')
+            ->where('hierarchy_level', 1)
+            ->first();
+
+        $picData = null;
+        if ($pic) {
+            $picData = [
+                'name' => $pic->user->name ?? 'Admin',
+                'position_title' => $pic->position_title,
+                'avatar_url' => $pic->getFirstMediaUrl('avatar') ?: null,
+            ];
+        }
+
         return [
+            'pic' => $picData,
             'open_abnormality_count' => ($abnormalitySummary['open'] ?? 0) + ($abnormalitySummary['in_progress'] ?? 0),
             'abnormality_resolved_today' => $resolvedToday,
             'abnormality_in_progress' => $abnormalitySummary['in_progress'] ?? 0,

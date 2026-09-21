@@ -15,6 +15,7 @@ class VisualBoardResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'pic' => $this->resource['pic'] ?? null,
             'open_abnormality_count' => $this->resource['open_abnormality_count'],
             'abnormality_resolved_today' => $this->resource['abnormality_resolved_today'] ?? 0,
             'abnormality_in_progress' => $this->resource['abnormality_in_progress'] ?? 0,
