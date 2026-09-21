@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Domains\VisualBoard\Models\Abnormality;
+use App\Domains\VisualBoard\Models\MonthlySchedule;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -29,7 +30,7 @@ class ExecutiveStatCardsWidget extends BaseWidget
                     'class' => 'border-t-4 border-rose-500 shadow-sm bg-white dark:bg-gray-900',
                 ]),
 
-            Stat::make('Rencana Audit Disetujui', 12)
+            Stat::make('Jadwal Inspeksi Disetujui', MonthlySchedule::where('status', 'disetujui')->count())
                 ->description('Periode bulan ini')
                 ->descriptionIcon('heroicon-m-check-badge')
                 ->color('success')
