@@ -26,7 +26,7 @@ class AttendanceService
         $employee = $this->employeeRepository->findByNamecode($namecode);
 
         if (! $employee) {
-            throw new DomainException("Pegawai dengan kode barcode {$namecode} tidak ditemukan.");
+            throw new DomainException('Data pegawai tidak ditemukan. Silakan periksa kembali Kode Pegawai yang Anda masukkan.');
         }
 
         $today = now()->format('Y-m-d');
@@ -35,13 +35,13 @@ class AttendanceService
         $alreadyScanned = $employee->attendances()->whereDate('date', $today)->exists();
 
         if ($alreadyScanned) {
-            throw new DomainException("Pegawai {$employee->namecode} sudah melakukan presensi hari ini.");
+            throw new DomainException('Data kehadiran Anda untuk hari ini sudah tercatat sebelumnya. Terima kasih!');
         }
 
         return $this->recordAttendance([
             'employee_id' => $employee->id,
             'date' => $today,
-            'status' => 'hadir',
+            'status' => 'present',
         ]);
     }
 
