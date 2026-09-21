@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Employees\Schemas;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -13,6 +14,12 @@ class EmployeeForm
     {
         return $schema
             ->components([
+                SpatieMediaLibraryFileUpload::make('avatar')
+                    ->collection('avatar')
+                    ->label('Foto Profil (Opsional)')
+                    ->image()
+                    ->avatar()
+                    ->columnSpanFull(),
                 Select::make('user_id')
                     ->label('Akun Pengguna (Opsional)')
                     ->relationship('user', 'name')
