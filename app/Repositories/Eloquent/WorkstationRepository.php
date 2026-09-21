@@ -34,4 +34,13 @@ class WorkstationRepository extends BaseRepository implements WorkstationReposit
     {
         return $this->model->with(['items', 'zone', 'employee', 'employee.user'])->find($id);
     }
+
+    public function findByEmployeeWithItems(string $userId): ?Workstation
+    {
+        return $this->model->with(['items', 'zone', 'employee', 'employee.user'])
+            ->whereHas('employee', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->first();
+    }
 }

@@ -10,4 +10,6 @@ interface WorkstationRepositoryInterface extends RepositoryInterface
     public function getAllPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator;
 
     public function findWithItems(string $id): ?Workstation;
+
+    public function findByEmployeeWithItems(string $userId): ?Workstation;
 }
