@@ -47,6 +47,7 @@ class GeneralDocument extends Model implements HasMedia
     {
         $this->addMediaCollection('document')
             ->singleFile()
+            ->useDisk('public')
             ->acceptsMimeTypes([
                 'application/pdf',
                 'image/jpeg',
