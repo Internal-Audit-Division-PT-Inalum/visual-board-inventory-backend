@@ -32,4 +32,9 @@ class WorkstationService
     {
         return $this->repository->findWithItems($id);
     }
+
+    public function getKioskWorkstationByEmployee(string $employeeId): ?Workstation
+    {
+        return $this->repository->findByEmployeeWithItems($employeeId);
+    }
 }
