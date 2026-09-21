@@ -31,8 +31,8 @@ Untuk memastikan sistem bisa dirawat lintas tim tanpa mengubah tatanan *spaghett
 ### Bedah Struktur Domain
 Kode tidak lagi digabung dalam satu folder besar `app/Models` secara berantakan. Sistem telah dipecah menjadi beberapa "Domain" bisnis independen di dalam direktori `app/Domains/` dan dikendalikan lewat `app/Services/`:
 
-1. **Visual Board Domain:** Inti fungsionalitas 5R. Menangani hierarki area (Zona & Workstation), pembuatan piket (*Monthly Schedules*), pelaporan temuan (*Abnormalities*), kalkulasi tren kelulusan audit (*Trend Abnormalities*), serta dokumen pedoman teknis (*General Documents*).
-2. **HR Domain:** Bertanggung jawab atas pengelolaan entitas karyawan, struktur departemen, level hierarki jabatan (Manajer/Supervisor/Eksekutor), data absen, hingga struktur dokumen organisasi resmi.
+1. **Visual Board Domain:** Inti fungsionalitas 5R. Menangani hierarki area (Zona & Workstation), pembuatan piket (*Monthly Schedules*), pelaporan temuan (*Abnormalities*), kalkulasi tren kelulusan audit (*Trend Abnormalities*), serta seluruh dokumen terpusat (*General Documents* & Struktur Organisasi).
+2. **HR Domain:** Bertanggung jawab atas pengelolaan entitas karyawan, hierarki tingkat jabatan (Manajer/Supervisor/Eksekutor), dan data absen Kiosk.
 3. **Portal Domain:** Mengurus fungsi penyampaian informasi massal (*broadcast*), termasuk Mading Pengumuman (*Bulletins*) dan Tautan Eksternal Pintas (*Quick Links*) yang disajikan di layar Kiosk.
 4. **Inventory Domain:** Menangani siklus hidup logistik, mulai dari pengaturan rak penyimpanan, data barang (*Items*), kriteria uji kelayakan, hingga jurnal transaksi gudang (*Inventory Ledgers*).
 5. **Telemetry (External Service):** Penghubung terintegrasi untuk membaca suplai metrik harian dari sistem eksternal perusahaan (SCADA / SAP / Sistem Keselamatan K3) guna menampilkan statistik kecepatan penyelesaian dan Hari Bebas Kecelakaan (*Safety Streak Days*).
@@ -69,8 +69,8 @@ Panduan langkah demi langkah untuk mempersiapkan lingkungan pengembangan:
    php artisan key:generate
    ```
 
-4. **Siapkan Database & Dummy Data**
-   Perintah ini akan menjalankan seluruh *migration* skema tabel, sekaligus mengisi *database* dengan profil akun Super Admin, data departemen tiruan, pengumuman mading, hingga sampel *abnormality*.
+4. **Siapkan Database (Kosong / Tanpa Dummy)**
+   Perintah ini akan menjalankan seluruh *migration* skema tabel, sekaligus mengisi *database* hanya dengan profil akun bawaan (Super Admin) dan *Role/Permissions*. **Sistem ini sengaja dikosongkan dari data tiruan (dummy)** untuk memastikan lingkungan bersih sebelum *input* data aktual secara manual.
    ```bash
    php artisan migrate:fresh --seed
    ```
@@ -111,8 +111,8 @@ Dokumentasi seluruh *endpoint* diproduksi secara dinamis.
 
 **Beberapa API Kunci:**
 *   `GET /api/visual-board/kiosk` - Pusat pengumpulan metrik dasbor layar utama (menarik gabungan matriks tren bulanan, dokumen penting, *abnormality* terakhir, dan telemetri kinerja K3).
-*   `GET /api/portal/bulletins` - Umpan informasi mading *slider*.
-*   `GET /api/hr/organization-documents` - Umpan diagram struktur kepemimpinan resmi organisasi.
+*   `GET /api/visual-board/workstations` - Endpoint dinamis untuk menampilkan stasiun kerja dan asosiasi karyawan yang bertugas di dalamnya.
+*   `GET /api/portal/bulletins` - Umpan informasi mading *slider* dinamis.
 
 ---
 
