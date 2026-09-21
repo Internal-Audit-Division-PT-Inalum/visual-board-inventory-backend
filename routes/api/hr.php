@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('kiosk')->group(function () {
     Route::get('/attendance-summary', [KioskAttendanceController::class, 'summary']);
     Route::get('/organization-documents', [KioskOrganizationController::class, 'documents']);
+    Route::post('/attendances/scan', [KioskAttendanceController::class, 'scan']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {

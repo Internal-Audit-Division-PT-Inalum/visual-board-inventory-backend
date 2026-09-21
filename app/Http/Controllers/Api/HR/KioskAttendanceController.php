@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\HR;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\ScanAttendanceRequest;
 use App\Services\HR\AttendanceService;
 use App\Shared\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -35,5 +36,28 @@ class KioskAttendanceController extends Controller
             $summary,
             'Berhasil memuat ringkasan kehadiran hari ini.'
         );
+    }
+
+    /**
+     * Scan Presensi Kiosk
+     */
+    public function scan(ScanAttendanceRequest $request): JsonResponse
+    {
+        try {
+            $attendance = $this->attendanceService->processScan($request->validated('namecode'));
+
+            return ApiResponse::success(
+                ['id' => $attendance->id, 'status' => $attendance->status, 'date' => $attendance->date],
+                'Presensi berhasil dicatat.',
+                [],
+                201
+            );
+        } catch (\DomainException $e) {
+            return ApiResponse::error(
+                $e->getMessage(),
+                [],
+                422
+            );
+        }
     }
 }
