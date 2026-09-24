@@ -18,6 +18,8 @@ class GeneralDocument extends Model implements HasMedia
         'title',
         'description',
         'category',
+        'implementation_month',
+        'implementation_year',
         'is_active',
         'sort_order',
     ];
@@ -41,6 +43,14 @@ class GeneralDocument extends Model implements HasMedia
     public function scopeOrganization(Builder $query): Builder
     {
         return $query->where('domain', 'organization');
+    }
+
+    /**
+     * Scope: dokumen milik Tab ASESMEN
+     */
+    public function scopeAssessment(Builder $query): Builder
+    {
+        return $query->where('domain', 'assessment');
     }
 
     public function registerMediaCollections(): void
