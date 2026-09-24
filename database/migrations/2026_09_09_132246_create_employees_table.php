@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUlid('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignUlid('department_id')->nullable()->constrained('departments')->nullOnDelete();
             $table->string('namecode')->unique()->comment('Nomor Identitas Karyawan');
             $table->string('position_title')->nullable();

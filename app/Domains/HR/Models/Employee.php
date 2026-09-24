@@ -19,13 +19,17 @@ class Employee extends Model implements HasMedia
     protected $fillable = [
         'user_id',
         'department_id',
+        'employee_code',
+        'name',
         'namecode',
         'position_title',
         'hierarchy_level',
+        'is_active',
     ];
 
     protected $casts = [
         'hierarchy_level' => 'integer',
+        'is_active' => 'boolean',
     ];
 
     public function user(): BelongsTo
