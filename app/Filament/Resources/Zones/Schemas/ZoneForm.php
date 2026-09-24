@@ -34,10 +34,9 @@ class ZoneForm
                     ->label('Status Aktif')
                     ->required(),
                 SpatieMediaLibraryFileUpload::make('standard_images')
-                    ->label('Foto Standar Ruangan')
+                    ->label('Foto/PDF Standar Ruangan')
                     ->collection('standard_images')
-                    ->image()
-                    ->imageEditor()
+                    ->acceptedFileTypes(['image/*', 'application/pdf'])
                     ->multiple()
                     ->columnSpanFull(),
             ]);
