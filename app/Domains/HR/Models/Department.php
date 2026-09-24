@@ -16,7 +16,7 @@ class Department extends Model
 
     protected $fillable = [
         'name',
-        'parent_id',
+        'division',
         'manager_id',
         'is_active',
     ];
@@ -24,16 +24,6 @@ class Department extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Department::class, 'parent_id');
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(Department::class, 'parent_id');
-    }
 
     public function manager(): BelongsTo
     {
