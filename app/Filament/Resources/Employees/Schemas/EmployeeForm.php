@@ -31,8 +31,13 @@ class EmployeeForm
                     ->required()
                     ->searchable()
                     ->preload(),
-                TextInput::make('namecode')
-                    ->label('Kode/Nama Karyawan')
+                TextInput::make('employee_code')
+                    ->label('Kode Pegawai')
+                    ->required()
+                    ->maxLength(100)
+                    ->helperText('Kode unik pegawai, contoh: K-12345'),
+                TextInput::make('name')
+                    ->label('Nama Pegawai')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('position_title')
@@ -41,13 +46,13 @@ class EmployeeForm
                 Select::make('hierarchy_level')
                     ->label('Level Jabatan (Hierarki)')
                     ->options([
-                        1 => 'Level 1 (Pucuk Pimpinan / Kepala Divisi)',
-                        2 => 'Level 2 (Manajemen Menengah / Kepala Departemen)',
-                        3 => 'Level 3 (Pelaksana Utama / Lead Auditor)',
-                        4 => 'Level 4 (Pelaksana Lapangan / Auditor)',
-                        5 => 'Level 5 (Administratif / Staf Pendukung)',
+                        1 => 'Level 1 – Kepala Divisi',
+                        2 => 'Level 2 – Kepala Departemen',
+                        3 => 'Level 3 – Senior Auditor',
+                        4 => 'Level 4 – Auditor',
+                        5 => 'Level 5 – Administrasi',
                     ])
-                    ->default(5)
+                    ->default(4)
                     ->required()
                     ->helperText('Angka lebih kecil berarti posisi lebih tinggi di struktur organisasi (tampil paling atas).'),
                 Toggle::make('is_active')

@@ -17,12 +17,11 @@ class EmployeeAttendanceForm
                     ->label('Pegawai')
                     ->relationship(
                         name: 'employee',
-                        titleAttribute: 'namecode',
-                        modifyQueryUsing: fn ($query) => $query->join('users', 'users.id', '=', 'employees.user_id')->select('employees.*')->with('user')
+                        titleAttribute: 'name'
                     )
-                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->user ? "{$record->user->name} ({$record->namecode})" : $record->namecode)
+                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ({$record->namecode})")
                     ->required()
-                    ->searchable(['employees.namecode', 'users.name'])
+                    ->searchable(['name', 'namecode'])
                     ->preload(),
                 DatePicker::make('date')
                     ->label('Tanggal')

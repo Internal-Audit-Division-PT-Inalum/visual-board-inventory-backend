@@ -21,6 +21,7 @@ class GeneralDocumentForm
                     ->options([
                         'visual_board' => '📊 Tab General (Dokumen Referensi 5R)',
                         'organization' => '🏢 Tab Organisasi (Bagan Struktur / Map Area)',
+                        'assessment' => '📋 Tab Asesmen (Self Assessment & Asesor)',
                     ])
                     ->required()
                     ->default('visual_board')
@@ -40,14 +41,42 @@ class GeneralDocumentForm
                             'structure' => 'Bagan Struktur (Organisasi & 5R)',
                             'map_area' => 'Map Area 5R',
                         ],
+                        'assessment' => [
+                            'self_assessment' => 'Self Assessment',
+                            'asesor' => 'Assessment by Asesor',
+                        ],
                         default => [ // visual_board
                             'basic_rule' => 'Basic Rule (Aturan Dasar)',
                             'flow_process' => 'Flow Process (Alur Proses)',
                             'kaizen_report' => 'Kaizen Report (Laporan Kaizen)',
+                            'sor' => 'SOR (Safety Observation Report)',
+                            'cog' => 'COG (Cost of Goods)',
+                            'berat_badan' => 'Challenge Weight Loss',
                         ],
                     })
                     ->required()
-                    ->searchable(),
+                    ->searchable()
+                    ->live(),
+
+                Select::make('implementation_month')
+                    ->label('Bulan Implementasi (Khusus Kaizen)')
+                    ->options([
+                        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                        5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                        9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                    ])
+                    ->visible(fn (Get $get) => $get('category') === 'kaizen_report')
+                    ->required(fn (Get $get) => $get('category') === 'kaizen_report'),
+
+                Select::make('implementation_year')
+                    ->label('Tahun Implementasi (Khusus Kaizen)')
+                    ->options(function () {
+                        $currentYear = (int) date('Y');
+
+                        return array_combine(range($currentYear - 2, $currentYear + 2), range($currentYear - 2, $currentYear + 2));
+                    })
+                    ->visible(fn (Get $get) => $get('category') === 'kaizen_report')
+                    ->required(fn (Get $get) => $get('category') === 'kaizen_report'),
 
                 TextInput::make('sort_order')
                     ->label('Urutan Tampil')

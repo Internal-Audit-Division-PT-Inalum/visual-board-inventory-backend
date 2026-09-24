@@ -14,10 +14,10 @@ class EmployeeAttendancesTable
     {
         return $table
             ->columns([
-                TextColumn::make('employee.user.name')
+                TextColumn::make('employee.name')
                     ->label('Karyawan')
                     ->description(fn ($record) => $record->employee->namecode)
-                    ->searchable(['employees.namecode', 'users.name'])
+                    ->searchable(['employees.name', 'employees.namecode'])
                     ->sortable(),
                 TextColumn::make('date')
                     ->label('Tanggal')

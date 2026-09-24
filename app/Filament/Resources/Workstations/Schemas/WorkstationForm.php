@@ -27,11 +27,10 @@ class WorkstationForm
                             ->label('Pegawai (PIC Meja)')
                             ->relationship(
                                 name: 'employee',
-                                titleAttribute: 'namecode',
-                                modifyQueryUsing: fn ($query) => $query->join('users', 'users.id', '=', 'employees.user_id')->select('employees.*')->with('user')
+                                titleAttribute: 'name',
                             )
-                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->user ? "{$record->user->name} ({$record->namecode})" : $record->namecode)
-                            ->searchable(['employees.namecode', 'users.name'])
+                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ({$record->namecode})")
+                            ->searchable(['name', 'namecode'])
                             ->nullable(),
                         Components\Toggle::make('is_active')
                             ->label('Status Aktif')

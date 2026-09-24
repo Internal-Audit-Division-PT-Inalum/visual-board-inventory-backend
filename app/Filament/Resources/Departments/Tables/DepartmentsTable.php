@@ -19,8 +19,8 @@ class DepartmentsTable
                     ->label('Nama Departemen')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('parent.name')
-                    ->label('Departemen Induk')
+                TextColumn::make('division')
+                    ->label('Divisi')
                     ->searchable()
                     ->sortable(),
                 IconColumn::make('is_active')

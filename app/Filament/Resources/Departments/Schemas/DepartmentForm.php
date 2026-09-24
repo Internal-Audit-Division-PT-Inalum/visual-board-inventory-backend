@@ -17,11 +17,13 @@ class DepartmentForm
                     ->label('Nama Departemen')
                     ->required()
                     ->maxLength(255),
-                Select::make('parent_id')
-                    ->label('Departemen Induk')
-                    ->relationship('parent', 'name')
-                    ->searchable()
-                    ->preload(),
+                Select::make('division')
+                    ->label('Divisi')
+                    ->options([
+                        'IIA (Inalum Internal Audit)' => 'IIA (Inalum Internal Audit)',
+                    ])
+                    ->default('IIA (Inalum Internal Audit)')
+                    ->required(),
                 Toggle::make('is_active')
                     ->label('Status Aktif')
                     ->default(true)

@@ -15,8 +15,12 @@ class EmployeesTable
     {
         return $table
             ->columns([
+                TextColumn::make('name')
+                    ->label('Nama Karyawan')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('namecode')
-                    ->label('Kode/Nama Karyawan')
+                    ->label('Kode Pegawai')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('department.name')

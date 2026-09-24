@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\Bulletins\Schemas;
 
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -29,7 +30,7 @@ class BulletinForm
                     ])
                     ->required()
                     ->searchable(),
-                Textarea::make('content')
+                RichEditor::make('content')
                     ->label('Isi Pengumuman')
                     ->required()
                     ->columnSpanFull(),
@@ -53,6 +54,9 @@ class BulletinForm
                     ->required()
                     ->searchable()
                     ->preload(),
+                DateTimePicker::make('expired_at')
+                    ->label('Batas Waktu Tampil (Expired Date)')
+                    ->helperText('Kosongkan jika pengumuman ini berlaku selamanya tanpa batas waktu.'),
                 Toggle::make('is_active')
                     ->label('Status Aktif')
                     ->default(true)
