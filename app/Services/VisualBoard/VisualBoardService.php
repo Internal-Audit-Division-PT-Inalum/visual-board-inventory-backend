@@ -160,12 +160,10 @@ class VisualBoardService
             // Metrik Agregat Kaizen dari Database
             'kaizen_implemented_count' => GeneralDocument::where('category', 'kaizen_report')
                 ->where('is_active', true)
-                ->where('implementation_month', $targetDate->month)
                 ->where('implementation_year', $targetDate->year)
                 ->count(),
             'kaizen_cost_saving' => GeneralDocument::where('category', 'kaizen_report')
                 ->where('is_active', true)
-                ->where('implementation_month', $targetDate->month)
                 ->where('implementation_year', $targetDate->year)
                 ->count() * 1000000,
 

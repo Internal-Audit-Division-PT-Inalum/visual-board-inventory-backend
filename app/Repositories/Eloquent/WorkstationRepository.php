@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Eloquent;
 
+use App\Domains\VisualBoard\Models\MasterWorkstationCriteria;
 use App\Domains\VisualBoard\Models\Workstation;
 use App\Repositories\Contracts\WorkstationRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -32,13 +33,25 @@ class WorkstationRepository extends BaseRepository implements WorkstationReposit
 
     public function findWithItems(string $id): ?Workstation
     {
-        return $this->model->with(['items', 'zone', 'employee', 'employee.user'])->find($id);
+        $workstation = $this->model->with(['items', 'zone', 'employee', 'employee.user'])->find($id);
+
+        if ($workstation) {
+            $workstation->master_criterias = MasterWorkstationCriteria::where('is_active', true)->orderBy('criteria_code')->get();
+        }
+
+        return $workstation;
     }
 
     public function findByEmployeeWithItems(string $employeeId): ?Workstation
     {
-        return $this->model->with(['items', 'zone', 'employee', 'employee.user'])
+        $workstation = $this->model->with(['items', 'zone', 'employee', 'employee.user'])
             ->where('employee_id', $employeeId)
             ->first();
+
+        if ($workstation) {
+            $workstation->master_criterias = MasterWorkstationCriteria::where('is_active', true)->orderBy('criteria_code')->get();
+        }
+
+        return $workstation;
     }
 }

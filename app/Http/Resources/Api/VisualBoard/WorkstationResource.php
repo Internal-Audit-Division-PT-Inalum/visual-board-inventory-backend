@@ -34,6 +34,16 @@ class WorkstationResource extends JsonResource
                     ];
                 });
             }),
+            'master_criterias' => $this->when(isset($this->master_criterias), function () {
+                return $this->master_criterias->map(function ($criteria) {
+                    return [
+                        'id' => $criteria->id,
+                        'item_group' => $criteria->item_group,
+                        'criteria_code' => $criteria->criteria_code,
+                        'standard_criteria' => $criteria->standard_criteria,
+                    ];
+                });
+            }),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
         ];
     }
