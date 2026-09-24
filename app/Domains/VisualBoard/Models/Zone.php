@@ -2,7 +2,7 @@
 
 namespace App\Domains\VisualBoard\Models;
 
-use App\Domains\Core\Models\User;
+use App\Domains\HR\Models\Employee;
 use App\Shared\Concerns\HasUlid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,14 +28,21 @@ class Zone extends Model implements HasMedia
         'is_active' => 'boolean',
     ];
 
+    protected $appends = ['standard_image_url'];
+
+    public function getStandardImageUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('standard_images') ?: null;
+    }
+
     public function picUtama(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'pic_utama_id');
+        return $this->belongsTo(Employee::class, 'pic_utama_id');
     }
 
     public function picPengganti(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'pic_pengganti_id');
+        return $this->belongsTo(Employee::class, 'pic_pengganti_id');
     }
 
     public function criterias(): HasMany
