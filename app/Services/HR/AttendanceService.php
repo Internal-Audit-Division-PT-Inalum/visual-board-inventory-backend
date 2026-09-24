@@ -21,7 +21,7 @@ class AttendanceService
         return $this->attendanceRepository->create($data);
     }
 
-    public function processScan(string $namecode): EmployeeAttendance
+    public function processScan(string $namecode, string $status = 'present'): EmployeeAttendance
     {
         $employee = $this->employeeRepository->findByNamecode($namecode);
 
@@ -38,11 +38,15 @@ class AttendanceService
             throw new DomainException('Data kehadiran Anda untuk hari ini sudah tercatat sebelumnya. Terima kasih!');
         }
 
-        return $this->recordAttendance([
+        $attendance = $this->recordAttendance([
             'employee_id' => $employee->id,
             'date' => $today,
-            'status' => 'present',
+            'status' => $status,
         ]);
+
+        Cache::forget("hr:kiosk:attendance_summary:{$today}");
+
+        return $attendance;
     }
 
     /**

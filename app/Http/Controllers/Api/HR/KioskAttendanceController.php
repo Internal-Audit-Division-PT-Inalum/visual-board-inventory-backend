@@ -44,7 +44,10 @@ class KioskAttendanceController extends Controller
     public function scan(ScanAttendanceRequest $request): JsonResponse
     {
         try {
-            $attendance = $this->attendanceService->processScan($request->validated('namecode'));
+            $attendance = $this->attendanceService->processScan(
+                $request->validated('namecode'),
+                $request->validated('status')
+            );
 
             return ApiResponse::success(
                 ['id' => $attendance->id, 'status' => $attendance->status, 'date' => $attendance->date],

@@ -15,6 +15,7 @@ class ScanAttendanceRequest extends FormRequest
     {
         return [
             'namecode' => ['required', 'string'],
+            'status' => ['required', 'string', 'in:present,business_trip,leave'],
         ];
     }
 }
