@@ -14,6 +14,8 @@ class ScheduleRecord extends Model
     protected $fillable = [
         'monthly_schedule_id',
         'inspection_criteria_id',
+        'workstation_id',
+        'master_workstation_criteria_id',
         'days_data',
     ];
 
@@ -29,5 +31,15 @@ class ScheduleRecord extends Model
     public function criteria(): BelongsTo
     {
         return $this->belongsTo(InspectionCriteria::class, 'inspection_criteria_id');
+    }
+
+    public function workstation(): BelongsTo
+    {
+        return $this->belongsTo(Workstation::class);
+    }
+
+    public function masterWorkstationCriteria(): BelongsTo
+    {
+        return $this->belongsTo(MasterWorkstationCriteria::class, 'master_workstation_criteria_id');
     }
 }

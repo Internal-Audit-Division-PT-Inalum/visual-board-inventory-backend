@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\MonthlySchedules\RelationManagers;
 
 use App\Domains\VisualBoard\Models\InspectionCriteria;
+use App\Domains\VisualBoard\Models\MasterWorkstationCriteria;
 use App\Domains\VisualBoard\Models\ScheduleRecord;
+use App\Domains\VisualBoard\Models\Workstation;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -97,6 +99,29 @@ class ScheduleRecordsRelationManager extends RelationManager
                                     'days_data' => [],
                                 ]);
                                 $newCount++;
+                            }
+                        }
+
+                        // Generate untuk Meja (Workstations)
+                        $workstations = Workstation::where('zone_id', $monthlySchedule->zone_id)->where('is_active', true)->get();
+                        $masterCriteria = MasterWorkstationCriteria::where('is_active', true)->get();
+
+                        foreach ($workstations as $workstation) {
+                            foreach ($masterCriteria as $mc) {
+                                $exists = ScheduleRecord::where('monthly_schedule_id', $monthlySchedule->id)
+                                    ->where('workstation_id', $workstation->id)
+                                    ->where('master_workstation_criteria_id', $mc->id)
+                                    ->exists();
+
+                                if (! $exists) {
+                                    ScheduleRecord::create([
+                                        'monthly_schedule_id' => $monthlySchedule->id,
+                                        'workstation_id' => $workstation->id,
+                                        'master_workstation_criteria_id' => $mc->id,
+                                        'days_data' => [],
+                                    ]);
+                                    $newCount++;
+                                }
                             }
                         }
 
