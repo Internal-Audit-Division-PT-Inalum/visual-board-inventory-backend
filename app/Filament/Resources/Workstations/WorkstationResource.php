@@ -16,7 +16,7 @@ class WorkstationResource extends Resource
 {
     protected static ?string $model = Workstation::class;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Inventaris';
+    protected static string|\UnitEnum|null $navigationGroup = 'Sumber Daya Manusia';
 
     protected static ?int $navigationSort = 24;
 
