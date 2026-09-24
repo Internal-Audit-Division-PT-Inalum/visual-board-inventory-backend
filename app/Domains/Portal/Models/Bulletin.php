@@ -22,11 +22,13 @@ class Bulletin extends Model
         'created_by',
         'image_url',
         'document_url',
+        'expired_at',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'published_at' => 'datetime',
+        'expired_at' => 'datetime',
     ];
 
     public function author(): BelongsTo
