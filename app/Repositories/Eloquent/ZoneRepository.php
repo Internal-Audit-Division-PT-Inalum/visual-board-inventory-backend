@@ -10,12 +10,12 @@ class ZoneRepository implements ZoneRepositoryInterface
 {
     public function getAllWithPics(): Collection
     {
-        return Zone::with(['picUtama:id,name', 'picPengganti:id,name'])->get();
+        return Zone::with(['picUtama.user', 'picPengganti.user'])->get();
     }
 
     public function getAllActive(): Collection
     {
-        return Zone::with(['picUtama:id,name', 'picPengganti:id,name'])
+        return Zone::with(['picUtama.user', 'picPengganti.user'])
             ->where('is_active', true)
             ->get();
     }

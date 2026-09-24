@@ -61,9 +61,10 @@ class VisualBoardResource extends JsonResource
                 return [
                     'id' => $zone->id,
                     'name' => $zone->name,
+                    'area' => $zone->area,
                     'standard_image_url' => $zone->getFirstMediaUrl('standard_images') ?: null,
-                    'pic_utama' => $zone->picUtama ? $zone->picUtama->name : null,
-                    'pic_pengganti' => $zone->picPengganti ? $zone->picPengganti->name : null,
+                    'pic_utama' => $zone->picUtama ? ($zone->picUtama->name ?? $zone->picUtama->namecode ?? ($zone->picUtama->user ? $zone->picUtama->user->name : null)) : null,
+                    'pic_pengganti' => $zone->picPengganti ? ($zone->picPengganti->name ?? $zone->picPengganti->namecode ?? ($zone->picPengganti->user ? $zone->picPengganti->user->name : null)) : null,
                 ];
             }),
             'trend_matrix' => $this->resource['trend_matrix'] ?? [],
@@ -77,6 +78,17 @@ class VisualBoardResource extends JsonResource
                     'mime_type' => $doc->getFirstMedia('document')?->mime_type,
                 ];
             }),
+            'assessment_docs' => collect($this->resource['assessment_docs'] ?? [])->map(function ($doc) {
+                return [
+                    'id' => $doc->id,
+                    'title' => $doc->title,
+                    'description' => $doc->description,
+                    'category' => $doc->category,
+                    'document_url' => $doc->getFirstMediaUrl('document'),
+                    'mime_type' => $doc->getFirstMedia('document')?->mime_type,
+                ];
+            }),
+            'five_r_evaluations' => $this->resource['five_r_evaluations'] ?? [],
         ];
     }
 }

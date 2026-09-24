@@ -3,6 +3,7 @@
 namespace App\Services\VisualBoard;
 
 use App\Domains\HR\Models\Employee;
+use App\Domains\VisualBoard\Models\FiveREvaluation;
 use App\Domains\VisualBoard\Models\GeneralDocument;
 use App\Repositories\Contracts\AbnormalityRepositoryInterface;
 use App\Repositories\Contracts\MonthlyScheduleRepositoryInterface;
@@ -71,6 +72,11 @@ class VisualBoardService
             ->orderBy('sort_order')
             ->get();
 
+        $assessmentDocs = GeneralDocument::assessment()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
         // Ambil data zones secara eksplisit
         $zones = $this->zoneRepository->getAllActive();
 
@@ -120,7 +126,7 @@ class VisualBoardService
         $picData = null;
         if ($pic) {
             $picData = [
-                'name' => $pic->user->name ?? 'Admin',
+                'name' => $pic->name ?? $pic->namecode ?? 'Admin',
                 'position_title' => $pic->position_title,
                 'avatar_url' => $pic->getFirstMediaUrl('avatar') ?: null,
             ];
@@ -152,8 +158,16 @@ class VisualBoardService
             'oee_target' => $this->telemetryService->getOeeTarget(),
 
             // Metrik Agregat Kaizen dari Database
-            'kaizen_implemented_count' => collect($champions)->sum('kaizen_count'),
-            'kaizen_cost_saving' => collect($champions)->sum('kaizen_count') * 1000000,
+            'kaizen_implemented_count' => GeneralDocument::where('category', 'kaizen_report')
+                ->where('is_active', true)
+                ->where('implementation_month', $targetDate->month)
+                ->where('implementation_year', $targetDate->year)
+                ->count(),
+            'kaizen_cost_saving' => GeneralDocument::where('category', 'kaizen_report')
+                ->where('is_active', true)
+                ->where('implementation_month', $targetDate->month)
+                ->where('implementation_year', $targetDate->year)
+                ->count() * 1000000,
 
             'abnormalities' => $latestUnresolved,
             'kaizen_champions' => $champions,
@@ -162,6 +176,10 @@ class VisualBoardService
             'zones' => $zones,
             'trend_matrix' => $trendMatrix,
             'reference_docs' => $referenceDocs,
+            'assessment_docs' => $assessmentDocs,
+            'five_r_evaluations' => FiveREvaluation::where('year', $targetDate->year)
+                ->orderBy('month')
+                ->get(),
         ];
     }
 

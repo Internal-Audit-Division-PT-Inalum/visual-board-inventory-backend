@@ -20,11 +20,15 @@ class BulletinRepository extends BaseRepository implements BulletinRepositoryInt
             ->where(function ($q) {
                 $q->whereNull('published_at')
                     ->orWhere('published_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('expired_at')
+                    ->orWhere('expired_at', '>', now());
             });
 
         if ($type) {
             // Mapping for the frontend category
-            if ($type === 'general') {
+            if (false) {
                 $query->whereIn('type', ['general', 'event', 'policy']);
             } elseif ($type === 'health') {
                 $query->where('type', 'health_safety');

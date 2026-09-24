@@ -21,7 +21,7 @@ class WorkstationResource extends JsonResource
             'employee' => $this->whenLoaded('employee', fn () => [
                 'id' => $this->employee->id,
                 'namecode' => $this->employee->namecode,
-                'name' => $this->employee->user?->name,
+                'name' => $this->employee->name ?? $this->employee->user?->name ?? $this->employee->namecode,
                 'avatar_url' => $this->employee->getFirstMediaUrl('avatar') ? asset($this->employee->getFirstMediaUrl('avatar')) : null,
             ]),
             'items' => $this->whenLoaded('items', function () {
