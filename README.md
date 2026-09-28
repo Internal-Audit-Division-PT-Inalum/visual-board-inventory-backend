@@ -96,7 +96,7 @@ Aplikasi ini dibangun menggunakan arsitektur **Domain-Driven Design (DDD)** yang
 ## Features
 
 ### Public Kiosk API (Frontend)
-- **Visual Board Metriks** — *Endpoint* terpusat untuk menarik gabungan skor audit bulanan, tren 5R, dan *Safety Streak Days* dari Telemetri.
+- **Visual Board Metriks** — *Endpoint* terpusat untuk menarik gabungan skor audit bulanan, tren 5R, dan *Safety Streak Days* dari Telemetri, dilengkapi algoritma *multi-level sorting* dan *Priority Order Map* kustom.
 - **Manajemen Area (Workstation)** — *Endpoint* spesifik untuk menampilkan daftar area kerja pabrik beserta penugasan karyawan penjaganya.
 - **Mading Digital (Bulletins)** — Menyuplai daftar *carousel/slider* pengumuman harian dengan dukungan pembaca PDF bawaan.
 - **Presensi Pintar (Kiosk Attendance)** — API pelaporan status kehadiran (*hadir, sakit, cuti*) yang diurutkan secara hierarkis (dari Pimpinan ke Pelaksana) lengkap dengan URL foto profil.
@@ -105,7 +105,7 @@ Aplikasi ini dibangun menggunakan arsitektur **Domain-Driven Design (DDD)** yang
 ### Admin Panel (Filament)
 - **Executive Dashboard** — Dasbor responsif dengan *widget* metrik statistik dinamis yang menghitung langsung dari pangkalan data secara *real-time*.
 - **Manajemen Dokumen Tunggal (General Documents)** — Pengelolaan file PDF tersentralisasi untuk semua kebutuhan (SOP, Struktur Organisasi, Peta Area).
-- **Penjadwalan 5R (Monthly Schedules)** — Matriks alokasi piket harian yang kompleks.
+- **Penjadwalan 5R (Monthly Schedules)** — Matriks alokasi piket harian yang terpusat, lengkap dengan form ceklis dinamis untuk Kriteria Standar maupun Kriteria Spesifik Meja Kerja.
 - **Inventaris Gudang (Inventory)** — Pencatatan logistik keluar-masuk barang, penataan rak, dan ambang batas ketersediaan barang.
 - **RBAC Super Ketat** — Hierarki kontrol peran dan izin (Super Admin, Manajer Area, Staf) yang dikelola lewat Filament Shield.
 
