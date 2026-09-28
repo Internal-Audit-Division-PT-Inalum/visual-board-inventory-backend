@@ -55,16 +55,77 @@ class VisualBoardService
         foreach ($schedules as $schedule) {
             $uniqueZoneIds[] = $schedule->zone->id;
             foreach ($schedule->scheduleRecords as $record) {
+                if ($record->criteria) {
+                    $itemGroup = $record->criteria->item_group;
+                    $criteriaCode = $record->criteria->criteria_code;
+                    $description = $record->criteria->description;
+                } elseif ($record->workstation && $record->masterWorkstationCriteria) {
+                    $itemGroup = 'Meja Kerja: ' . $record->workstation->name;
+                    $criteriaCode = $record->masterWorkstationCriteria->criteria_code;
+                    $description = $record->masterWorkstationCriteria->standard_criteria;
+                } else {
+                    continue;
+                }
+
                 $scheduleMatrix[] = [
                     'zone_id' => $schedule->zone->id,
                     'zone_name' => $schedule->zone->name,
-                    'item_group' => $record->criteria->item_group,
-                    'criteria_code' => $record->criteria->criteria_code,
-                    'criteria_description' => $record->criteria->description,
-                    'days' => $record->days_data ?? [],
+                    'item_group' => $itemGroup,
+                    'criteria_code' => $criteriaCode,
+                    'criteria_description' => $description,
+                    'days' => (object) ($record->days_data ?? []),
                 ];
             }
         }
+
+        usort($scheduleMatrix, function ($a, $b) {
+            $orderMap = [
+                'Tidak ada barang yang tidak digunakan' => 1,
+                'Barang / Peralatan terletak di area label' => 2,
+                'Isi dalam rak bersih dari debu' => 4,
+                'Kursi memiliki identitas' => 5,
+                'Setiap kursi memiliki identitas' => 5,
+                'Kursi diposisi layout jika tidak digunakan' => 6,
+                'Setiap kursi diposisi layout jika tidak digunakan' => 6,
+                'Bersih dari debu / kotoran' => 7,
+                'Barang mudah bergerak terletak didalam line' => 8,
+                'Line pembatas dalam keadaan baik' => 9,
+                'Bersih dari debu / kotoran / genangan air' => 10,
+                'Kondisi papan bersih dari debu dan kotoran' => 11,
+                'Lampu dapat berfungsi semua' => 12,
+                'Tidak ada sarang laba-laba' => 13,
+                'Kabel tertata rapi' => 14,
+                'Tembok tidak kotor dan tidak bebercak' => 15,
+                'Tembok tidak ada sarang laba-laba' => 16,
+                'Poster / Informasi dalam kondisi update dan bersih' => 17,
+                'Air tersedia' => 18,
+                'Body lemari Bersih dari debu / kotoran' => 19,
+                'Terdapat standar isi lemari' => 20,
+                'Terdapat label isi lemari' => 21,
+                'Label dalam keadaan baik' => 22,
+                'Isi kulkas, galon dan air dispenser tersedia' => 23,
+                'APAR dalam Kondisi standby (garis hijau)/ P3K Stand By' => 24,
+                'Tidak ada barang dibawah Apar/ P3K ada ditempatnya' => 25,
+            ];
+
+            $zoneCompare = strcmp($a['zone_name'], $b['zone_name']);
+            if ($zoneCompare !== 0) {
+                return $zoneCompare;
+            }
+            $groupCompare = strcmp($a['item_group'], $b['item_group']);
+            if ($groupCompare !== 0) {
+                return $groupCompare;
+            }
+            $codeCompare = strcmp($a['criteria_code'], $b['criteria_code']);
+            if ($codeCompare !== 0) {
+                return $codeCompare;
+            }
+
+            $orderA = $orderMap[$a['criteria_description']] ?? 99;
+            $orderB = $orderMap[$b['criteria_description']] ?? 99;
+
+            return $orderA <=> $orderB;
+        });
 
         $trendMatrix = $this->abnormalityRepository->getMonthlyTrendMatrix($targetDate->year);
         $referenceDocs = GeneralDocument::visualBoard()
