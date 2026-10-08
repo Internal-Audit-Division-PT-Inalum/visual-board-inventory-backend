@@ -16,6 +16,7 @@ class LocationResource extends JsonResource
             'description' => $this->description,
             'is_active' => $this->is_active,
             'items_count' => $this->whenCounted('items'),
+            'items' => ItemResource::collection($this->whenLoaded('items')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

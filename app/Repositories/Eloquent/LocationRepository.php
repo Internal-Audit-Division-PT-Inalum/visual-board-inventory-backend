@@ -22,6 +22,7 @@ class LocationRepository implements LocationRepositoryInterface
     {
         return $this->model->newQuery()
             ->withCount('items')
+            ->with('items')
             ->find($id);
     }
 
