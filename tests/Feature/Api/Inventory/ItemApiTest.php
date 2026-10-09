@@ -1,12 +1,16 @@
 <?php
 
 use App\Domains\Core\Models\User;
+use App\Domains\HR\Models\Employee;
 use App\Domains\Inventory\Models\Item;
 use App\Domains\Inventory\Models\Location;
 use Illuminate\Support\Str;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
+    Employee::factory()->create([
+        'user_id' => $this->user->id,
+    ]);
     $this->location = Location::factory()->create();
 });
 
@@ -161,9 +165,18 @@ it('can borrow an asset item', function () {
 it('can return a borrowed asset', function () {
     $item = Item::factory()->asset()->create([
         'location_id' => $this->location->id,
-        'current_stock' => 3,
+        'current_stock' => 5,
     ]);
 
+    // Borrow it first
+    $this->actingAs($this->user)
+        ->postJson("/api/v1/inventory/items/{$item->id}/borrow", [
+            'quantity' => 2,
+            'client_uuid' => Str::uuid()->toString(),
+        ])
+        ->assertStatus(201);
+
+    // Now return it
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/return", [
             'quantity' => 2,
