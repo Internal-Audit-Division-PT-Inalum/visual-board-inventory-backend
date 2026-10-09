@@ -2,11 +2,16 @@
 
 namespace App\Services\Inventory;
 
+use App\Domains\Core\Models\User;
 use App\Domains\Inventory\Exceptions\IdempotencyConflictException;
 use App\Domains\Inventory\Exceptions\InsufficientStockException;
 use App\Domains\Inventory\Exceptions\InvalidItemOperationException;
+use App\Domains\Inventory\Exceptions\LoanExceedsOutstandingException;
+use App\Domains\Inventory\Models\AssetLoan;
+use App\Domains\Inventory\Models\AssetLoanReturn;
 use App\Domains\Inventory\Models\InventoryLedger;
 use App\Domains\Inventory\Models\Item;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -89,6 +94,32 @@ class InventoryService
                 );
             }
 
+            // 3.5. Validation for Loans
+            $user = null;
+            if (in_array($type, ['borrow', 'return'])) {
+                $user = User::with('employee')->find($userId);
+                if (! $user || ! $user->employee) {
+                    throw new InvalidItemOperationException('Hanya pegawai yang dapat melakukan peminjaman/pengembalian.');
+                }
+            }
+
+            $openLoans = null;
+            if ($type === 'return') {
+                $openLoans = AssetLoan::where('item_id', $item->id)
+                    ->where('employee_id', $user->employee->id)
+                    ->whereNull('fully_returned_at')
+                    ->lockForUpdate()
+                    ->orderBy('borrowed_at', 'asc')
+                    ->get();
+
+                $totalOutstanding = $openLoans->sum(fn ($loan) => $loan->quantity - $loan->returned_quantity);
+                if ($quantity > $totalOutstanding) {
+                    throw new LoanExceedsOutstandingException(
+                        "Jumlah pengembalian ({$quantity}) melebihi sisa pinjaman ({$totalOutstanding})."
+                    );
+                }
+            }
+
             $stockBefore = $item->current_stock;
             $stockAfter = $stockBefore;
 
@@ -133,6 +164,42 @@ class InventoryService
                 }
 
                 throw $e;
+            }
+
+            // 5.5. Manage Asset Loans
+            if ($type === 'borrow') {
+                AssetLoan::create([
+                    'item_id' => $item->id,
+                    'employee_id' => $user->employee->id,
+                    'quantity' => $quantity,
+                    'borrowed_at' => $occurredAt ? Carbon::parse($occurredAt) : now(),
+                    'borrow_ledger_id' => $ledger->id,
+                ]);
+            } elseif ($type === 'return') {
+                $remainingToReturn = $quantity;
+                foreach ($openLoans as $loan) {
+                    if ($remainingToReturn <= 0) {
+                        break;
+                    }
+
+                    $loanOutstanding = $loan->quantity - $loan->returned_quantity;
+                    $returningForThisLoan = min($remainingToReturn, $loanOutstanding);
+
+                    $loan->returned_quantity += $returningForThisLoan;
+                    if ($loan->returned_quantity >= $loan->quantity) {
+                        $loan->fully_returned_at = $occurredAt ? Carbon::parse($occurredAt) : now();
+                    }
+                    $loan->save();
+
+                    AssetLoanReturn::create([
+                        'asset_loan_id' => $loan->id,
+                        'ledger_id' => $ledger->id,
+                        'quantity' => $returningForThisLoan,
+                        'returned_at' => $occurredAt ? Carbon::parse($occurredAt) : now(),
+                    ]);
+
+                    $remainingToReturn -= $returningForThisLoan;
+                }
             }
 
             // 6. Logging
