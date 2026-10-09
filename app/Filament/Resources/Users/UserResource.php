@@ -11,9 +11,15 @@ use App\Filament\Resources\Users\Tables\UserTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserResource extends Resource
 {
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('email', 'not like', '%@synthetic.inalum.id');
+    }
+
     protected static ?string $model = User::class;
 
     protected static ?string $modelLabel = 'Pengguna';
