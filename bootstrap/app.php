@@ -1,5 +1,6 @@
 <?php
 
+use App\Domains\Inventory\Exceptions\IdempotencyConflictException;
 use App\Domains\Inventory\Exceptions\InsufficientStockException;
 use App\Domains\Inventory\Exceptions\InvalidItemOperationException;
 use App\Domains\VisualBoard\Exceptions\ScheduleNotFoundException;
@@ -35,7 +36,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 return ApiResponse::error(
                     'Validasi gagal.',
                     $e->errors(),
-                    422
+                    422,
+                    ['code' => 'VALIDATION_FAILED']
                 );
             }
         });
@@ -45,7 +47,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 return ApiResponse::error(
                     'Data tidak ditemukan.',
                     [],
-                    404
+                    404,
+                    ['code' => 'ITEM_NOT_FOUND']
                 );
             }
         });
@@ -55,7 +58,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 return ApiResponse::error(
                     'Endpoint atau rute tidak ditemukan.',
                     [],
-                    404
+                    404,
+                    ['code' => 'ITEM_NOT_FOUND']
                 );
             }
         });
@@ -65,7 +69,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 return ApiResponse::error(
                     'Unauthenticated. Silakan login terlebih dahulu.',
                     [],
-                    401
+                    401,
+                    ['code' => 'UNAUTHENTICATED']
                 );
             }
         });
@@ -75,7 +80,19 @@ return Application::configure(basePath: dirname(__DIR__))
                 return ApiResponse::error(
                     'Anda tidak memiliki akses ke sumber daya ini.',
                     [],
-                    403
+                    403,
+                    ['code' => 'FORBIDDEN']
+                );
+            }
+        });
+
+        $exceptions->render(function (IdempotencyConflictException $e, Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return ApiResponse::error(
+                    $e->getMessage(),
+                    [],
+                    409,
+                    ['code' => 'IDEMPOTENCY_CONFLICT']
                 );
             }
         });
@@ -85,7 +102,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 return ApiResponse::error(
                     $e->getMessage(),
                     [],
-                    422
+                    422,
+                    ['code' => 'INSUFFICIENT_STOCK']
                 );
             }
         });
@@ -95,7 +113,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 return ApiResponse::error(
                     $e->getMessage(),
                     [],
-                    422
+                    422,
+                    ['code' => 'INVALID_OPERATION']
                 );
             }
         });
@@ -120,9 +139,8 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        // Catch-all for API route general exceptions (optional, to hide SQL errors in production)
+        // Catch-all for API route general exceptions
         $exceptions->render(function (Throwable $e, Request $request) {
-            // Only mask the error if it's production, otherwise let Laravel show the stack trace during development
             if (app()->environment('production') && ($request->is('api/*') || $request->expectsJson())) {
                 return ApiResponse::error(
                     'Terjadi kesalahan internal server.',
