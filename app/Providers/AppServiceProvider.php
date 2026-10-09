@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Domains\Inventory\Models\Item;
+use App\Domains\Inventory\Models\Location;
 use App\Domains\VisualBoard\Models\Abnormality;
 use App\Domains\VisualBoard\Observers\AbnormalityObserver;
+use App\Observers\ItemObserver;
+use App\Observers\LocationObserver;
 use App\Repositories\Contracts\AbnormalityRepositoryInterface;
 use App\Repositories\Contracts\BulletinRepositoryInterface;
 use App\Repositories\Contracts\DepartmentRepositoryInterface;
@@ -27,7 +31,9 @@ use App\Repositories\Eloquent\SchedulePicRepository;
 use App\Repositories\Eloquent\WorkstationRepository;
 use App\Repositories\Eloquent\ZoneRepository;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -56,6 +62,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Abnormality::observe(AbnormalityObserver::class);
+
+        Item::observe(ItemObserver::class);
+        Location::observe(LocationObserver::class);
+
+        // Cache invalidation for media updates
+        $clearKioskCache = function () {
+            Cache::forget('inventory:kiosk:locations');
+        };
+        Media::created($clearKioskCache);
+        Media::updated($clearKioskCache);
+        Media::deleted($clearKioskCache);
 
         Factory::guessFactoryNamesUsing(function (string $modelName) {
             $modelName = class_basename($modelName);
