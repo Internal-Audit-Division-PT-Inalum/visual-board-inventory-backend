@@ -15,6 +15,8 @@ class InventoryLedger extends Model
     // Append-only — TIDAK pakai SoftDeletes (AGENTS.md konvensi)
 
     protected $fillable = [
+        'client_uuid',
+        'occurred_at',
         'item_id',
         'user_id',
         'type',

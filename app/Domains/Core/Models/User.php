@@ -2,6 +2,7 @@
 
 namespace App\Domains\Core\Models;
 
+use App\Domains\HR\Models\Employee;
 use App\Shared\Concerns\HasUlid;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -42,5 +43,10 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
     }
 }
