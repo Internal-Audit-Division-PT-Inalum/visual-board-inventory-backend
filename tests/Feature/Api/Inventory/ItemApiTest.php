@@ -3,6 +3,7 @@
 use App\Domains\Core\Models\User;
 use App\Domains\Inventory\Models\Item;
 use App\Domains\Inventory\Models\Location;
+use Illuminate\Support\Str;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
@@ -84,6 +85,7 @@ it('can take a consumable item and ledger is recorded', function () {
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
             'quantity' => 5,
             'notes' => 'Untuk rapat direksi',
+            'client_uuid' => Str::uuid()->toString(),
         ])
         ->assertStatus(201)
         ->assertJsonPath('data.type', 'out')
@@ -105,6 +107,7 @@ it('rejects take when stock is insufficient', function () {
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
             'quantity' => 10,
+            'client_uuid' => Str::uuid()->toString(),
         ])
         ->assertStatus(422)
         ->assertJsonPath('success', false);
@@ -123,6 +126,7 @@ it('can add stock to a consumable item', function () {
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/add", [
             'quantity' => 20,
+            'client_uuid' => Str::uuid()->toString(),
         ])
         ->assertStatus(201)
         ->assertJsonPath('data.type', 'in')
@@ -145,6 +149,7 @@ it('can borrow an asset item', function () {
         ->postJson("/api/v1/inventory/items/{$item->id}/borrow", [
             'quantity' => 2,
             'notes' => 'Untuk presentasi',
+            'client_uuid' => Str::uuid()->toString(),
         ])
         ->assertStatus(201)
         ->assertJsonPath('data.type', 'borrow')
@@ -162,6 +167,7 @@ it('can return a borrowed asset', function () {
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/return", [
             'quantity' => 2,
+            'client_uuid' => Str::uuid()->toString(),
         ])
         ->assertStatus(201)
         ->assertJsonPath('data.type', 'return')
@@ -183,6 +189,7 @@ it('rejects take on asset item', function () {
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
             'quantity' => 1,
+            'client_uuid' => Str::uuid()->toString(),
         ])
         ->assertStatus(422)
         ->assertJsonPath('success', false);
@@ -198,6 +205,7 @@ it('rejects borrow on consumable item', function () {
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/borrow", [
             'quantity' => 1,
+            'client_uuid' => Str::uuid()->toString(),
         ])
         ->assertStatus(422)
         ->assertJsonPath('success', false);
@@ -216,18 +224,91 @@ it('prevents stock from going negative with sequential takes', function () {
 
     // Take 3 → success (stock: 5 → 2)
     $this->actingAs($this->user)
-        ->postJson("/api/v1/inventory/items/{$item->id}/take", ['quantity' => 3])
+        ->postJson("/api/v1/inventory/items/{$item->id}/take", [
+            'quantity' => 3,
+            'client_uuid' => Str::uuid()->toString(),
+        ])
         ->assertStatus(201);
 
     // Take 3 lagi → fail (stock: 2, diminta: 3)
     $this->actingAs($this->user)
-        ->postJson("/api/v1/inventory/items/{$item->id}/take", ['quantity' => 3])
+        ->postJson("/api/v1/inventory/items/{$item->id}/take", [
+            'quantity' => 3,
+            'client_uuid' => Str::uuid()->toString(),
+        ])
         ->assertStatus(422);
 
     // Verifikasi stok tidak pernah minus
     $item->refresh();
     expect($item->current_stock)->toBeGreaterThanOrEqual(0);
     expect($item->current_stock)->toBe(2);
+});
+
+// ────────────────────────────────────────────────────────
+// IDEMPOTENCY
+// ────────────────────────────────────────────────────────
+
+it('returns replayed response for identical client_uuid and user', function () {
+    $item = Item::factory()->create([
+        'location_id' => $this->location->id,
+        'type' => 'consumable',
+        'current_stock' => 20,
+    ]);
+
+    $clientUuid = Str::uuid()->toString();
+
+    // Request 1
+    $this->actingAs($this->user)
+        ->postJson("/api/v1/inventory/items/{$item->id}/take", [
+            'quantity' => 5,
+            'client_uuid' => $clientUuid,
+        ])
+        ->assertStatus(201)
+        ->assertJsonPath('meta.replayed', false);
+
+    // Stok berkurang
+    $this->assertDatabaseHas('items', ['id' => $item->id, 'current_stock' => 15]);
+
+    // Request 2 (replay)
+    $this->actingAs($this->user)
+        ->postJson("/api/v1/inventory/items/{$item->id}/take", [
+            'quantity' => 5, // Even if params differ, it's ignored based on UUID
+            'client_uuid' => $clientUuid,
+        ])
+        ->assertStatus(200)
+        ->assertJsonPath('meta.replayed', true)
+        ->assertJsonPath('data.client_uuid', $clientUuid);
+
+    // Stok tidak berkurang lagi
+    $this->assertDatabaseHas('items', ['id' => $item->id, 'current_stock' => 15]);
+});
+
+it('returns 409 conflict if identical client_uuid used by different user', function () {
+    $item = Item::factory()->create([
+        'location_id' => $this->location->id,
+        'type' => 'consumable',
+        'current_stock' => 20,
+    ]);
+
+    $clientUuid = Str::uuid()->toString();
+
+    // Request 1 by User A
+    $this->actingAs($this->user)
+        ->postJson("/api/v1/inventory/items/{$item->id}/take", [
+            'quantity' => 5,
+            'client_uuid' => $clientUuid,
+        ])
+        ->assertStatus(201);
+
+    // Request 2 by User B
+    $userB = User::factory()->create();
+    $this->actingAs($userB)
+        ->postJson("/api/v1/inventory/items/{$item->id}/take", [
+            'quantity' => 5,
+            'client_uuid' => $clientUuid,
+        ])
+        ->assertStatus(409)
+        ->assertJsonPath('meta.code', 'IDEMPOTENCY_CONFLICT');
 });
 
 // ────────────────────────────────────────────────────────
@@ -243,9 +324,15 @@ it('can fetch ledger history for an item', function () {
 
     // Buat beberapa transaksi
     $this->actingAs($this->user)
-        ->postJson("/api/v1/inventory/items/{$item->id}/take", ['quantity' => 5]);
+        ->postJson("/api/v1/inventory/items/{$item->id}/take", [
+            'quantity' => 5,
+            'client_uuid' => Str::uuid()->toString(),
+        ]);
     $this->actingAs($this->user)
-        ->postJson("/api/v1/inventory/items/{$item->id}/add", ['quantity' => 10]);
+        ->postJson("/api/v1/inventory/items/{$item->id}/add", [
+            'quantity' => 10,
+            'client_uuid' => Str::uuid()->toString(),
+        ]);
 
     $this->actingAs($this->user)
         ->getJson("/api/v1/inventory/items/{$item->id}/ledger")
