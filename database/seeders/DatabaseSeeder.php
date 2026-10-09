@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
         // 1. Buat Role Super Admin (Tanpa shield:generate)
         $role = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
 
-        // 1.5. Buat Role Operasional 5R
-        $operationalRoles = ['pelaksana_5r', 'staff_penyelia', 'managerial_staff'];
+        // 1.5. Buat Role Operasional 5R & Inventory
+        $operationalRoles = ['pelaksana_5r', 'staff_penyelia', 'managerial_staff', 'inventory_admin'];
         foreach ($operationalRoles as $roleName) {
             Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
         }
