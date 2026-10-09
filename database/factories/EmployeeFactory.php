@@ -16,7 +16,9 @@ class EmployeeFactory extends Factory
         return [
             'user_id' => User::factory(),
             'department_id' => Department::factory(),
-            'namecode' => $this->faker->unique()->numerify('######'),
+            'namecode' => $this->faker->unique()->numerify('EMP-######'),
+            'employee_code' => $this->faker->unique()->numerify('C-######'),
+            'name' => $this->faker->name(),
             'position_title' => $this->faker->jobTitle(),
         ];
     }

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Api\VisualBoard;
 
-use App\Domains\Core\Models\User;
+use App\Domains\HR\Models\Employee;
 use App\Domains\VisualBoard\Models\Abnormality;
 use App\Domains\VisualBoard\Models\Zone;
 use Illuminate\Support\Carbon;
@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Cache;
 beforeEach(function () {
     Cache::flush();
 
-    $this->pic1 = User::factory()->create();
-    $this->pic2 = User::factory()->create();
+    $this->pic1 = Employee::factory()->create();
+    $this->pic2 = Employee::factory()->create();
 
     $this->zone1 = Zone::factory()->create([
         'pic_utama_id' => $this->pic1->id,

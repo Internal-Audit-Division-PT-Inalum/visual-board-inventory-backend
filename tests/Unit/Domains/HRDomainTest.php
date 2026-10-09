@@ -36,6 +36,8 @@ test('it can create an employee using service', function () {
         'user_id' => $user->id,
         'department_id' => $department->id,
         'namecode' => 'EMP-12345',
+        'employee_code' => 'C-12345',
+        'name' => 'John Doe',
         'position_title' => 'Manager',
     ]);
 
@@ -50,6 +52,8 @@ test('it can record an employee attendance using service', function () {
     $employee = app(EmployeeService::class)->createEmployee([
         'user_id' => $user->id,
         'namecode' => 'EMP-001',
+        'employee_code' => 'C-001',
+        'name' => 'Jane Doe',
     ]);
 
     $service = app(AttendanceService::class);

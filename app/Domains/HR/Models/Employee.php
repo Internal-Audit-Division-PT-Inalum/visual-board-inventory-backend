@@ -25,11 +25,24 @@ class Employee extends Model implements HasMedia
         'position_title',
         'hierarchy_level',
         'is_active',
+        'pin',
+        'pin_set_at',
+        'must_change_pin',
+        'pin_failed_attempts',
+        'pin_locked_until',
     ];
 
     protected $casts = [
         'hierarchy_level' => 'integer',
         'is_active' => 'boolean',
+        'pin_set_at' => 'datetime',
+        'must_change_pin' => 'boolean',
+        'pin_failed_attempts' => 'integer',
+        'pin_locked_until' => 'datetime',
+    ];
+
+    protected $hidden = [
+        'pin',
     ];
 
     public function user(): BelongsTo
