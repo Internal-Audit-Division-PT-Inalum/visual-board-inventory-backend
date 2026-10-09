@@ -108,14 +108,18 @@ class ItemController extends Controller
             $request->validated('quantity'),
             $request->user()->id,
             $request->validated('notes'),
-            $request->validated('reference_number')
+            $request->validated('reference_number'),
+            $request->validated('client_uuid'),
+            $request->validated('occurred_at')
         );
 
+        $isReplayed = $ledger->is_replayed ?? false;
+
         return ApiResponse::success(
-            new LedgerResource($ledger->load('user')),
-            'Barang berhasil diambil.',
-            [],
-            201
+            new LedgerResource($ledger->load(['user.employee', 'item'])),
+            $isReplayed ? 'Transaksi sudah pernah diproses (idempotent).' : 'Barang berhasil diambil.',
+            ['replayed' => $isReplayed],
+            $isReplayed ? 200 : 201
         );
     }
 
@@ -133,14 +137,18 @@ class ItemController extends Controller
             $request->validated('quantity'),
             $request->user()->id,
             $request->validated('notes'),
-            $request->validated('reference_number')
+            $request->validated('reference_number'),
+            $request->validated('client_uuid'),
+            $request->validated('occurred_at')
         );
 
+        $isReplayed = $ledger->is_replayed ?? false;
+
         return ApiResponse::success(
-            new LedgerResource($ledger->load('user')),
-            'Stok barang berhasil ditambahkan.',
-            [],
-            201
+            new LedgerResource($ledger->load(['user.employee', 'item'])),
+            $isReplayed ? 'Transaksi sudah pernah diproses (idempotent).' : 'Stok barang berhasil ditambahkan.',
+            ['replayed' => $isReplayed],
+            $isReplayed ? 200 : 201
         );
     }
 
@@ -158,14 +166,18 @@ class ItemController extends Controller
             $request->validated('quantity'),
             $request->user()->id,
             $request->validated('notes'),
-            $request->validated('reference_number')
+            $request->validated('reference_number'),
+            $request->validated('client_uuid'),
+            $request->validated('occurred_at')
         );
 
+        $isReplayed = $ledger->is_replayed ?? false;
+
         return ApiResponse::success(
-            new LedgerResource($ledger->load('user')),
-            'Asset berhasil dipinjam.',
-            [],
-            201
+            new LedgerResource($ledger->load(['user.employee', 'item'])),
+            $isReplayed ? 'Transaksi sudah pernah diproses (idempotent).' : 'Asset berhasil dipinjam.',
+            ['replayed' => $isReplayed],
+            $isReplayed ? 200 : 201
         );
     }
 
@@ -183,14 +195,18 @@ class ItemController extends Controller
             $request->validated('quantity'),
             $request->user()->id,
             $request->validated('notes'),
-            $request->validated('reference_number')
+            $request->validated('reference_number'),
+            $request->validated('client_uuid'),
+            $request->validated('occurred_at')
         );
 
+        $isReplayed = $ledger->is_replayed ?? false;
+
         return ApiResponse::success(
-            new LedgerResource($ledger->load('user')),
-            'Asset berhasil dikembalikan.',
-            [],
-            201
+            new LedgerResource($ledger->load(['user.employee', 'item'])),
+            $isReplayed ? 'Transaksi sudah pernah diproses (idempotent).' : 'Asset berhasil dikembalikan.',
+            ['replayed' => $isReplayed],
+            $isReplayed ? 200 : 201
         );
     }
 

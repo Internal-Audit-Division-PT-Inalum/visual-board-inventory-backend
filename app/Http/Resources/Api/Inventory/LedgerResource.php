@@ -17,10 +17,17 @@ class LedgerResource extends JsonResource
             'stock_after' => $this->stock_after,
             'notes' => $this->notes,
             'reference_number' => $this->reference_number,
+            'client_uuid' => $this->client_uuid,
+            'occurred_at' => $this->occurred_at,
             'user' => [
                 'id' => $this->user?->id,
                 'name' => $this->user?->name,
+                'employee_name' => $this->user?->employee?->name,
             ],
+            'item' => $this->whenLoaded('item', fn () => [
+                'id' => $this->item->id,
+                'current_stock' => $this->item->current_stock,
+            ]),
             'created_at' => $this->created_at,
         ];
     }
