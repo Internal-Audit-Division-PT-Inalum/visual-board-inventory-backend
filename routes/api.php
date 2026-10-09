@@ -12,4 +12,6 @@ Route::prefix('v1')->group(function () {
 
     Route::prefix('portal')->group(base_path('routes/api/portal.php'));
 
+    Route::prefix('auth')->group(base_path('routes/api/auth.php'));
+
 });
