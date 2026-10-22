@@ -58,7 +58,7 @@ class Zone extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('standard_images')
-            ->useDisk('public')
-            ->useFallbackUrl('/images/default-zone.png');
+            ->singleFile()
+            ->useDisk('public');
     }
 }
