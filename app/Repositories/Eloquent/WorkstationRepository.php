@@ -33,7 +33,7 @@ class WorkstationRepository extends BaseRepository implements WorkstationReposit
 
     public function findWithItems(string $id): ?Workstation
     {
-        $workstation = $this->model->with(['items', 'zone', 'employee', 'employee.user'])->find($id);
+        $workstation = $this->model->with(['items', 'zone', 'zone.media', 'media', 'employee', 'employee.media', 'employee.user'])->find($id);
 
         if ($workstation) {
             $workstation->master_criterias = MasterWorkstationCriteria::where('is_active', true)->orderBy('criteria_code')->get();
@@ -44,7 +44,7 @@ class WorkstationRepository extends BaseRepository implements WorkstationReposit
 
     public function findByEmployeeWithItems(string $employeeId): ?Workstation
     {
-        $workstation = $this->model->with(['items', 'zone', 'employee', 'employee.user'])
+        $workstation = $this->model->with(['items', 'zone', 'zone.media', 'media', 'employee', 'employee.media', 'employee.user'])
             ->where('employee_id', $employeeId)
             ->first();
 
