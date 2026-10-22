@@ -17,12 +17,10 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
     {
         $totalEmployees = Employee::where('is_active', true)->count();
 
-        // Hitung total hadir
         $presentCount = $this->model->whereDate('date', $date)
             ->where('status', 'present')
             ->count();
 
-        // Ambil data yang absen (sakit, cuti, dll)
         $absences = $this->model->whereDate('date', $date)
             ->where('status', '!=', 'present')
             ->with(['employee:id,name,namecode,user_id,position_title'])
@@ -32,9 +30,7 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
         $leaveCount = $absences->where('status', 'leave')->count();
         $businessTripCount = $absences->where('status', 'business_trip')->count();
 
-        // Format unavailable_today
         $unavailableToday = $absences->map(function ($attendance) {
-            // Map status to leave_type string literal expected by TS
             $leaveType = 'special_leave';
             if ($attendance->status === 'sick') {
                 $leaveType = 'sick_leave';
@@ -49,11 +45,10 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
                 'name' => $attendance->employee->name ?? $attendance->employee->namecode,
                 'position' => $attendance->employee->position_title ?? 'Staff',
                 'leave_type' => $leaveType,
-                'avatar_url' => $attendance->employee->getFirstMediaUrl('avatar') ? asset($attendance->employee->getFirstMediaUrl('avatar')) : null,
+                'avatar_url' => $attendance->employee->getFirstMediaUrl('avatar') ?: null,
             ];
         })->values()->toArray();
 
-        // Ambil semua data pegawai divisi dan urutkan berdasarkan hierarki
         $employees = Employee::with(['user:id,name', 'department:id,name'])
             ->where('is_active', true)
             ->orderBy('hierarchy_level', 'asc')
@@ -66,12 +61,12 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
             $attendance = $attendancesToday->get($emp->id);
 
             return [
-                'user_id' => $emp->id,  // Use employee ULID as lookup key (user_id is unused)
+                'user_id' => $emp->id,
                 'name' => $emp->name ?? $emp->namecode,
                 'role_label' => $emp->position_title ?? 'Staff',
                 'unit' => $emp->department->name ?? 'Divisi IIA',
                 'hierarchy_level' => $emp->hierarchy_level,
-                'avatar_url' => $emp->getFirstMediaUrl('avatar') ? asset($emp->getFirstMediaUrl('avatar')) : null,
+                'avatar_url' => $emp->getFirstMediaUrl('avatar') ?: null,
                 'today_status' => $attendance ? $attendance->status : null,
             ];
         })->values()->toArray();
