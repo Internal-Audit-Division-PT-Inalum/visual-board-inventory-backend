@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Items\Schemas;
 
+use App\Domains\Inventory\Models\Item;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
@@ -31,7 +32,10 @@ class ItemForm
                         'consumable' => 'Habis Pakai (Consumable)',
                         'asset' => 'Aset (Asset)',
                     ])
-                    ->required(),
+                    ->required()
+                    ->disabled(fn (?Item $record): bool => $record !== null && $record->ledgers()->exists())
+                    ->helperText(fn (?Item $record): ?string => ($record !== null && $record->ledgers()->exists()) ? 'Tipe barang dikunci karena sudah memiliki riwayat transaksi/ledger.' : null)
+                    ->dehydrated(fn (?Item $record): bool => ! ($record !== null && $record->ledgers()->exists())),
                 TextInput::make('unit')
                     ->label('Satuan')
                     ->required(),
@@ -39,7 +43,11 @@ class ItemForm
                     ->label('Stok Saat Ini')
                     ->required()
                     ->numeric()
-                    ->default(0),
+                    ->minValue(0)
+                    ->default(0)
+                    ->disabled(fn (string $operation): bool => $operation === 'edit')
+                    ->helperText(fn (string $operation): ?string => $operation === 'edit' ? 'Stok tidak dapat diubah langsung saat edit barang demi menjaga audit trail ledger. Gunakan aksi "Koreksi Stok" di tabel barang.' : 'Stok awal barang saat pertama kali didaftarkan.')
+                    ->dehydrated(fn (string $operation): bool => $operation !== 'edit'),
                 TextInput::make('minimum_stock')
                     ->label('Stok Minimum')
                     ->required()
