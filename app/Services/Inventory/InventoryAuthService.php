@@ -47,7 +47,7 @@ class InventoryAuthService
         $token = $employee->user->createToken(
             'inventory-pwa',
             ['inventory'],
-            now()->addDays(30)
+            now()->addDays(config('inventory.token_expiration_days', 30))
         );
 
         return [
