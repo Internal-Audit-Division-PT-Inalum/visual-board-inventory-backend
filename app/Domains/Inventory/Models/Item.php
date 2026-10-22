@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Item extends Model implements HasMedia
 {
@@ -50,5 +51,21 @@ class Item extends Model implements HasMedia
         return $this->belongsToMany(Workstation::class, 'workstation_items')
             ->withPivot('standard_quantity', 'actual_quantity')
             ->withTimestamps();
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('item_images')
+            ->singleFile()
+            ->useDisk('public');
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(400)
+            ->height(400)
+            ->format('webp')
+            ->nonQueued();
     }
 }

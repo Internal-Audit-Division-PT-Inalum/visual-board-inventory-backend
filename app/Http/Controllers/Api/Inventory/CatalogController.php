@@ -11,7 +11,7 @@ class CatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $items = Item::with('location')
+        $items = Item::with(['location', 'media'])
             ->where('is_active', true)
             ->get();
 

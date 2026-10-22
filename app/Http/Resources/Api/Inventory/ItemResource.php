@@ -20,6 +20,8 @@ class ItemResource extends JsonResource
             'is_low_stock' => $this->current_stock <= $this->minimum_stock,
             'description' => $this->description,
             'is_active' => $this->is_active,
+            'image_url' => $this->getFirstMediaUrl('item_images') ?: null,
+            'image_thumb_url' => $this->getFirstMediaUrl('item_images', 'thumb') ?: null,
             'location' => new LocationResource($this->whenLoaded('location')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

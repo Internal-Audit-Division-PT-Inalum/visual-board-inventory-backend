@@ -14,7 +14,7 @@ class KioskController extends Controller
     {
         $data = Cache::remember('inventory:kiosk:locations', now()->addMinutes(5), function () {
             $locations = Location::with(['items' => function ($query) {
-                $query->where('is_active', true);
+                $query->where('is_active', true)->with('media');
             }])->get();
 
             $assetIds = [];
