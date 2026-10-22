@@ -14,8 +14,11 @@ use App\Domains\Inventory\Models\Item;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class InventoryService
@@ -244,5 +247,68 @@ class InventoryService
             ->with(['user'])
             ->latest()
             ->paginate($perPage);
+    }
+
+    /**
+     * Koreksi stok fisik barang (Stock Opname) — B0.11
+     * WAJIB DB::transaction + lockForUpdate + alasan wajib + invalidasi cache kiosk.
+     */
+    public function adjustStock(Item|string $item, int $countedQuantity, string $reason, string $userId): InventoryLedger
+    {
+        $trimmedReason = trim($reason);
+        if ($trimmedReason === '') {
+            throw new InvalidArgumentException('Alasan koreksi stok wajib diisi.');
+        }
+
+        if ($countedQuantity < 0) {
+            throw new InvalidArgumentException('Jumlah fisik stok tidak boleh bernilai negatif.');
+        }
+
+        $itemId = $item instanceof Item ? $item->id : $item;
+
+        return DB::transaction(function () use ($itemId, $countedQuantity, $trimmedReason, $userId) {
+            $lockedItem = Item::where(function ($q) use ($itemId) {
+                $q->where('id', $itemId)->orWhere('sku', $itemId);
+            })->lockForUpdate()->first();
+
+            if (! $lockedItem) {
+                throw new NotFoundHttpException('Item tidak ditemukan.');
+            }
+
+            $stockBefore = (int) $lockedItem->current_stock;
+            $stockAfter = $countedQuantity;
+            $diff = $stockAfter - $stockBefore;
+
+            $lockedItem->update([
+                'current_stock' => $stockAfter,
+            ]);
+
+            $ledger = InventoryLedger::create([
+                'item_id' => $lockedItem->id,
+                'user_id' => $userId,
+                'type' => 'adjustment',
+                'quantity' => abs($diff),
+                'stock_before' => $stockBefore,
+                'stock_after' => $stockAfter,
+                'notes' => $trimmedReason,
+                'reference_number' => 'OPNAME-' . strtoupper(Str::random(6)),
+                'occurred_at' => now(),
+            ]);
+
+            // Invalidate kiosk cache
+            Cache::forget('inventory:kiosk:locations');
+
+            Log::info('Inventory: stock adjusted', [
+                'item_id' => $lockedItem->id,
+                'item_name' => $lockedItem->name,
+                'user_id' => $userId,
+                'stock_before' => $stockBefore,
+                'stock_after' => $stockAfter,
+                'diff' => $diff,
+                'reason' => $trimmedReason,
+            ]);
+
+            return $ledger;
+        });
     }
 }

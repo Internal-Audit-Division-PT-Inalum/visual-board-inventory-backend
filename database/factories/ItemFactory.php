@@ -29,6 +29,16 @@ class ItemFactory extends Factory
     }
 
     /**
+     * Create a consumable type item.
+     */
+    public function consumable(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => 'consumable',
+        ]);
+    }
+
+    /**
      * Create an asset type item.
      */
     public function asset(): static
