@@ -75,6 +75,13 @@ it('can fetch public kiosk locations with grouped items', function () {
         ->assertJsonPath('data.0.items.1.current_stock', 1)
         ->assertJsonPath('data.0.items.1.stock_status', 'low')
         ->assertJsonPath('data.0.items.1.borrowed_quantity', 1);
+
+    // Zero Network Data Leak verification: pastikan tidak ada data sensitif peminjam
+    $payloadString = json_encode($response->json());
+    expect($payloadString)->not->toContain('namecode')
+        ->not->toContain('pin')
+        ->not->toContain('employee_id')
+        ->not->toContain('user_id');
 });
 
 it('invalidates cache when item is saved', function () {
