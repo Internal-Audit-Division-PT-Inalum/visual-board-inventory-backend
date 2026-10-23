@@ -21,7 +21,9 @@ return [
 
     'allowed_origins' => array_values(array_filter(array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS', 'http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174'))))),
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => env('APP_ENV') === 'local' ? [
+        '#^http://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$#',
+    ] : [],
 
     'allowed_headers' => ['*'],
 
