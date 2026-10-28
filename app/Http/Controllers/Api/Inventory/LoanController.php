@@ -20,7 +20,7 @@ class LoanController extends Controller
             ], 403);
         }
 
-        $query = AssetLoan::with('item')
+        $query = AssetLoan::with(['item', 'returns'])
             ->where('employee_id', $user->employee->id)
             ->latest('borrowed_at');
 
