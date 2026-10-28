@@ -28,7 +28,7 @@ class LoanController extends Controller
             $query->whereNull('fully_returned_at');
         }
 
-        $loans = $query->paginate((int) $request->query('per_page', 100));
+        $loans = $query->paginate($request->integer('per_page', 100));
 
         return AssetLoanResource::collection($loans)->additional([
             'success' => true,
