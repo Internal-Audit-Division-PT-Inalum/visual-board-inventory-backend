@@ -3,6 +3,7 @@
 use App\Domains\Inventory\Exceptions\IdempotencyConflictException;
 use App\Domains\Inventory\Exceptions\InsufficientStockException;
 use App\Domains\Inventory\Exceptions\InvalidItemOperationException;
+use App\Domains\Inventory\Exceptions\LoanExceedsOutstandingException;
 use App\Domains\VisualBoard\Exceptions\ScheduleNotFoundException;
 use App\Domains\VisualBoard\Exceptions\UnauthorizedVerificationException;
 use App\Shared\Responses\ApiResponse;
@@ -115,6 +116,17 @@ return Application::configure(basePath: dirname(__DIR__))
                     [],
                     422,
                     ['code' => 'INVALID_OPERATION']
+                );
+            }
+        });
+
+        $exceptions->render(function (LoanExceedsOutstandingException $e, Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return ApiResponse::error(
+                    $e->getMessage(),
+                    [],
+                    422,
+                    ['code' => 'LOAN_EXCEEDS_OUTSTANDING']
                 );
             }
         });
