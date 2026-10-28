@@ -1,0 +1,75 @@
+name: Backend CI (Laravel Inventory & Visual Board)
+
+on:
+  push:
+    branches: [main, master, staging, develop]
+  pull_request:
+    branches: [main, master, staging, develop]
+
+jobs:
+  test:
+    name: Lint, Static Analysis & Pest Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: visual_board_inventory_db_testing
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Runtime & Extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, fileinfo, gd, intl, pdo, pgsql, pdo_pgsql, zip, bcmath, pcntl
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Prepare Environment File
+        run: |
+          cp .env.example .env.testing
+          php artisan key:generate --env=testing
+
+      - name: Run Database Migrations
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: visual_board_inventory_db_testing
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+        run: php artisan migrate --force --env=testing
+
+      - name: Run Full CI Pipeline (Pint, Larastan, Pest)
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: visual_board_inventory_db_testing
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+        run: composer run ci
