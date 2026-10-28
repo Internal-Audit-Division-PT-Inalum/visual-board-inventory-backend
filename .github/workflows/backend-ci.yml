@@ -33,7 +33,7 @@ jobs:
       - name: Setup PHP Runtime & Extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           extensions: mbstring, dom, fileinfo, gd, intl, pdo, pgsql, pdo_pgsql, zip, bcmath, pcntl
           coverage: none
           tools: composer:v2
@@ -52,6 +52,12 @@ jobs:
       - name: Prepare Environment File
         run: |
           cp .env.example .env.testing
+          sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=pgsql/' .env.testing
+          echo "DB_HOST=127.0.0.1" >> .env.testing
+          echo "DB_PORT=5432" >> .env.testing
+          echo "DB_DATABASE=visual_board_inventory_db_testing" >> .env.testing
+          echo "DB_USERNAME=postgres" >> .env.testing
+          echo "DB_PASSWORD=password" >> .env.testing
           php artisan key:generate --env=testing
 
       - name: Run Database Migrations
