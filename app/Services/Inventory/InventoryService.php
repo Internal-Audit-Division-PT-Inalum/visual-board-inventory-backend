@@ -244,8 +244,9 @@ class InventoryService
         $item = Item::where('id', $identifier)->orWhere('sku', $identifier)->firstOrFail();
 
         return InventoryLedger::where('item_id', $item->id)
-            ->with(['user'])
-            ->latest()
+            ->with(['user.employee'])
+            ->latest('occurred_at')
+            ->latest('id')
             ->paginate($perPage);
     }
 
