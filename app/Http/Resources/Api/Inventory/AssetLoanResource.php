@@ -26,6 +26,13 @@ class AssetLoanResource extends JsonResource
             'borrowed_at' => $this->borrowed_at,
             'fully_returned_at' => $this->fully_returned_at,
             'status' => $this->fully_returned_at ? 'returned' : 'borrowed',
+            'returns' => $this->whenLoaded('returns', fn () => $this->returns->map(fn ($ret) => [
+                'id' => $ret->id,
+                'asset_loan_id' => $ret->asset_loan_id,
+                'ledger_id' => $ret->ledger_id,
+                'quantity' => $ret->quantity,
+                'returned_at' => $ret->returned_at,
+            ])),
         ];
     }
 }
