@@ -172,8 +172,6 @@ class VisualBoardService
         } else {
             $resolutionGrade = 'D';
         }
-        // Atau jika hanya ingin zone yang punya jadwal:
-        // $zones = collect($zones)->filter(fn($z) => in_array($z->id, $uniqueZoneIds))->values()->all();
 
         Log::info('VisualBoard: Mengambil data kiosk', [
             'month' => $targetDate->format('Y-m'),
