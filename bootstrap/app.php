@@ -6,6 +6,7 @@ use App\Domains\Inventory\Exceptions\InvalidItemOperationException;
 use App\Domains\Inventory\Exceptions\LoanExceedsOutstandingException;
 use App\Domains\VisualBoard\Exceptions\ScheduleNotFoundException;
 use App\Domains\VisualBoard\Exceptions\UnauthorizedVerificationException;
+use App\Http\Middleware\EnsureDateHeader;
 use App\Shared\Responses\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -25,7 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->api(append: [
+            EnsureDateHeader::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
