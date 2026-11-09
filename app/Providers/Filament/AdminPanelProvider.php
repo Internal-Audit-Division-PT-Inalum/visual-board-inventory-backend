@@ -30,7 +30,10 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->emailVerification()
-            ->brandName('PT INALUM')
+            ->brandName('Internal Audit PT INALUM')
+            ->brandLogo(asset('images/inalum-logo.png'))
+            ->brandLogoHeight('2.25rem')
+            ->favicon(asset('favicon.ico?v=2'))
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
