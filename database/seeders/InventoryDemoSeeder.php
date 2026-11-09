@@ -377,10 +377,10 @@ class InventoryDemoSeeder extends Seeder
         ];
 
         foreach ($loansData as $lData) {
-            $item = $itemMap[$lData['sku']] ?? null;
-            $employee = $employeeMap[$lData['namecode']] ?? null;
+            $item = $itemMap[$lData['sku']];
+            $employee = $employeeMap[$lData['namecode']];
 
-            if (! $item || ! $employee || ! $employee->user_id) {
+            if (! $employee->user_id) {
                 continue;
             }
 
