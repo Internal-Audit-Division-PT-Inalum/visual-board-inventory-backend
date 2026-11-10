@@ -40,18 +40,24 @@ class EmployeesTable
                     ->label('Departemen')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('position_title')
+                TextColumn::make('position.name')
                     ->label('Jabatan')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->default(fn ($record) => $record->position_title),
                 TextColumn::make('hierarchy_level')
                     ->label('Level')
                     ->sortable()
                     ->badge()
+                    ->formatStateUsing(fn (int $state): string => "Level {$state}")
                     ->color(fn (int $state): string => match ($state) {
                         1 => 'danger',
                         2 => 'warning',
-                        3 => 'success',
-                        4 => 'info',
+                        3 => 'info',
+                        4 => 'primary',
+                        5 => 'secondary',
+                        6 => 'success',
+                        7 => 'gray',
                         default => 'gray',
                     }),
                 TextColumn::make('user.name')
