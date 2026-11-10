@@ -52,4 +52,3 @@ class PositionResource extends Resource
         ];
     }
 }
-

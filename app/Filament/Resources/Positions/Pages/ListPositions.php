@@ -17,4 +17,3 @@ class ListPositions extends ListRecords
         ];
     }
 }
-

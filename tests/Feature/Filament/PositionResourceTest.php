@@ -78,4 +78,3 @@ test('it can edit an existing position', function () {
     expect($position->fresh()->name)->toBe('Staff Baru Diperbarui')
         ->and($position->fresh()->hierarchy_level)->toBe(5);
 });
-

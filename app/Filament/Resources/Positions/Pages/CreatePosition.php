@@ -9,4 +9,3 @@ class CreatePosition extends CreateRecord
 {
     protected static string $resource = PositionResource::class;
 }
-
