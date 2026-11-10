@@ -19,6 +19,7 @@ class Employee extends Model implements HasMedia
     protected $fillable = [
         'user_id',
         'department_id',
+        'position_id',
         'employee_code',
         'name',
         'namecode',
@@ -55,9 +56,28 @@ class Employee extends Model implements HasMedia
         return $this->belongsTo(Department::class);
     }
 
+    public function position(): BelongsTo
+    {
+        return $this->belongsTo(Position::class);
+    }
+
     public function attendances(): HasMany
     {
         return $this->hasMany(EmployeeAttendance::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Employee $employee) {
+            if ($employee->isDirty('position_id') && $employee->position_id) {
+                $position = Position::find($employee->position_id);
+                if ($position) {
+                    $employee->position_title = $position->name;
+                    $employee->hierarchy_level = $position->hierarchy_level;
+                    $employee->setRelation('position', $position);
+                }
+            }
+        });
     }
 
     public function registerMediaCollections(): void
