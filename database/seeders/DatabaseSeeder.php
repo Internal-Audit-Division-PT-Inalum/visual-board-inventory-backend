@@ -34,5 +34,7 @@ class DatabaseSeeder extends Seeder
             $admin->assignRole($role);
         }
 
+        // 4. Seed Master Jabatan Baku 7 Tingkat Hierarki PT INALUM & Backfill Pegawai
+        $this->call(PositionSeeder::class);
     }
 }
