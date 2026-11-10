@@ -54,19 +54,19 @@ class InventoryService
      * Kembalikan barang asset.
      * WAJIB DB::transaction + lockForUpdate (GEMINI.md §2).
      */
-    public function returnItem(string $identifier, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null, ?string $clientUuid = null, ?string $occurredAt = null): InventoryLedger
+    public function returnItem(string $identifier, int $quantity, string $userId, ?string $notes = null, ?string $referenceNumber = null, ?string $clientUuid = null, ?string $occurredAt = null, ?string $employeeId = null): InventoryLedger
     {
-        return $this->processTransaction('return', 'asset', $identifier, $quantity, $userId, $notes, $referenceNumber, $clientUuid, $occurredAt);
+        return $this->processTransaction('return', 'asset', $identifier, $quantity, $userId, $notes, $referenceNumber, $clientUuid, $occurredAt, $employeeId);
     }
 
     /**
      * Helper to process transaction logic cleanly with idempotency check
      */
-    private function processTransaction(string $type, string $expectedItemType, string $identifier, int $quantity, string $userId, ?string $notes, ?string $referenceNumber, ?string $clientUuid, ?string $occurredAt): InventoryLedger
+    private function processTransaction(string $type, string $expectedItemType, string $identifier, int $quantity, string $userId, ?string $notes, ?string $referenceNumber, ?string $clientUuid, ?string $occurredAt, ?string $employeeId = null): InventoryLedger
     {
         Log::info('processTransaction', ['clientUuid' => $clientUuid]);
 
-        return DB::transaction(function () use ($type, $expectedItemType, $identifier, $quantity, $userId, $notes, $referenceNumber, $clientUuid, $occurredAt) {
+        return DB::transaction(function () use ($type, $expectedItemType, $identifier, $quantity, $userId, $notes, $referenceNumber, $clientUuid, $occurredAt, $employeeId) {
             // 1. Idempotency Check early
             if ($clientUuid) {
                 $existing = InventoryLedger::where('client_uuid', $clientUuid)->first();
@@ -101,15 +101,23 @@ class InventoryService
             $user = null;
             if (in_array($type, ['borrow', 'return'])) {
                 $user = User::with('employee')->find($userId);
-                if (! $user || ! $user->employee) {
+                if (! $user) {
+                    throw new InvalidItemOperationException('User tidak ditemukan.');
+                }
+                if (! $employeeId && ! $user->employee) {
                     throw new InvalidItemOperationException('Hanya pegawai yang dapat melakukan peminjaman/pengembalian.');
                 }
             }
 
             $openLoans = null;
             if ($type === 'return') {
+                $targetEmployeeId = $employeeId ?? $user?->employee?->id;
+                if (! $targetEmployeeId) {
+                    throw new InvalidItemOperationException('Hanya pegawai yang dapat melakukan peminjaman/pengembalian.');
+                }
+
                 $openLoans = AssetLoan::where('item_id', $item->id)
-                    ->where('employee_id', $user->employee->id)
+                    ->where('employee_id', $targetEmployeeId)
                     ->whereNull('fully_returned_at')
                     ->lockForUpdate()
                     ->orderBy('borrowed_at', 'asc')
@@ -171,9 +179,14 @@ class InventoryService
 
             // 5.5. Manage Asset Loans
             if ($type === 'borrow') {
+                $targetEmployeeId = $employeeId ?? $user?->employee?->id;
+                if (! $targetEmployeeId) {
+                    throw new InvalidItemOperationException('Hanya pegawai yang dapat melakukan peminjaman/pengembalian.');
+                }
+
                 AssetLoan::create([
                     'item_id' => $item->id,
-                    'employee_id' => $user->employee->id,
+                    'employee_id' => $targetEmployeeId,
                     'quantity' => $quantity,
                     'borrowed_at' => $occurredAt ? Carbon::parse($occurredAt) : now(),
                     'borrow_ledger_id' => $ledger->id,
