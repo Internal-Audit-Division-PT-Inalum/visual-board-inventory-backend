@@ -30,21 +30,33 @@ class AssetLoan extends Model
         'fully_returned_at' => 'datetime',
     ];
 
+    /**
+     * @return BelongsTo<Item, $this>
+     */
     public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
     }
 
+    /**
+     * @return BelongsTo<Employee, $this>
+     */
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
     }
 
+    /**
+     * @return BelongsTo<InventoryLedger, $this>
+     */
     public function borrowLedger(): BelongsTo
     {
         return $this->belongsTo(InventoryLedger::class, 'borrow_ledger_id');
     }
 
+    /**
+     * @return HasMany<AssetLoanReturn, $this>
+     */
     public function returns(): HasMany
     {
         return $this->hasMany(AssetLoanReturn::class);
