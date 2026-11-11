@@ -131,4 +131,3 @@ class CriticalStockAlertTableWidget extends BaseWidget
             ->defaultPaginationPageOption(5);
     }
 }
-

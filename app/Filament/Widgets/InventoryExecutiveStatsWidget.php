@@ -67,4 +67,3 @@ class InventoryExecutiveStatsWidget extends BaseWidget
         ];
     }
 }
-
