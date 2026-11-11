@@ -12,6 +12,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+/**
+ * @property string $id
+ * @property string|null $user_id
+ * @property string|null $department_id
+ * @property string|null $position_id
+ * @property string $name
+ * @property string $namecode
+ * @property-read User|null $user
+ */
 class Employee extends Model implements HasMedia
 {
     use HasFactory, HasUlid, InteractsWithMedia, SoftDeletes;
@@ -46,6 +55,9 @@ class Employee extends Model implements HasMedia
         'pin',
     ];
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
