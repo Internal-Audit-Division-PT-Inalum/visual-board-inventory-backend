@@ -11,7 +11,7 @@ class DashboardHeaderWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?int $sort = -3; // Highest priority to show at top
+    protected static ?int $sort = -4; // Highest priority to show at top
 
     public function getUserName(): string
     {
