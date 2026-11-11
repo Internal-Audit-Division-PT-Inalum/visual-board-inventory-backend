@@ -109,7 +109,7 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
             ->groupBy('pic_id')
             ->orderByDesc('kaizen_count')
             ->limit(3)
-            ->with('pic.department') // Asumsikan user (pic) memiliki relasi department, jika ada
+            ->with('pic.employee.department')
             ->get();
 
         $result = [];
@@ -119,8 +119,7 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
             if ($user) {
                 // Di sistem ini kita buat skor seolah kaizen_count * 15
                 $score = $champion->kaizen_count * 15;
-                // Untuk demo mock department jika relasi tidak ada
-                $department = $user->department?->name ?? 'Produksi';
+                $department = $user->employee?->department?->name ?? 'Produksi';
 
                 $result[] = [
                     'rank' => $rank++,
