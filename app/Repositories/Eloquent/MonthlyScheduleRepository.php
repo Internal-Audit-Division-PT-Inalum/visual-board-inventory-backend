@@ -13,6 +13,12 @@ class MonthlyScheduleRepository extends BaseRepository implements MonthlySchedul
         parent::__construct($model);
     }
 
+    public function findById(string $id): ?MonthlySchedule
+    {
+        /** @var MonthlySchedule|null */
+        return $this->model->find($id);
+    }
+
     public function findByZoneAndPeriod(string $zoneId, string $periodMonth): ?Model
     {
         return $this->model
