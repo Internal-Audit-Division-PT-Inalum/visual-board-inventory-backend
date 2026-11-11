@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'inventory_frontend_url' => env('INVENTORY_FRONTEND_URL', 'https://inventory.inalum.id'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
