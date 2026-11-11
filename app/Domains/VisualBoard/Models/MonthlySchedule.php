@@ -10,6 +10,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $id
+ * @property string $zone_id
+ * @property string $status
+ * @property array<string, mixed>|null $approval_data
+ * @property string|null $created_by
+ * @property-read Zone|null $zone
+ * @property-read User|null $creator
+ */
 class MonthlySchedule extends Model
 {
     use HasFactory, HasUlid, SoftDeletes;
@@ -27,21 +36,33 @@ class MonthlySchedule extends Model
         'approval_data' => 'array',
     ];
 
+    /**
+     * @return BelongsTo<Zone, $this>
+     */
     public function zone(): BelongsTo
     {
         return $this->belongsTo(Zone::class);
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * @return HasMany<ScheduleRecord, $this>
+     */
     public function scheduleRecords(): HasMany
     {
         return $this->hasMany(ScheduleRecord::class);
     }
 
+    /**
+     * @return HasMany<SchedulePic, $this>
+     */
     public function schedulePics(): HasMany
     {
         return $this->hasMany(SchedulePic::class);
