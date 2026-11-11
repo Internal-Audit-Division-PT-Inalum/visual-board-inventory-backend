@@ -18,9 +18,29 @@ class PendingMonthlySchedulesTable extends BaseWidget
 
     public function table(Table $table): Table
     {
+        $user = auth()->user();
+        $isSuperAdmin = $user?->hasRole('super_admin') ?? false;
+
         return $table
             ->query(
-                MonthlySchedule::query()->where('status', 'draft')
+                MonthlySchedule::query()
+                    ->where('status', 'draft')
+                    ->when(! $isSuperAdmin && $user, function ($q) use ($user) {
+                        $employeeId = $user->employee?->id;
+                        $q->where(function ($sub) use ($user, $employeeId) {
+                            $sub->where('created_by', $user->id)
+                                ->orWhereHas('schedulePics', function ($picQuery) use ($user) {
+                                    $picQuery->where('pic_id', $user->id);
+                                });
+
+                            if ($employeeId) {
+                                $sub->orWhereHas('zone', function ($zoneQuery) use ($employeeId) {
+                                    $zoneQuery->where('pic_utama_id', $employeeId)
+                                        ->orWhere('pic_pengganti_id', $employeeId);
+                                });
+                            }
+                        });
+                    })
             )
             ->columns([
                 Tables\Columns\TextColumn::make('zone.name')
