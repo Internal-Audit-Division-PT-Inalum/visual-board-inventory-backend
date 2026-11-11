@@ -4,8 +4,10 @@ namespace App\Filament\Resources\Items\Tables;
 
 use App\Domains\Core\Models\User;
 use App\Domains\Inventory\Models\Item;
+use App\Exports\StockOpnameExport;
 use App\Services\Inventory\InventoryService;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -21,7 +23,11 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ItemsTable
 {
@@ -92,6 +98,21 @@ class ItemsTable
                     ),
                 TrashedFilter::make(),
             ])
+            ->headerActions([
+                Action::make('export_stock_opname')
+                    ->label('Ekspor Form Stock Opname')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function (): BinaryFileResponse {
+                        $auditorName = auth()->user()->name ?? 'Auditor Internal';
+                        $filename = 'Berita_Acara_Stock_Opname_' . now()->format('Ymd_His') . '.xlsx';
+
+                        /** @var BinaryFileResponse $response */
+                        $response = Excel::download(new StockOpnameExport($auditorName), $filename);
+
+                        return $response;
+                    }),
+            ])
             ->recordActions([
                 Action::make('adjust_stock')
                     ->label('Koreksi Stok')
@@ -136,10 +157,25 @@ class ItemsTable
                             ->success()
                             ->send();
                     }),
+                Action::make('print_label')
+                    ->label('Cetak Label Aset')
+                    ->icon('heroicon-o-printer')
+                    ->color('info')
+                    ->url(fn (Item $record): string => route('filament.admin.print.items', ['ids' => $record->id]))
+                    ->openUrlInNewTab(),
                 EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('print_selected_labels')
+                        ->label('Cetak Label Terpilih')
+                        ->icon('heroicon-o-printer')
+                        ->color('info')
+                        ->action(function (Collection $records, Component $livewire): void {
+                            $ids = $records->pluck('id')->join(',');
+                            $url = route('filament.admin.print.items', ['ids' => $ids]);
+                            $livewire->js("window.open('{$url}', '_blank')");
+                        }),
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
