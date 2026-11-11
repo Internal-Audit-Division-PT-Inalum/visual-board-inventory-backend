@@ -79,40 +79,40 @@ class InventoryDemoSeeder extends Seeder
             ]);
         }
 
-        // 5. Akun Pegawai Khusus UAT & Demo (Short Namecode: MRA, RDY, BAM, SIT, AUD)
+        // 5. Akun Pegawai Khusus UAT & Demo (Numeric Namecode: 101001, 101002, 101003, 101004, 101005)
         $uatAuditors = [
             [
-                'namecode' => 'MRA',
+                'namecode' => '101001',
                 'name' => 'Muhammad Ridwan Auditor',
-                'email' => 'mra@inalum.id',
+                'email' => '101001@inalum.id',
                 'position_title' => 'Lead Auditor Operasional',
                 'hierarchy_level' => 2,
             ],
             [
-                'namecode' => 'RDY',
+                'namecode' => '101002',
                 'name' => 'Rudyanto',
-                'email' => 'rdy@inalum.id',
+                'email' => '101002@inalum.id',
                 'position_title' => 'Senior Auditor Fabrikasi',
                 'hierarchy_level' => 3,
             ],
             [
-                'namecode' => 'BAM',
+                'namecode' => '101003',
                 'name' => 'Bambang Setiawan',
-                'email' => 'bam@inalum.id',
+                'email' => '101003@inalum.id',
                 'position_title' => 'Staff Auditor Gudang & Logistik',
                 'hierarchy_level' => 4,
             ],
             [
-                'namecode' => 'SIT',
+                'namecode' => '101004',
                 'name' => 'Siti Fatimah',
-                'email' => 'sit@inalum.id',
+                'email' => '101004@inalum.id',
                 'position_title' => 'Staff Auditor Keuangan & IT',
                 'hierarchy_level' => 4,
             ],
             [
-                'namecode' => 'AUD',
+                'namecode' => '101005',
                 'name' => 'Auditor Demo / Training',
-                'email' => 'aud@inalum.id',
+                'email' => '101005@inalum.id',
                 'position_title' => 'Auditor Tamu UAT',
                 'hierarchy_level' => 5,
             ],
@@ -301,7 +301,7 @@ class InventoryDemoSeeder extends Seeder
         ];
 
         $itemMap = [];
-        $adminUser = User::where('email', 'mra@inalum.id')->first() ?? $superAdmin;
+        $adminUser = User::where('email', '101001@inalum.id')->first() ?? $superAdmin;
 
         foreach ($itemsData as $data) {
             $location = $locationMap[$data['location_code']];
@@ -341,35 +341,35 @@ class InventoryDemoSeeder extends Seeder
 
         // 8. Skenario Riwayat Pinjaman Berjalan (Asset Loans) & Uji Aging Dashboard
         $loansData = [
-            // Pinjaman 1: Laptop ThinkPad dipinjam MRA (Baru 1 hari, status Aman)
+            // Pinjaman 1: Laptop ThinkPad dipinjam 101001 (Baru 1 hari, status Aman)
             [
                 'sku' => 'AST-LPT-001',
-                'namecode' => 'MRA',
+                'namecode' => '101001',
                 'quantity' => 1,
                 'borrowed_at' => now()->subDay(),
                 'notes' => 'Pinjam untuk audit kepatuhan pengadaan Kuala Tanjung',
             ],
-            // Pinjaman 2: Laptop ThinkPad dipinjam RDY (5 hari lalu, Menjelang Jatuh Tempo)
+            // Pinjaman 2: Laptop ThinkPad dipinjam 101002 (5 hari lalu, Menjelang Jatuh Tempo)
             [
                 'sku' => 'AST-LPT-001',
-                'namecode' => 'RDY',
+                'namecode' => '101002',
                 'quantity' => 1,
                 'borrowed_at' => now()->subDays(5),
                 'notes' => 'Peminjaman audit stock opname logistik dermaga',
             ],
-            // Pinjaman 3: Proyektor Epson dipinjam BAM (9 hari lalu, OVERDUE > 7 hari)
+            // Pinjaman 3: Proyektor Epson dipinjam 101003 (9 hari lalu, OVERDUE > 7 hari)
             // Skenario penting: Memvalidasi badge merah "Terlambat Dikembalikan" di Dashboard PWA
             [
                 'sku' => 'AST-PRJ-001',
-                'namecode' => 'BAM',
+                'namecode' => '101003',
                 'quantity' => 1,
                 'borrowed_at' => now()->subDays(9),
                 'notes' => 'Peminjaman presentasi interim exit meeting pabrik',
             ],
-            // Pinjaman 4: Digital Multimeter dipinjam SIT (2 hari lalu, status Aman)
+            // Pinjaman 4: Digital Multimeter dipinjam 101004 (2 hari lalu, status Aman)
             [
                 'sku' => 'AST-MLT-001',
-                'namecode' => 'SIT',
+                'namecode' => '101004',
                 'quantity' => 1,
                 'borrowed_at' => now()->subDays(2),
                 'notes' => 'Pemeriksaan instrumen panel gardu induk PLTA Sigura-gura',
