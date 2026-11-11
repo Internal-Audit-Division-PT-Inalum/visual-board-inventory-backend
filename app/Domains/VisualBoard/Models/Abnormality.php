@@ -11,6 +11,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+/**
+ * @property string $id
+ * @property string $zone_id
+ * @property string|null $monthly_schedule_id
+ * @property string|null $inspection_criteria_id
+ * @property string $problem_description
+ * @property string|null $countermeasure_actual
+ * @property string|null $pic_id
+ * @property string|null $reported_by_id
+ * @property string $status
+ * @property int $progress_percentage
+ * @property string|null $verified_by_staff_id
+ * @property string|null $verified_by_ms_id
+ * @property-read Zone|null $zone
+ * @property-read MonthlySchedule|null $monthlySchedule
+ * @property-read InspectionCriteria|null $criteria
+ * @property-read User|null $pic
+ * @property-read User|null $reportedBy
+ * @property-read User|null $verifiedByStaff
+ * @property-read User|null $verifiedByMs
+ */
 class Abnormality extends Model implements HasMedia
 {
     use HasFactory, HasUlid, InteractsWithMedia, SoftDeletes;
@@ -54,36 +75,57 @@ class Abnormality extends Model implements HasMedia
         'verified_at_ms' => 'datetime',
     ];
 
+    /**
+     * @return BelongsTo<Zone, $this>
+     */
     public function zone(): BelongsTo
     {
         return $this->belongsTo(Zone::class);
     }
 
+    /**
+     * @return BelongsTo<MonthlySchedule, $this>
+     */
     public function monthlySchedule(): BelongsTo
     {
         return $this->belongsTo(MonthlySchedule::class);
     }
 
+    /**
+     * @return BelongsTo<InspectionCriteria, $this>
+     */
     public function criteria(): BelongsTo
     {
         return $this->belongsTo(InspectionCriteria::class, 'inspection_criteria_id');
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function pic(): BelongsTo
     {
         return $this->belongsTo(User::class, 'pic_id');
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function reportedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reported_by_id');
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function verifiedByStaff(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by_staff_id');
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function verifiedByMs(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by_ms_id');
