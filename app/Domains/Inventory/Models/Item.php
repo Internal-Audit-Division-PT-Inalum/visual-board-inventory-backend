@@ -14,6 +14,19 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property string $id
+ * @property string|null $location_id
+ * @property string $name
+ * @property string $sku
+ * @property string $type
+ * @property string $unit
+ * @property int $current_stock
+ * @property int $minimum_stock
+ * @property string|null $description
+ * @property bool $is_active
+ * @property-read Location|null $location
+ */
 class Item extends Model implements HasMedia
 {
     use HasFactory, HasUlid, InteractsWithMedia, SoftDeletes;
@@ -36,16 +49,25 @@ class Item extends Model implements HasMedia
         'minimum_stock' => 'integer',
     ];
 
+    /**
+     * @return BelongsTo<Location, $this>
+     */
     public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class);
     }
 
+    /**
+     * @return HasMany<InventoryLedger, $this>
+     */
     public function ledgers(): HasMany
     {
         return $this->hasMany(InventoryLedger::class);
     }
 
+    /**
+     * @return BelongsToMany<Workstation, $this>
+     */
     public function workstations(): BelongsToMany
     {
         return $this->belongsToMany(Workstation::class, 'workstation_items')
