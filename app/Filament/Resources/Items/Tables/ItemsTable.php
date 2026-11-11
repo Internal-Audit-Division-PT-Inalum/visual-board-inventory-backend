@@ -17,8 +17,10 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ItemsTable
@@ -78,6 +80,16 @@ class ItemsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                TernaryFilter::make('critical_stock')
+                    ->label('Kondisi Stok')
+                    ->placeholder('Semua Kondisi')
+                    ->trueLabel('Stok Kritis (<= Stok Minimum)')
+                    ->falseLabel('Stok Aman (> Stok Minimum)')
+                    ->queries(
+                        true: fn (Builder $query): Builder => $query->whereColumn('current_stock', '<=', 'minimum_stock'),
+                        false: fn (Builder $query): Builder => $query->whereColumn('current_stock', '>', 'minimum_stock'),
+                        blank: fn (Builder $query): Builder => $query,
+                    ),
                 TrashedFilter::make(),
             ])
             ->recordActions([
