@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $code
+ * @property string|null $description
+ * @property bool $is_active
+ */
 class Location extends Model
 {
     use HasFactory, HasUlid, SoftDeletes;
@@ -23,6 +30,9 @@ class Location extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * @return HasMany<Item, $this>
+     */
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
