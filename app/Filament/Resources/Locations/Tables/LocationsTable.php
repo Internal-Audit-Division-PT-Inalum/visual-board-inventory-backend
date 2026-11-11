@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Locations\Tables;
 
+use App\Domains\Inventory\Models\Location;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -11,6 +14,8 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
+use Livewire\Component;
 
 class LocationsTable
 {
@@ -56,10 +61,25 @@ class LocationsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                Action::make('print_sticker')
+                    ->label('Cetak Stiker Rak')
+                    ->icon('heroicon-o-printer')
+                    ->color('info')
+                    ->url(fn (Location $record): string => route('filament.admin.print.locations', ['ids' => $record->id]))
+                    ->openUrlInNewTab(),
                 EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('print_selected_stickers')
+                        ->label('Cetak Stiker Terpilih')
+                        ->icon('heroicon-o-printer')
+                        ->color('info')
+                        ->action(function (Collection $records, Component $livewire): void {
+                            $ids = $records->pluck('id')->join(',');
+                            $url = route('filament.admin.print.locations', ['ids' => $ids]);
+                            $livewire->js("window.open('{$url}', '_blank')");
+                        }),
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
