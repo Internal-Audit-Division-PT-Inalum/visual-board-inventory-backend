@@ -124,4 +124,3 @@ test('it hides return_asset action for users without admin privileges', function
     Livewire::test(ListAssetLoans::class)
         ->assertTableActionHidden('return_asset', $activeLoan);
 });
-
