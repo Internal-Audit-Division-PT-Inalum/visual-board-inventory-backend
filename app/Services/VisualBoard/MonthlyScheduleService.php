@@ -95,13 +95,34 @@ class MonthlyScheduleService
             'zone_id' => $record->zone_id,
         ]);
 
-        // Notifikasi ke pelaksana_5r saat jadwal di-approve oleh manager/VP (GEMINI.md §8A)
+        // Notifikasi ke penanggung jawab spesifik jadwal/zona (bukan broadcast kolektif seluruh role)
         if ($approvedLevel === 'manager' || $approvedLevel === 'vp') {
-            $pelaksana = User::role('pelaksana_5r')->get();
-            if ($pelaksana->isNotEmpty()) {
+            $recipients = collect();
+
+            if ($record->creator) {
+                $recipients->push($record->creator);
+            }
+
+            $schedulePicUsers = User::whereIn('id', $record->schedulePics()->pluck('pic_id'))->get();
+            $recipients = $recipients->merge($schedulePicUsers);
+
+            if ($record->zone) {
+                $zone = $record->zone;
+                $zone->loadMissing(['picUtama.user', 'picPengganti.user']);
+                if ($zone->picUtama?->user) {
+                    $recipients->push($zone->picUtama->user);
+                }
+                if ($zone->picPengganti?->user) {
+                    $recipients->push($zone->picPengganti->user);
+                }
+            }
+
+            $uniqueRecipients = $recipients->unique('id');
+
+            if ($uniqueRecipients->isNotEmpty()) {
                 Notification::make()
                     ->title('Jadwal Bulanan Telah Di-Approve')
-                    ->body('Jadwal baru untuk zona Anda sudah siap dieksekusi.')
+                    ->body("Jadwal untuk zona {$record->zone?->name} sudah di-approve dan siap dieksekusi.")
                     ->actions([
                         Action::make('view')
                             ->label('Lihat Jadwal')
@@ -109,7 +130,7 @@ class MonthlyScheduleService
                             ->url(MonthlyScheduleResource::getUrl('edit', ['record' => $record->id])),
                     ])
                     ->success()
-                    ->sendToDatabase($pelaksana);
+                    ->sendToDatabase($uniqueRecipients);
             }
         }
 
