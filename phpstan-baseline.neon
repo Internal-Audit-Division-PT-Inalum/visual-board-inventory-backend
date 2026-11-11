@@ -19,18 +19,6 @@ parameters:
 			path: app/Domains/VisualBoard/Notifications/NewAbnormalityNotification.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$picPengganti\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Domains/VisualBoard/Observers/AbnormalityObserver.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$picUtama\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Domains/VisualBoard/Observers/AbnormalityObserver.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -203,12 +191,6 @@ parameters:
 			identifier: argument.unresolvableType
 			count: 1
 			path: app/Http/Controllers/Api/Inventory/KioskController.php
-
-		-
-			message: '#^Access to an undefined property App\\Domains\\Core\\Models\\User\:\:\$employee\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Api/Inventory/LoanController.php
 
 		-
 			message: '#^Parameter \#2 \$errors of static method App\\Shared\\Responses\\ApiResponse\:\:error\(\) expects array, int given\.$#'
@@ -847,12 +829,6 @@ parameters:
 			path: app/Repositories/Eloquent/AbnormalityRepository.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/Eloquent/AbnormalityRepository.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 1
@@ -931,52 +907,10 @@ parameters:
 			path: app/Services/HR/EmployeeService.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:createToken\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Services/Inventory/InventoryAuthService.php
-
-		-
-			message: '#^Access to an undefined property App\\Domains\\Core\\Models\\User\:\:\$employee\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Services/Inventory/InventoryService.php
-
-		-
-			message: '#^Relation ''employee'' is not found in App\\Domains\\Core\\Models\\User model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: app/Services/Inventory/InventoryService.php
-
-		-
 			message: '#^Method App\\Services\\Portal\\BulletinService\:\:createBulletin\(\) should return App\\Domains\\Portal\\Models\\Bulletin but returns Illuminate\\Database\\Eloquent\\Model\.$#'
 			identifier: return.type
 			count: 1
 			path: app/Services/Portal/BulletinService.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$approval_data\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Services/VisualBoard/MonthlyScheduleService.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Services/VisualBoard/MonthlyScheduleService.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Services/VisualBoard/MonthlyScheduleService.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$zone_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Services/VisualBoard/MonthlyScheduleService.php
 
 		-
 			message: '#^Method App\\Services\\VisualBoard\\SchedulePicService\:\:assignPic\(\) should return App\\Domains\\VisualBoard\\Models\\SchedulePic but returns Illuminate\\Database\\Eloquent\\Model\.$#'
