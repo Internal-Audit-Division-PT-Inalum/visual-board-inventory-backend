@@ -8,11 +8,15 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @property-read Employee|null $employee
+ */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     public function canAccessPanel(Panel $panel): bool
@@ -45,7 +49,10 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         ];
     }
 
-    public function employee()
+    /**
+     * @return HasOne<Employee, $this>
+     */
+    public function employee(): HasOne
     {
         return $this->hasOne(Employee::class);
     }
