@@ -37,12 +37,33 @@ class AbnormalityService
             'status' => 'open',
         ]);
 
-        // Notifikasi ke semua staff penyelia & super admin
-        $recipients = User::role(['staff_penyelia', 'super_admin'])->get();
-        if ($recipients->isNotEmpty()) {
+        // Notifikasi ke penanggung jawab spesifik (bukan broadcast ke semua staff penyelia)
+        $recipients = collect();
+
+        if ($abnormality->pic) {
+            $recipients->push($abnormality->pic);
+        }
+
+        if ($abnormality->zone) {
+            $zone = $abnormality->zone;
+            $zone->loadMissing(['picUtama.user', 'picPengganti.user']);
+            if ($zone->picUtama?->user) {
+                $recipients->push($zone->picUtama->user);
+            }
+            if ($zone->picPengganti?->user) {
+                $recipients->push($zone->picPengganti->user);
+            }
+        }
+
+        $superAdmins = User::role('super_admin')->get();
+        $recipients = $recipients->merge($superAdmins);
+
+        $uniqueRecipients = $recipients->unique('id');
+
+        if ($uniqueRecipients->isNotEmpty()) {
             Notification::make()
                 ->title('Temuan 5R Baru')
-                ->body('Terdapat temuan abnormality baru yang perlu diperiksa.')
+                ->body("Terdapat temuan abnormality baru di area {$abnormality->zone?->name} yang perlu diperiksa.")
                 ->actions([
                     Action::make('view')
                         ->label('Lihat Detail')
@@ -50,7 +71,7 @@ class AbnormalityService
                         ->url(AbnormalityResource::getUrl('edit', ['record' => $abnormality->id])),
                 ])
                 ->success()
-                ->sendToDatabase($recipients);
+                ->sendToDatabase($uniqueRecipients);
         }
 
         return $abnormality;
@@ -190,13 +211,23 @@ class AbnormalityService
                 'level' => $isStaffVerification ? 'staff' : 'manager',
             ]);
 
-            // Notifikasi ke Managerial Staff & Super Admin jika diverifikasi oleh Staff Penyelia (eskalasi)
+            // Notifikasi ke penanggung jawab spesifik / atasan langsung saat diverifikasi staff (eskalasi)
             if ($isStaffVerification) {
-                $managers = User::role(['managerial_staff', 'super_admin'])->get();
-                if ($managers->isNotEmpty()) {
+                $managers = collect();
+
+                if ($record->pic && $record->pic->hasRole('managerial_staff')) {
+                    $managers->push($record->pic);
+                }
+
+                $superAdmins = User::role('super_admin')->get();
+                $managers = $managers->merge($superAdmins);
+
+                $uniqueManagers = $managers->unique('id');
+
+                if ($uniqueManagers->isNotEmpty()) {
                     Notification::make()
                         ->title('Temuan 5R Menunggu Verifikasi Manajer')
-                        ->body('Staff telah memverifikasi temuan. Menunggu verifikasi Anda.')
+                        ->body("Staff telah memverifikasi temuan di {$record->zone?->name}. Menunggu verifikasi Anda.")
                         ->actions([
                             Action::make('view')
                                 ->label('Lihat Detail')
@@ -204,7 +235,7 @@ class AbnormalityService
                                 ->url(AbnormalityResource::getUrl('edit', ['record' => $record->id])),
                         ])
                         ->info()
-                        ->sendToDatabase($managers);
+                        ->sendToDatabase($uniqueManagers);
                 }
             }
 
