@@ -9,9 +9,12 @@ use App\Filament\Resources\Positions\Pages\EditPosition;
 use App\Filament\Resources\Positions\Pages\ListPositions;
 use Database\Seeders\PositionSeeder;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
 
 test('authenticated user can view positions list page', function () {
+    $role = Role::firstOrCreate(['name' => 'super_admin']);
     $user = User::factory()->create(['email' => 'admin@inalum.id']);
+    $user->assignRole($role);
     $this->seed(PositionSeeder::class);
 
     $this->actingAs($user);
@@ -22,7 +25,9 @@ test('authenticated user can view positions list page', function () {
 });
 
 test('it can create a new position through filament form', function () {
+    $role = Role::firstOrCreate(['name' => 'super_admin']);
     $user = User::factory()->create(['email' => 'admin@inalum.id']);
+    $user->assignRole($role);
     $this->actingAs($user);
 
     Livewire::test(CreatePosition::class)
@@ -44,7 +49,9 @@ test('it can create a new position through filament form', function () {
 });
 
 test('it validates position name uniqueness and requirement', function () {
+    $role = Role::firstOrCreate(['name' => 'super_admin']);
     $user = User::factory()->create(['email' => 'admin@inalum.id']);
+    $user->assignRole($role);
     $this->actingAs($user);
 
     Position::factory()->create(['name' => 'Kepala Divisi']);
@@ -59,7 +66,9 @@ test('it validates position name uniqueness and requirement', function () {
 });
 
 test('it can edit an existing position', function () {
+    $role = Role::firstOrCreate(['name' => 'super_admin']);
     $user = User::factory()->create(['email' => 'admin@inalum.id']);
+    $user->assignRole($role);
     $this->actingAs($user);
 
     $position = Position::factory()->create([

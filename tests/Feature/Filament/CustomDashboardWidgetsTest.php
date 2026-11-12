@@ -15,43 +15,40 @@ use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-    Role::firstOrCreate(['name' => 'inventory_admin', 'guard_name' => 'web']);
 });
 
 test('inventory executive stats widget displays accurate database metrics and links', function () {
     $admin = User::factory()->create();
     $admin->assignRole('super_admin');
 
-    // Items
     Item::factory()->create([
         'is_active' => true,
         'current_stock' => 1,
         'minimum_stock' => 5,
-    ]); // Critical
+    ]);
 
     Item::factory()->create([
         'is_active' => true,
         'current_stock' => 10,
         'minimum_stock' => 5,
-    ]); // Safe
+    ]);
 
     Item::factory()->create([
         'is_active' => false,
         'current_stock' => 0,
         'minimum_stock' => 5,
-    ]); // Inactive
+    ]);
 
-    // Loans
     AssetLoan::factory()->create([
         'quantity' => 5,
-        'returned_quantity' => 2, // remaining = 3
+        'returned_quantity' => 2,
         'borrowed_at' => now()->subDays(2),
         'fully_returned_at' => null,
     ]);
 
     AssetLoan::factory()->overdue()->create([
         'quantity' => 4,
-        'returned_quantity' => 1, // remaining = 3
+        'returned_quantity' => 1,
         'borrowed_at' => now()->subDays(10),
         'fully_returned_at' => null,
     ]);
@@ -120,7 +117,7 @@ test('critical stock alert table widget displays low stock items and excludes sa
 
 test('critical stock alert table widget allows authorized admin to adjust stock with audit trail', function () {
     $admin = User::factory()->create();
-    $admin->assignRole('inventory_admin');
+    $admin->assignRole('super_admin');
 
     $item = Item::factory()->create([
         'name' => 'Harddisk Eksternal 2TB',

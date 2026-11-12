@@ -28,7 +28,6 @@ class ExportReportsTest extends TestCase
         parent::setUp();
 
         Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'inventory_admin', 'guard_name' => 'web']);
 
         $this->adminUser = User::factory()->create([
             'name' => 'Auditor Senior Inalum',
@@ -77,16 +76,15 @@ class ExportReportsTest extends TestCase
         $mapped = $export->map($firstItem);
 
         $this->assertEquals(1, $mapped[0]); // No
-        $this->assertEquals($firstItem->sku, $mapped[1]); // SKU
-        $this->assertEquals($firstItem->name, $mapped[2]); // Name
-        $this->assertStringContainsString('H6-G6', $mapped[8]); // Formula selisih
+        $this->assertEquals($firstItem->sku, $mapped[1]);
+        $this->assertEquals($firstItem->name, $mapped[2]);
+        $this->assertStringContainsString('H6-G6', $mapped[8]);
     }
 
     public function test_inventory_ledger_export_filters_by_date_and_type(): void
     {
         $item = Item::factory()->create(['name' => 'Kertas A4 Sinar Dunia', 'sku' => 'ATK-KRT-001']);
 
-        // Transaksi 1: Kemarin (in)
         InventoryLedger::factory()->create([
             'item_id' => $item->id,
             'user_id' => $this->adminUser->id,
@@ -97,7 +95,6 @@ class ExportReportsTest extends TestCase
             'occurred_at' => now()->subDay(),
         ]);
 
-        // Transaksi 2: Hari ini (borrow)
         InventoryLedger::factory()->create([
             'item_id' => $item->id,
             'user_id' => $this->adminUser->id,
@@ -108,7 +105,6 @@ class ExportReportsTest extends TestCase
             'occurred_at' => now(),
         ]);
 
-        // Transaksi 3: 10 hari lalu (adjustment)
         InventoryLedger::factory()->create([
             'item_id' => $item->id,
             'user_id' => $this->adminUser->id,
@@ -119,19 +115,16 @@ class ExportReportsTest extends TestCase
             'occurred_at' => now()->subDays(10),
         ]);
 
-        // Test filter type 'borrow'
         $exportBorrow = new InventoryLedgerExport(type: 'borrow');
         $this->assertCount(1, $exportBorrow->collection());
         $this->assertEquals('borrow', $exportBorrow->collection()->first()?->type);
 
-        // Test filter date range (3 hari terakhir)
         $exportRecent = new InventoryLedgerExport(
             startDate: now()->subDays(2)->format('Y-m-d'),
             endDate: now()->addDay()->format('Y-m-d'),
         );
         $this->assertCount(2, $exportRecent->collection());
 
-        // Test map output
         $mapped = $exportBorrow->map($exportBorrow->collection()->first());
         $this->assertEquals(1, $mapped[0]);
         $this->assertEquals('Peminjaman (Borrow)', $mapped[5]);

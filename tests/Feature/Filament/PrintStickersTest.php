@@ -13,7 +13,6 @@ use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-    Role::firstOrCreate(['name' => 'inventory_admin', 'guard_name' => 'web']);
 });
 
 test('unauthenticated user cannot access sticker print routes', function () {
@@ -62,7 +61,6 @@ test('authorized user can view rack location qr sticker print page with single a
 
     $this->actingAs($admin);
 
-    // Single print
     $this->get(route('filament.admin.print.locations', ['ids' => $locA->id]))
         ->assertOk()
         ->assertViewIs('filament.print.location-qr-sticker')
@@ -71,7 +69,6 @@ test('authorized user can view rack location qr sticker print page with single a
         ->assertSee('PT INALUM')
         ->assertSee('<svg', false);
 
-    // Bulk print
     $this->get(route('filament.admin.print.locations', ['ids' => "{$locA->id},{$locB->id}"]))
         ->assertOk()
         ->assertSee('RAK-ARSIP-01')
@@ -81,7 +78,7 @@ test('authorized user can view rack location qr sticker print page with single a
 
 test('authorized user can view item asset qr sticker print page with single and bulk records', function () {
     $admin = User::factory()->create();
-    $admin->assignRole('inventory_admin');
+    $admin->assignRole('super_admin');
 
     $itemA = Item::factory()->create([
         'name' => 'Multimeter Digital Fluke',
@@ -95,7 +92,6 @@ test('authorized user can view item asset qr sticker print page with single and 
 
     $this->actingAs($admin);
 
-    // Single print
     $this->get(route('filament.admin.print.items', ['ids' => $itemA->id]))
         ->assertOk()
         ->assertViewIs('filament.print.item-qr-sticker')
@@ -103,7 +99,6 @@ test('authorized user can view item asset qr sticker print page with single and 
         ->assertSee('PROPERTY OF PT INALUM')
         ->assertSee('<svg', false);
 
-    // Bulk print
     $this->get(route('filament.admin.print.items', ['ids' => "{$itemA->id},{$itemB->id}"]))
         ->assertOk()
         ->assertSee('TOOL-FLK-001')

@@ -20,7 +20,7 @@ beforeEach(function () {
     $this->service = app(InventoryService::class);
 
     Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-    Role::firstOrCreate(['name' => 'inventory_admin', 'guard_name' => 'web']);
+    Role::firstOrCreate(['name' => 'pelaksana_5r', 'guard_name' => 'web']);
 });
 
 it('increases stock and records adjustment ledger on surplus', function () {
@@ -160,7 +160,6 @@ it('creates initial stock ledger on item registration when current_stock > 0', f
         'is_active' => true,
     ]);
 
-    // Test CreateItem afterCreate hook behavior
     $page = new CreateItem;
     $refProperty = new ReflectionProperty($page, 'record');
     $refProperty->setValue($page, $item);
@@ -200,17 +199,17 @@ it('verifies ItemForm locking logic for edit operation and ledger presence', fun
     expect($typeDisabledClosure($itemWithLedger))->toBeTrue();
 });
 
-it('verifies adjust_stock action visibility is restricted to inventory_admin and super_admin', function () {
+it('verifies adjust_stock action visibility is restricted to super_admin', function () {
     $regularUser = User::factory()->create();
-    $adminUser = User::factory()->create();
-    $adminUser->assignRole('inventory_admin');
+    $pelaksanaUser = User::factory()->create();
+    $pelaksanaUser->assignRole('pelaksana_5r');
     $superAdminUser = User::factory()->create();
     $superAdminUser->assignRole('super_admin');
 
-    $visibilityClosure = fn ($user): bool => $user?->hasAnyRole(['inventory_admin', 'super_admin']) ?? false;
+    $visibilityClosure = fn ($user): bool => $user?->hasRole('super_admin') ?? false;
 
     expect($visibilityClosure($regularUser))->toBeFalse();
-    expect($visibilityClosure($adminUser))->toBeTrue();
+    expect($visibilityClosure($pelaksanaUser))->toBeFalse();
     expect($visibilityClosure($superAdminUser))->toBeTrue();
 });
 

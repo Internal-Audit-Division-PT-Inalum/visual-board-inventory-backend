@@ -9,6 +9,7 @@ use App\Domains\Inventory\Models\InventoryLedger;
 use App\Domains\Inventory\Models\Item;
 use App\Filament\Resources\AssetLoans\Pages\ListAssetLoans;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 test('inventory admin can process manual asset return through filament table action', function () {
@@ -39,15 +40,12 @@ test('inventory admin can process manual asset return through filament table act
         ])
         ->assertHasNoTableActionErrors();
 
-    // Verifikasi penambahan stok fisik barang
     expect($item->fresh()->current_stock)->toBe(6);
 
-    // Verifikasi pembaruan data pinjaman
     $freshLoan = $loan->fresh();
     expect($freshLoan->returned_quantity)->toBe(1)
         ->and($freshLoan->fully_returned_at)->toBeNull();
 
-    // Verifikasi pencatatan buku besar inventaris
     $ledger = InventoryLedger::where('item_id', $item->id)
         ->where('type', 'return')
         ->latest('created_at')
@@ -59,7 +57,6 @@ test('inventory admin can process manual asset return through filament table act
         ->and($ledger->stock_before)->toBe(5)
         ->and($ledger->stock_after)->toBe(6);
 
-    // Verifikasi pencatatan lini masa pengembalian
     $returnRecord = AssetLoanReturn::where('asset_loan_id', $loan->id)->first();
     expect($returnRecord)->not->toBeNull()
         ->and($returnRecord->quantity)->toBe(1)
@@ -110,8 +107,13 @@ test('it hides return_asset action when loan is already settled', function () {
 });
 
 test('it hides return_asset action for users without admin privileges', function () {
-    // User tanpa role inventory_admin atau super_admin
+    $managerialRole = Role::firstOrCreate(['name' => 'managerial_staff', 'guard_name' => 'web']);
+    $viewAnyPerm = Permission::firstOrCreate(['name' => 'ViewAny:AssetLoan', 'guard_name' => 'web']);
+    $viewPerm = Permission::firstOrCreate(['name' => 'View:AssetLoan', 'guard_name' => 'web']);
+    $managerialRole->syncPermissions([$viewAnyPerm, $viewPerm]);
+
     $regularUser = User::factory()->create(['email' => 'auditor@inalum.id']);
+    $regularUser->assignRole($managerialRole);
 
     $activeLoan = AssetLoan::factory()->create([
         'quantity' => 2,
