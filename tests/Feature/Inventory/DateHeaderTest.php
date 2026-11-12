@@ -9,6 +9,5 @@ test('api responses always contain rfc 7231 date header for client clock skew co
     expect($dateHeader)->not->toBeNull();
     $timestamp = strtotime($dateHeader);
     expect($timestamp)->not->toBeFalse();
-    // Header Date harus mendekati waktu sistem saat ini (+/- 5 detik)
     expect(abs(time() - $timestamp))->toBeLessThanOrEqual(5);
 });

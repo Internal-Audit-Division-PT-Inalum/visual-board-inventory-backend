@@ -21,14 +21,12 @@ it('can fetch active catalog items with borrowed quantities', function () {
         'is_active' => true,
     ]);
 
-    // Borrow 3
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/borrow", [
             'quantity' => 3,
             'client_uuid' => Str::uuid()->toString(),
         ])->assertStatus(201);
 
-    // Fetch catalog
     $response = $this->actingAs($this->user)
         ->getJson('/api/v1/inventory/catalog')
         ->assertOk()

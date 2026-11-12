@@ -37,13 +37,11 @@ it('can fetch public kiosk locations with grouped items', function () {
         'is_active' => true,
     ]);
 
-    // Create inactive item to ensure it's not fetched
     Item::factory()->create([
         'location_id' => $location->id,
         'is_active' => false,
     ]);
 
-    // Borrow 1 from item2
     $user = User::factory()->create();
     Employee::factory()->create(['user_id' => $user->id]);
 
@@ -53,9 +51,6 @@ it('can fetch public kiosk locations with grouped items', function () {
             'client_uuid' => Str::uuid()->toString(),
         ])->assertStatus(201);
 
-    // Invalidate cache explicitly just in case test logic didn't trigger observers cleanly
-    // actually, ItemObserver will trigger during borrow via `update(['current_stock' => ...])`
-
     $response = $this->getJson('/api/v1/inventory/kiosk/locations')
         ->assertOk()
         ->assertJsonPath('success', true)
@@ -63,20 +58,17 @@ it('can fetch public kiosk locations with grouped items', function () {
         ->assertJsonPath('data.0.name', 'Kiosk Location')
         ->assertJsonCount(2, 'data.0.items');
 
-    // Consumable checks
     $response->assertJsonPath('data.0.items.0.name', 'Kertas A4')
         ->assertJsonPath('data.0.items.0.type', 'consumable')
         ->assertJsonPath('data.0.items.0.stock_status', 'ok')
         ->assertJsonPath('data.0.items.0.borrowed_quantity', null);
 
-    // Asset checks
     $response->assertJsonPath('data.0.items.1.name', 'Proyektor')
         ->assertJsonPath('data.0.items.1.type', 'asset')
         ->assertJsonPath('data.0.items.1.current_stock', 1)
         ->assertJsonPath('data.0.items.1.stock_status', 'low')
         ->assertJsonPath('data.0.items.1.borrowed_quantity', 1);
 
-    // Zero Network Data Leak verification: pastikan tidak ada data sensitif peminjam
     $payloadString = json_encode($response->json());
     expect($payloadString)->not->toContain('namecode')
         ->not->toContain('pin')
@@ -88,17 +80,14 @@ it('invalidates cache when item is saved', function () {
     $location = Location::factory()->create();
     Item::factory()->create(['location_id' => $location->id, 'is_active' => true, 'name' => 'Initial Name']);
 
-    // Fetch once to prime cache
     $this->getJson('/api/v1/inventory/kiosk/locations')
         ->assertOk()
         ->assertJsonPath('data.0.items.0.name', 'Initial Name');
 
-    // Update item
     $item = Item::first();
     $item->name = 'Updated Name';
-    $item->save(); // Should trigger observer
+    $item->save();
 
-    // Fetch again
     $this->getJson('/api/v1/inventory/kiosk/locations')
         ->assertOk()
         ->assertJsonPath('data.0.items.0.name', 'Updated Name');

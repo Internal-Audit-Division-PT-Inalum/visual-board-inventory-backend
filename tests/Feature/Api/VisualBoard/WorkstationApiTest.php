@@ -31,7 +31,6 @@ it('can fetch workstation list', function () {
 it('can fetch single workstation data for kiosk scanner', function () {
     $workstation = Workstation::factory()->create(['zone_id' => $this->zone->id]);
 
-    // Assign standard ATK
     $location = Location::factory()->create();
     $item = Item::factory()->create(['location_id' => $location->id]);
     $workstation->items()->attach($item->id, ['standard_quantity' => 2]);

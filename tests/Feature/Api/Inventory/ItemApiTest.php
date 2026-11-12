@@ -14,10 +14,6 @@ beforeEach(function () {
     $this->location = Location::factory()->create();
 });
 
-// ────────────────────────────────────────────────────────
-// CRUD
-// ────────────────────────────────────────────────────────
-
 it('can list items with pagination', function () {
     Item::factory()->count(3)->create(['location_id' => $this->location->id]);
 
@@ -74,10 +70,6 @@ it('can delete an item', function () {
     $this->assertSoftDeleted('items', ['id' => $item->id]);
 });
 
-// ────────────────────────────────────────────────────────
-// CONSUMABLE: Take & Add
-// ────────────────────────────────────────────────────────
-
 it('can take a consumable item and ledger is recorded', function () {
     $item = Item::factory()->create([
         'location_id' => $this->location->id,
@@ -116,7 +108,6 @@ it('rejects take when stock is insufficient', function () {
         ->assertStatus(422)
         ->assertJsonPath('success', false);
 
-    // Stok tidak berubah
     $this->assertDatabaseHas('items', ['id' => $item->id, 'current_stock' => 3]);
 });
 
@@ -138,10 +129,6 @@ it('can add stock to a consumable item', function () {
 
     $this->assertDatabaseHas('items', ['id' => $item->id, 'current_stock' => 30]);
 });
-
-// ────────────────────────────────────────────────────────
-// ASSET: Borrow & Return
-// ────────────────────────────────────────────────────────
 
 it('can borrow an asset item', function () {
     $item = Item::factory()->asset()->create([
@@ -168,7 +155,6 @@ it('can return a borrowed asset', function () {
         'current_stock' => 5,
     ]);
 
-    // Borrow it first
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/borrow", [
             'quantity' => 2,
@@ -176,7 +162,6 @@ it('can return a borrowed asset', function () {
         ])
         ->assertStatus(201);
 
-    // Now return it
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/return", [
             'quantity' => 2,
@@ -188,10 +173,6 @@ it('can return a borrowed asset', function () {
 
     $this->assertDatabaseHas('items', ['id' => $item->id, 'current_stock' => 5]);
 });
-
-// ────────────────────────────────────────────────────────
-// TYPE ENFORCEMENT: Asset vs Consumable
-// ────────────────────────────────────────────────────────
 
 it('rejects take on asset item', function () {
     $item = Item::factory()->asset()->create([
@@ -224,10 +205,6 @@ it('rejects borrow on consumable item', function () {
         ->assertJsonPath('success', false);
 });
 
-// ────────────────────────────────────────────────────────
-// RACE CONDITION: Stock never goes negative
-// ────────────────────────────────────────────────────────
-
 it('prevents stock from going negative with sequential takes', function () {
     $item = Item::factory()->create([
         'location_id' => $this->location->id,
@@ -235,7 +212,6 @@ it('prevents stock from going negative with sequential takes', function () {
         'current_stock' => 5,
     ]);
 
-    // Take 3 → success (stock: 5 → 2)
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
             'quantity' => 3,
@@ -243,7 +219,6 @@ it('prevents stock from going negative with sequential takes', function () {
         ])
         ->assertStatus(201);
 
-    // Take 3 lagi → fail (stock: 2, diminta: 3)
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
             'quantity' => 3,
@@ -251,15 +226,10 @@ it('prevents stock from going negative with sequential takes', function () {
         ])
         ->assertStatus(422);
 
-    // Verifikasi stok tidak pernah minus
     $item->refresh();
     expect($item->current_stock)->toBeGreaterThanOrEqual(0);
     expect($item->current_stock)->toBe(2);
 });
-
-// ────────────────────────────────────────────────────────
-// IDEMPOTENCY
-// ────────────────────────────────────────────────────────
 
 it('returns replayed response for identical client_uuid and user', function () {
     $item = Item::factory()->create([
@@ -270,7 +240,6 @@ it('returns replayed response for identical client_uuid and user', function () {
 
     $clientUuid = Str::uuid()->toString();
 
-    // Request 1
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
             'quantity' => 5,
@@ -279,20 +248,17 @@ it('returns replayed response for identical client_uuid and user', function () {
         ->assertStatus(201)
         ->assertJsonPath('meta.replayed', false);
 
-    // Stok berkurang
     $this->assertDatabaseHas('items', ['id' => $item->id, 'current_stock' => 15]);
 
-    // Request 2 (replay)
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
-            'quantity' => 5, // Even if params differ, it's ignored based on UUID
+            'quantity' => 5,
             'client_uuid' => $clientUuid,
         ])
         ->assertStatus(200)
         ->assertJsonPath('meta.replayed', true)
         ->assertJsonPath('data.client_uuid', $clientUuid);
 
-    // Stok tidak berkurang lagi
     $this->assertDatabaseHas('items', ['id' => $item->id, 'current_stock' => 15]);
 });
 
@@ -305,7 +271,6 @@ it('returns 409 conflict if identical client_uuid used by different user', funct
 
     $clientUuid = Str::uuid()->toString();
 
-    // Request 1 by User A
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
             'quantity' => 5,
@@ -313,7 +278,6 @@ it('returns 409 conflict if identical client_uuid used by different user', funct
         ])
         ->assertStatus(201);
 
-    // Request 2 by User B
     $userB = User::factory()->create();
     $this->actingAs($userB)
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
@@ -324,10 +288,6 @@ it('returns 409 conflict if identical client_uuid used by different user', funct
         ->assertJsonPath('meta.code', 'IDEMPOTENCY_CONFLICT');
 });
 
-// ────────────────────────────────────────────────────────
-// LEDGER HISTORY
-// ────────────────────────────────────────────────────────
-
 it('can fetch ledger history for an item', function () {
     $item = Item::factory()->create([
         'location_id' => $this->location->id,
@@ -335,7 +295,6 @@ it('can fetch ledger history for an item', function () {
         'current_stock' => 50,
     ]);
 
-    // Buat beberapa transaksi
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/take", [
             'quantity' => 5,
@@ -352,10 +311,6 @@ it('can fetch ledger history for an item', function () {
         ->assertOk()
         ->assertJsonCount(2, 'data');
 });
-
-// ────────────────────────────────────────────────────────
-// AUTH
-// ────────────────────────────────────────────────────────
 
 it('prevents unauthenticated access to items', function () {
     $this->getJson('/api/v1/inventory/items')

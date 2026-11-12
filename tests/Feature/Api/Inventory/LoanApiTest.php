@@ -20,7 +20,6 @@ it('can fetch open loans by default', function () {
         'current_stock' => 10,
     ]);
 
-    // Borrow item
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/borrow", [
             'quantity' => 2,
@@ -41,27 +40,23 @@ it('can fetch all loans including returned ones', function () {
         'current_stock' => 10,
     ]);
 
-    // Borrow item
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/borrow", [
             'quantity' => 2,
             'client_uuid' => Str::uuid()->toString(),
         ])->assertStatus(201);
 
-    // Return item fully
     $this->actingAs($this->user)
         ->postJson("/api/v1/inventory/items/{$item->id}/return", [
             'quantity' => 2,
             'client_uuid' => Str::uuid()->toString(),
         ])->assertStatus(201);
 
-    // Open loans should be 0
     $this->actingAs($this->user)
         ->getJson('/api/v1/inventory/loans/mine')
         ->assertOk()
         ->assertJsonCount(0, 'data');
 
-    // All loans should be 1
     $this->actingAs($this->user)
         ->getJson('/api/v1/inventory/loans/mine?status=all')
         ->assertOk()
