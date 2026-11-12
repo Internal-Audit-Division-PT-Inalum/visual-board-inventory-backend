@@ -31,7 +31,6 @@ class AttendanceService
 
         $today = now()->format('Y-m-d');
 
-        // Cek apakah sudah absen hari ini
         $alreadyScanned = $employee->attendances()->whereDate('date', $today)->exists();
 
         if ($alreadyScanned) {
