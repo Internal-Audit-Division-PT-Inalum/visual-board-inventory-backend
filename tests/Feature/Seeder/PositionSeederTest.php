@@ -76,14 +76,12 @@ test('it backfills existing unlinked employees to correct positions based on tit
         'hierarchy_level' => 5,
     ]);
 
-    // Jalankan seeder
     $this->seed(PositionSeeder::class);
 
     $empDivisi->refresh();
     $empStaff->refresh();
     $empAdmin->refresh();
 
-    // Verifikasi penautan position_id dan penyelarasan level baru
     expect($empDivisi->position_id)->not->toBeNull()
         ->and($empDivisi->position->name)->toBe('Kepala Divisi')
         ->and($empDivisi->hierarchy_level)->toBe(3)

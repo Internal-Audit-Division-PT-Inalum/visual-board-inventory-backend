@@ -16,7 +16,4 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
  * @property MonthlySchedule $schedule
  * @property ScheduleRecord $record
  */
-abstract class TestCase extends BaseTestCase
-{
-    //
-}
+abstract class TestCase extends BaseTestCase {}

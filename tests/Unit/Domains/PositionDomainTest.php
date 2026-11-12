@@ -94,7 +94,6 @@ test('it automatically synchronizes position_title and hierarchy_level when posi
         'name' => 'Rahmat Hidayat',
     ]);
 
-    // Refresh from database to verify persistence of synchronized fields
     $employee->refresh();
 
     expect($employee->position_title)->toBe('Kepala Seksi')
@@ -128,7 +127,6 @@ test('it automatically updates position_title and hierarchy_level when employee 
     expect($employee->position_title)->toBe('Staff')
         ->and($employee->hierarchy_level)->toBe(6);
 
-    // Promote to Kepala Departemen
     $employee->update(['position_id' => $posManager->id]);
     $employee->refresh();
 
