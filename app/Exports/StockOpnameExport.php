@@ -97,9 +97,9 @@ class StockOpnameExport implements FromCollection, ShouldAutoSize, WithCustomSta
             $item->location->name ?? '-',
             $item->unit,
             (int) $item->current_stock,
-            '', // Kolom hitung fisik diisi saat stock opname manual di lapangan
-            '=IF(ISBLANK(H' . $excelRow . '),"",H' . $excelRow . '-G' . $excelRow . ')', // Formula selisih otomatis
-            '', // Catatan auditor
+            '',
+            '=IF(ISBLANK(H' . $excelRow . '),"",H' . $excelRow . '-G' . $excelRow . ')',
+            '',
         ];
     }
 
@@ -114,7 +114,6 @@ class StockOpnameExport implements FromCollection, ShouldAutoSize, WithCustomSta
                 $totalDataRows = $this->rowNumber;
                 $lastDataRow = 5 + $totalDataRows;
 
-                // --- 1. Header Surat Berita Acara (Baris 1 - 3) ---
                 $sheet->mergeCells('A1:J1');
                 $sheet->setCellValue('A1', 'PT INDONESIA ASAHAN ALUMINIUM');
                 $sheet->getStyle('A1')->getFont()->setSize(14)->setBold(true)->getColor()->setRGB('1E3A8A');
@@ -130,7 +129,6 @@ class StockOpnameExport implements FromCollection, ShouldAutoSize, WithCustomSta
                 );
                 $sheet->getStyle('A3')->getFont()->setSize(10)->setItalic(true)->getColor()->setRGB('475569');
 
-                // --- 2. Styling Header Tabel (Baris 5) ---
                 $headerRange = 'A5:J5';
                 $sheet->getStyle($headerRange)->applyFromArray([
                     'font' => [
@@ -150,7 +148,6 @@ class StockOpnameExport implements FromCollection, ShouldAutoSize, WithCustomSta
                 ]);
                 $sheet->getRowDimension(5)->setRowHeight(28);
 
-                // --- 3. Styling Data Rows & Borders ---
                 if ($totalDataRows > 0) {
                     $tableRange = 'A5:J' . $lastDataRow;
                     $sheet->getStyle($tableRange)->applyFromArray([
@@ -162,7 +159,6 @@ class StockOpnameExport implements FromCollection, ShouldAutoSize, WithCustomSta
                         ],
                     ]);
 
-                    // Alignment per kolom data
                     $sheet->getStyle('A6:A' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     $sheet->getStyle('B6:B' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     $sheet->getStyle('D6:D' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -171,12 +167,10 @@ class StockOpnameExport implements FromCollection, ShouldAutoSize, WithCustomSta
                     $sheet->getStyle('H6:H' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
                     $sheet->getStyle('I6:I' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
-                    // Number formats
                     $sheet->getStyle('G6:H' . $lastDataRow)->getNumberFormat()->setFormatCode('#,##0');
                     $sheet->getStyle('I6:I' . $lastDataRow)->getNumberFormat()->setFormatCode('+#,##0;-#,##0;0');
                 }
 
-                // --- 4. Baris Ringkasan Total Sistem ---
                 $summaryRow = $lastDataRow + 1;
                 $sheet->mergeCells('A' . $summaryRow . ':F' . $summaryRow);
                 $sheet->setCellValue('A' . $summaryRow, 'TOTAL KUANTITAS STOK SISTEM');
@@ -196,7 +190,6 @@ class StockOpnameExport implements FromCollection, ShouldAutoSize, WithCustomSta
                 $sheet->getStyle('G' . $summaryRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
                 $sheet->getStyle('G' . $summaryRow)->getNumberFormat()->setFormatCode('#,##0');
 
-                // --- 5. Footer Tanda Tangan Formal 3 Pihak ---
                 $signDateRow = $summaryRow + 3;
                 $sheet->setCellValue('A' . $signDateRow, 'Kuala Tanjung, ' . now()->translatedFormat('d F Y'));
                 $sheet->getStyle('A' . $signDateRow)->getFont()->setItalic(true);

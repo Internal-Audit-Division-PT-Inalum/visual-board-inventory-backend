@@ -149,7 +149,6 @@ class InventoryLedgerExport implements FromCollection, ShouldAutoSize, WithCusto
                 $totalDataRows = $this->rowNumber;
                 $lastDataRow = 5 + $totalDataRows;
 
-                // --- 1. Header Surat Berita Acara (Baris 1 - 3) ---
                 $sheet->mergeCells('A1:K1');
                 $sheet->setCellValue('A1', 'PT INDONESIA ASAHAN ALUMINIUM');
                 $sheet->getStyle('A1')->getFont()->setSize(14)->setBold(true)->getColor()->setRGB('1E3A8A');
@@ -176,7 +175,6 @@ class InventoryLedgerExport implements FromCollection, ShouldAutoSize, WithCusto
                 );
                 $sheet->getStyle('A3')->getFont()->setSize(10)->setItalic(true)->getColor()->setRGB('475569');
 
-                // --- 2. Styling Header Tabel (Baris 5) ---
                 $headerRange = 'A5:K5';
                 $sheet->getStyle($headerRange)->applyFromArray([
                     'font' => [
@@ -196,7 +194,6 @@ class InventoryLedgerExport implements FromCollection, ShouldAutoSize, WithCusto
                 ]);
                 $sheet->getRowDimension(5)->setRowHeight(28);
 
-                // --- 3. Styling Data Rows & Borders ---
                 if ($totalDataRows > 0) {
                     $tableRange = 'A5:K' . $lastDataRow;
                     $sheet->getStyle($tableRange)->applyFromArray([
@@ -208,18 +205,15 @@ class InventoryLedgerExport implements FromCollection, ShouldAutoSize, WithCusto
                         ],
                     ]);
 
-                    // Alignment
                     $sheet->getStyle('A6:A' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     $sheet->getStyle('B6:B' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     $sheet->getStyle('E6:F' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     $sheet->getStyle('G6:I' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
                     $sheet->getStyle('J6:J' . $lastDataRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-                    // Number formats
                     $sheet->getStyle('G6:I' . $lastDataRow)->getNumberFormat()->setFormatCode('#,##0');
                 }
 
-                // --- 4. Ringkasan Total Mutasi ---
                 $summaryRow = $lastDataRow + 1;
                 $sheet->mergeCells('A' . $summaryRow . ':F' . $summaryRow);
                 $sheet->setCellValue('A' . $summaryRow, 'TOTAL TRANSAKSI MUTASI / UNIT');
@@ -239,7 +233,6 @@ class InventoryLedgerExport implements FromCollection, ShouldAutoSize, WithCusto
                 $sheet->getStyle('G' . $summaryRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
                 $sheet->getStyle('G' . $summaryRow)->getNumberFormat()->setFormatCode('#,##0');
 
-                // --- 5. Footer Pengesahan Formal 2 Pihak ---
                 $signDateRow = $summaryRow + 3;
                 $sheet->setCellValue('A' . $signDateRow, 'Kuala Tanjung, ' . now()->translatedFormat('d F Y'));
                 $sheet->getStyle('A' . $signDateRow)->getFont()->setItalic(true);
