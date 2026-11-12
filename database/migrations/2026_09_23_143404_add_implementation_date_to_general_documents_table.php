@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('general_documents', function (Blueprint $table) {
-            //
+            $table->dropColumn(['implementation_month', 'implementation_year']);
         });
     }
 };

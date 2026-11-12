@@ -154,7 +154,6 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        // Catch-all for API route general exceptions
         $exceptions->render(function (Throwable $e, Request $request) {
             if (app()->environment('production') && ($request->is('api/*') || $request->expectsJson())) {
                 return ApiResponse::error(
