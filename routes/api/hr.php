@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\HR\KioskAttendanceController;
 use App\Http\Controllers\Api\HR\KioskOrganizationController;
 use Illuminate\Support\Facades\Route;
 
-// Kiosk Read-Only Endpoints (No Auth required for TV/Scanner)
 Route::prefix('kiosk')->group(function () {
     Route::get('/attendance-summary', [KioskAttendanceController::class, 'summary']);
     Route::get('/organization-documents', [KioskOrganizationController::class, 'documents']);

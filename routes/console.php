@@ -9,8 +9,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Auto-deactivate bulletins that have passed their expired_at date.
-// Runs every minute to keep status real-time (only takes effect when expired_at is set and past).
 Schedule::call(function () {
     Bulletin::query()
         ->where('is_active', true)

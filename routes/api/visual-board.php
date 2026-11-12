@@ -9,7 +9,6 @@ use App\Http\Controllers\Api\VisualBoard\WorkstationController;
 use App\Http\Controllers\Api\VisualBoard\ZoneController;
 use Illuminate\Support\Facades\Route;
 
-// Read-only Kiosk Endpoints
 Route::prefix('kiosk')->group(function () {
     Route::get('/', [VisualBoardController::class, 'index']);
     Route::get('/workstations/{id}', [KioskWorkstationController::class, 'show']);
@@ -24,7 +23,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/schedules/{id}', [ScheduleController::class, 'show']);
     Route::patch('/schedule-records/{recordId}/update-day', [ScheduleController::class, 'updateDay']);
 
-    // Abnormalities
     Route::apiResource('abnormalities', AbnormalityController::class);
     Route::patch('abnormalities/{id}/progress', [AbnormalityController::class, 'updateProgress']);
 
