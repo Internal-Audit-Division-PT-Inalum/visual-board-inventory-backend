@@ -45,7 +45,6 @@ class AbnormalityTrendChart extends ChartWidget
                 ->count();
         }
 
-        // Build arrays
         $xData = array_fill(1, 12, 0);
         $oData = array_fill(1, 12, 0);
         foreach ($newFindings as $month => $count) {

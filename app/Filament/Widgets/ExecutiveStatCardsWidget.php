@@ -15,7 +15,6 @@ class ExecutiveStatCardsWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        // Simulasi perhitungan data nyata
         $abnormalitasTerbuka = Abnormality::where('status', 'open')->count();
         $abnormalitasSelesai = Abnormality::where('status', 'resolved')->count();
         $abnormalitasDalamProses = Abnormality::where('status', 'in_progress')->count();

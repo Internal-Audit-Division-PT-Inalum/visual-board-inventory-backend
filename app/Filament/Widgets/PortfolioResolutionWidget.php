@@ -15,7 +15,6 @@ class PortfolioResolutionWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        // Simulasi kalkulasi
         $totalAbnormality = Abnormality::count();
         $resolvedAbnormality = Abnormality::where('status', 'resolved')->count();
         $resolutionRate = $totalAbnormality > 0 ? round(($resolvedAbnormality / $totalAbnormality) * 100) : 0;
