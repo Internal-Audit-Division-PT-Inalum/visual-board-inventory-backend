@@ -65,9 +65,6 @@ class EmployeeController extends Controller
             return ApiResponse::error('Pegawai tidak ditemukan.', [], 404);
         }
 
-        // Simplification: Not validating unique constraint on update for simplicity in this stage,
-        // a dedicated UpdateEmployeeRequest is best practice, but Store works if namecode isn't changed
-        // or handled properly in validation.
         $updated = $this->service->updateEmployee($id, $request->validated());
 
         return ApiResponse::success(new EmployeeResource($updated), 'Pegawai diperbarui.');

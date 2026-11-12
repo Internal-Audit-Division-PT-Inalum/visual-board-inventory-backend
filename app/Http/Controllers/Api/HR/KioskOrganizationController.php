@@ -32,7 +32,6 @@ class KioskOrganizationController extends Controller
                 'title' => $doc->title,
                 'description' => $doc->description,
                 'category' => $doc->category,
-                // Nama field tetap 'image_url' agar tidak breaking change di Frontend
                 'image_url' => $doc->getFirstMediaUrl('document') ?: null,
                 'mime_type' => $doc->getFirstMedia('document')?->mime_type,
             ]);
