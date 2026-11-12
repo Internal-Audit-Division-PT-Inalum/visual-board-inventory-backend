@@ -44,7 +44,6 @@ class AssetLoanResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

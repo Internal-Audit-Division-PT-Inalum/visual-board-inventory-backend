@@ -43,7 +43,6 @@ class ItemResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 
