@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Domains\Core\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
 class UserForm
@@ -40,7 +42,23 @@ class UserForm
                     ->getOptionLabelFromRecordUsing(fn ($record) => str($record->name)->replace('_', ' ')->title())
                     ->multiple()
                     ->preload()
-                    ->searchable(),
+                    ->searchable()
+                    ->disabled(fn (?User $record): bool => $record !== null && $record->id === auth()->id())
+                    ->helperText(fn (?User $record): string => $record !== null && $record->id === auth()->id()
+                        ? 'Anda tidak dapat mengubah peran akun Anda sendiri untuk alasan kepatuhan keamanan.'
+                        : 'Pilih peran operasional pengguna.')
+                    ->saveRelationshipsUsing(function (Select $component, ?User $record, $state): void {
+                        if ($record === null) {
+                            return;
+                        }
+
+                        if ($record->id === auth()->id()) {
+                            return;
+                        }
+
+                        $roleIds = array_map('intval', Arr::wrap($state ?? []));
+                        $record->syncRoles($roleIds);
+                    }),
 
                 DateTimePicker::make('email_verified_at')
                     ->label('Verifikasi Email (Bypass)')
