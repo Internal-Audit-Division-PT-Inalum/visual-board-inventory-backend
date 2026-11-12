@@ -54,7 +54,6 @@ class MonthlyScheduleService
             $data['manager_signed'] = ['user_id' => $user->id, 'signed_at' => $now];
             $approvedLevel = 'manager';
         } elseif ($roles->contains('super_admin')) {
-            // Super admin mengisi level approval berikutnya yang kosong
             if (! isset($data['pic_signed'])) {
                 $data['pic_signed'] = ['user_id' => $user->id, 'signed_at' => $now];
                 $approvedLevel = 'pic';
@@ -80,14 +79,12 @@ class MonthlyScheduleService
 
         $record->approval_data = $data;
 
-        // Transisi status otomatis: jika Manager atau VP sudah approve, jadwal aktif
         if (isset($data['manager_signed']) || isset($data['vp_signed'])) {
             $record->status = 'in_progress';
         }
 
         $record->save();
 
-        // Structured logging (GEMINI.md §8)
         Log::info('MonthlySchedule: approved', [
             'schedule_id' => $record->id,
             'user_id' => $user->id,
@@ -95,7 +92,6 @@ class MonthlyScheduleService
             'zone_id' => $record->zone_id,
         ]);
 
-        // Notifikasi ke penanggung jawab spesifik jadwal/zona (bukan broadcast kolektif seluruh role)
         if ($approvedLevel === 'manager' || $approvedLevel === 'vp') {
             $recipients = collect();
 

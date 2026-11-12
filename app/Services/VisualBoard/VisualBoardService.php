@@ -11,7 +11,6 @@ use App\Repositories\Contracts\ZoneRepositoryInterface;
 use App\Services\Telemetry\ExternalTelemetryService;
 use DomainException;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class VisualBoardService
@@ -29,8 +28,6 @@ class VisualBoardService
      */
     public function getKioskData(?int $month = null, ?int $year = null): array
     {
-        // Cache dihapus sementara untuk menghindari Incomplete Object Error pada saat deserialization.
-        // Struktur data disesuaikan dengan kontrak KioskDashboardResponse di Frontend (Phase 2).
         $now = Carbon::now();
 
         if ($month && $year) {
@@ -46,7 +43,6 @@ class VisualBoardService
         $champions = $this->abnormalityRepository->getKaizenChampions();
         $weeklyTrend = $this->abnormalityRepository->getAbnormalityTrend(7);
 
-        // Mapping Schedule Matrix 5R
         $periodMonth = $targetDate->copy()->startOfMonth()->format('Y-m-d');
         $schedules = $this->scheduleRepository->getAllByPeriod($periodMonth);
 
@@ -138,10 +134,8 @@ class VisualBoardService
             ->orderBy('sort_order')
             ->get();
 
-        // Ambil data zones secara eksplisit
         $zones = $this->zoneRepository->getAllActive();
 
-        // Calculate Kepatuhan 5R
         $totalEvaluated = 0;
         $totalPassed = 0;
         foreach ($scheduleMatrix as $matrixRow) {
@@ -156,7 +150,6 @@ class VisualBoardService
         }
         $compliancePercentage = $totalEvaluated > 0 ? round(($totalPassed / $totalEvaluated) * 100, 1) : 0;
 
-        // Calculate Resolution Rate
         $open = $abnormalitySummary['open'] ?? 0;
         $inProgress = $abnormalitySummary['in_progress'] ?? 0;
         $resolved = $abnormalitySummary['resolved'] ?? 0;
@@ -177,7 +170,6 @@ class VisualBoardService
             'month' => $targetDate->format('Y-m'),
         ]);
 
-        // Ambil data PIC (Penanggung Jawab) - Kepala Divisi IIA
         $pic = Employee::with('media')
             ->where('hierarchy_level', 1)
             ->first();
@@ -196,27 +188,17 @@ class VisualBoardService
             'open_abnormality_count' => ($abnormalitySummary['open'] ?? 0) + ($abnormalitySummary['in_progress'] ?? 0),
             'abnormality_resolved_today' => $resolvedToday,
             'abnormality_in_progress' => $abnormalitySummary['in_progress'] ?? 0,
-
-            // Dinamis dari kalkulasi jadwal harian
             'compliance_percentage' => $compliancePercentage,
             'compliance_mom_trend' => 'up',
-
-            // Dinamis dari kalkulasi penyelesaian abnormality (menggantikan mock audit eksternal)
             'resolution_rate' => $resolutionRate,
             'resolution_grade' => $resolutionGrade,
-
-            // Dummy for backwards compatibility in tests
             'audit_pass_percentage' => $resolutionRate,
             'audit_pass_grade' => $resolutionGrade,
-
-            // Metrik Eksternal (SCADA/SAP/Sistem K3) dipertahankan jika masih dibutuhkan frontend
             'safety_streak_days' => $this->telemetryService->getSafetyStreakDays(),
             'safety_safe_shifts' => $this->telemetryService->getSafetySafeShifts(),
             'resolution_speed_avg_mins' => $this->telemetryService->getResolutionSpeedAvgMins(),
             'oee_percentage' => $this->telemetryService->getOeePercentage(),
             'oee_target' => $this->telemetryService->getOeeTarget(),
-
-            // Metrik Agregat Kaizen dari Database
             'kaizen_implemented_count' => GeneralDocument::where('category', 'kaizen_report')
                 ->where('is_active', true)
                 ->where('implementation_year', $targetDate->year)
@@ -225,7 +207,6 @@ class VisualBoardService
                 ->where('is_active', true)
                 ->where('implementation_year', $targetDate->year)
                 ->count() * 1000000,
-
             'abnormalities' => $latestUnresolved,
             'kaizen_champions' => $champions,
             'schedule_matrix' => $scheduleMatrix,
@@ -261,7 +242,6 @@ class VisualBoardService
             throw new DomainException("Jadwal 5R untuk Zona {$zone->name} pada bulan ini belum dibuat.");
         }
 
-        // Ambil data dengan records beserta kriteria inspeksinya
         $scheduleWithRecords = $this->scheduleRepository->getScheduleWithRecords($schedule->id);
 
         return [

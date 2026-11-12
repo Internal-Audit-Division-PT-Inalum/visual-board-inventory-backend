@@ -37,7 +37,6 @@ class AbnormalityService
             'status' => 'open',
         ]);
 
-        // Notifikasi ke penanggung jawab spesifik (bukan broadcast ke semua staff penyelia)
         $recipients = collect();
 
         if ($abnormality->pic) {
@@ -93,15 +92,12 @@ class AbnormalityService
         if ($picId !== null) {
             $data['pic_id'] = $picId;
         } elseif (auth()->check()) {
-            // Auto set PIC if it's currently authenticated user and we don't have explicit picId
-            // Only do this if the abnormality doesn't have a PIC yet (handled later or we just overwrite)
             $abnormality = $this->repository->findById($id);
             if (! $abnormality->pic_id) {
                 $data['pic_id'] = auth()->id();
             }
         }
 
-        // Determine status based on percentage
         if ($percentage == 100) {
             $data['status'] = 'resolved';
         } elseif ($percentage > 0) {
@@ -119,7 +115,6 @@ class AbnormalityService
             'user_id' => auth()->id(),
         ]);
 
-        // Jika status menjadi resolved, beritahu pelapor
         if ($data['status'] === 'resolved' && $abnormality->reported_by_id) {
             $reporter = User::find($abnormality->reported_by_id);
             if ($reporter) {
@@ -147,7 +142,6 @@ class AbnormalityService
     {
         $abnormality = $this->repository->update($id, $data);
 
-        // Jika status menjadi resolved, beritahu pelapor
         if (isset($data['status']) && $data['status'] === 'resolved' && $abnormality->reported_by_id) {
             $reporter = User::find($abnormality->reported_by_id);
             if ($reporter) {
@@ -211,7 +205,6 @@ class AbnormalityService
                 'level' => $isStaffVerification ? 'staff' : 'manager',
             ]);
 
-            // Notifikasi ke penanggung jawab spesifik / atasan langsung saat diverifikasi staff (eskalasi)
             if ($isStaffVerification) {
                 $managers = collect();
 
