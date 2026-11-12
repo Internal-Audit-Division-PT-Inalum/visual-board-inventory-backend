@@ -793,12 +793,6 @@ parameters:
 			path: app/Repositories/Eloquent/AbnormalityRepository.php
 
 		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: app/Repositories/Eloquent/BulletinRepository.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$employee\.$#'
 			identifier: property.notFound
 			count: 3

@@ -27,10 +27,7 @@ class BulletinRepository extends BaseRepository implements BulletinRepositoryInt
             });
 
         if ($type) {
-            // Mapping for the frontend category
-            if (false) {
-                $query->whereIn('type', ['general', 'event', 'policy']);
-            } elseif ($type === 'health') {
+            if ($type === 'health') {
                 $query->where('type', 'health_safety');
             } else {
                 $query->where('type', $type);
