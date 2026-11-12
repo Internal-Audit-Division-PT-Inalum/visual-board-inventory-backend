@@ -100,7 +100,6 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
 
     public function getKaizenChampions(): array
     {
-        // Mendapatkan 3 PIC dengan jumlah resolved kaizen abnormality terbanyak
         $champions = $this->model->newQuery()
             ->select('pic_id', DB::raw('count(*) as kaizen_count'))
             ->where('is_kaizen', true)
@@ -117,7 +116,6 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
         foreach ($champions as $champion) {
             $user = $champion->pic;
             if ($user) {
-                // Di sistem ini kita buat skor seolah kaizen_count * 15
                 $score = $champion->kaizen_count * 15;
                 $department = $user->employee?->department?->name ?? 'Produksi';
 
@@ -152,7 +150,6 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
             $date = Carbon::today()->subDays($i);
             $dateStr = $date->format('Y-m-d');
 
-            // Format hari: 'Senin', 'Selasa', dll.
             $dayName = $date->locale('id')->isoFormat('dddd');
 
             $result[] = [
@@ -166,14 +163,12 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
 
     public function getMonthlyTrendMatrix(int $year): array
     {
-        // Ambil semua zona yang aktif, diurutkan berdasarkan nama
         $zones = Zone::orderBy('name')->get(['id', 'name']);
 
         $isSqlite = DB::connection()->getDriverName() === 'sqlite';
         $monthSelect = $isSqlite ? "CAST(strftime('%m', date_found) AS INTEGER) as month" : 'EXTRACT(MONTH FROM date_found)::integer as month';
         $monthGroup = $isSqlite ? "strftime('%m', date_found)" : 'EXTRACT(MONTH FROM date_found)';
 
-        // Kalkulasi agregat langsung dari tabel abnormalities (Single Source of Truth)
         $aggregates = $this->model->newQuery()
             ->select(
                 'zone_id',
@@ -191,7 +186,6 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
         $months = range(1, 12);
         $matrix = [];
 
-        // Susun matriks per zona per bulan
         foreach ($zones as $zone) {
             $zoneData = $aggregates->get($zone->id, collect());
             $row = ['zone_label' => $zone->name, 'months' => []];
@@ -208,7 +202,6 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
             $matrix[] = $row;
         }
 
-        // Tambahkan baris Total (agregasi seluruh zona)
         $allAggregates = $this->model->newQuery()
             ->select(
                 DB::raw($monthSelect),
