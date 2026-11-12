@@ -31,7 +31,6 @@ class MasterWorkstationCriteriasTable
                     ->label('Aktif'),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),
