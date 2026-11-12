@@ -29,8 +29,6 @@ class AbnormalityResource extends JsonResource
             'is_kaizen' => $this->is_kaizen,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-
-            // Relationships
             'zone' => $this->whenLoaded('zone', function () {
                 return [
                     'id' => $this->zone->id,

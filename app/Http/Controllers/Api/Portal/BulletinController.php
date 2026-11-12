@@ -59,12 +59,9 @@ class BulletinController extends Controller
             abort(404, 'Dokumen fisik tidak ditemukan.');
         }
 
-        // Return as response()->file which automatically adds CORS headers
-        // By using this route (/bulletins/{id}/document), IDM usually ignores it
-        // since the URL doesn't end in .pdf.
         return response()->file($path, [
             'Content-Type' => 'application/pdf',
-            'Access-Control-Allow-Origin' => '*', // Force CORS allow all just to be safe
+            'Access-Control-Allow-Origin' => '*',
         ]);
     }
 }

@@ -23,8 +23,6 @@ class CatalogController extends Controller
             return response()->json(null, 304);
         }
 
-        // We need to calculate borrowed_quantity for each asset
-        // borrowed_quantity = sum of open asset_loans (quantity - returned_quantity)
         $itemIds = $items->where('type', 'asset')->pluck('id');
 
         $borrowedQuantities = [];
