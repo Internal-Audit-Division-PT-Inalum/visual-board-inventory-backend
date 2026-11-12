@@ -37,7 +37,6 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        // Find employee associated with the authenticated user
         $employee = Employee::where('user_id', $user->id)->first();
 
         if (! $employee) {
