@@ -48,7 +48,6 @@ class EmployeeAttendancesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),
