@@ -92,9 +92,11 @@ class InventoryAuthService
         $employee->update($updates);
     }
 
+    /**
+     * Executes constant-time dummy hash verification to mitigate timing attacks before throwing generic validation error.
+     */
     private function throwGenericError(): void
     {
-        // Hash dummy to prevent timing attacks
         Hash::check('dummy', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
 
         throw ValidationException::withMessages([

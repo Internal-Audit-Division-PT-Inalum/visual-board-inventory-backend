@@ -66,8 +66,11 @@ class InventoryService
     {
         Log::info('processTransaction', ['clientUuid' => $clientUuid]);
 
+        if ($quantity <= 0) {
+            throw new InvalidItemOperationException('Jumlah kuantitas transaksi harus bernilai lebih dari 0.');
+        }
+
         return DB::transaction(function () use ($type, $expectedItemType, $identifier, $quantity, $userId, $notes, $referenceNumber, $clientUuid, $occurredAt, $employeeId) {
-            // 1. Idempotency Check early
             if ($clientUuid) {
                 $existing = InventoryLedger::where('client_uuid', $clientUuid)->first();
                 if ($existing) {
@@ -81,23 +84,26 @@ class InventoryService
                 }
             }
 
-            // 2. Lock item
-            $item = Item::where(function ($q) use ($identifier) {
+            $itemQuery = Item::where(function ($q) use ($identifier) {
                 $q->where('id', $identifier)->orWhere('sku', $identifier);
-            })->lockForUpdate()->first();
+            });
+
+            if ($type === 'return') {
+                $itemQuery->withTrashed();
+            }
+
+            $item = $itemQuery->lockForUpdate()->first();
 
             if (! $item) {
                 throw new NotFoundHttpException('Item tidak ditemukan.');
             }
 
-            // 3. Verify item type
             if ($item->type !== $expectedItemType) {
                 throw new InvalidItemOperationException(
                     "Item \"{$item->name}\" bertipe {$item->type}. Operasi {$type} hanya untuk {$expectedItemType}."
                 );
             }
 
-            // 3.5. Validation for Loans
             $user = null;
             if (in_array($type, ['borrow', 'return'])) {
                 $user = User::with('employee')->find($userId);
@@ -134,7 +140,6 @@ class InventoryService
             $stockBefore = $item->current_stock;
             $stockAfter = $stockBefore;
 
-            // 4. Calculate stock based on type
             if (in_array($type, ['out', 'borrow'])) {
                 if ($item->current_stock < $quantity) {
                     throw new InsufficientStockException(
@@ -148,7 +153,6 @@ class InventoryService
 
             $item->update(['current_stock' => $stockAfter]);
 
-            // 5. Create Ledger with conflict handling
             try {
                 $ledger = InventoryLedger::create([
                     'item_id' => $item->id,
@@ -177,7 +181,6 @@ class InventoryService
                 throw $e;
             }
 
-            // 5.5. Manage Asset Loans
             if ($type === 'borrow') {
                 $targetEmployeeId = $employeeId ?? $user?->employee?->id;
                 if (! $targetEmployeeId) {
@@ -218,7 +221,6 @@ class InventoryService
                 }
             }
 
-            // 6. Logging
             $actionWord = match ($type) {
                 'out' => 'taken',
                 'in' => 'restocked',
