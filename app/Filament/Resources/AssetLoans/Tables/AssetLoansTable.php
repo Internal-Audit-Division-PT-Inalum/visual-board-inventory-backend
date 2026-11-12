@@ -153,7 +153,7 @@ class AssetLoansTable
                         $isUnsettled = $record->fully_returned_at === null && $record->returned_quantity < $record->quantity;
                         $user = auth()->user();
 
-                        return $isUnsettled && ($user?->hasAnyRole(['inventory_admin', 'super_admin']) ?? false);
+                        return $isUnsettled && ($user?->hasRole('super_admin') ?? false);
                     })
                     ->form([
                         TextInput::make('item_display')

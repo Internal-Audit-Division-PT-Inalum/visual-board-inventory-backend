@@ -118,7 +118,7 @@ class ItemsTable
                     ->label('Koreksi Stok')
                     ->icon('heroicon-o-scale')
                     ->color('warning')
-                    ->visible(fn (): bool => auth()->user()?->hasAnyRole(['inventory_admin', 'super_admin']) ?? false)
+                    ->visible(fn (): bool => auth()->user()?->hasRole('super_admin') ?? false)
                     ->form([
                         TextInput::make('current_stock_display')
                             ->label('Stok Tercatat Saat Ini')
