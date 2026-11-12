@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Domains\Core\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserTable
 {
@@ -44,15 +46,28 @@ class UserTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->hidden(fn (User $record): bool => $record->id === auth()->id() || $record->isLastStandingSuperAdmin()),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->action(function (Collection $records): void {
+                            foreach ($records as $record) {
+                                if (! $record instanceof User) {
+                                    continue;
+                                }
+
+                                if ($record->id === auth()->id() || $record->isLastStandingSuperAdmin()) {
+                                    continue;
+                                }
+
+                                $record->delete();
+                            }
+                        }),
                 ]),
             ]);
     }
