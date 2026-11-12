@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Domains\Core\Observers\UserRoleAuditObserver;
 use App\Domains\Inventory\Models\Item;
 use App\Domains\Inventory\Models\Location;
 use App\Domains\VisualBoard\Models\Abnormality;
@@ -32,30 +33,29 @@ use App\Repositories\Eloquent\WorkstationRepository;
 use App\Repositories\Eloquent\ZoneRepository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Permission\Events\RoleAttachedEvent;
+use Spatie\Permission\Events\RoleDetachedEvent;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Visual Board domain
         $this->app->bind(MonthlyScheduleRepositoryInterface::class, MonthlyScheduleRepository::class);
         $this->app->bind(AbnormalityRepositoryInterface::class, AbnormalityRepository::class);
         $this->app->bind(ZoneRepositoryInterface::class, ZoneRepository::class);
         $this->app->bind(SchedulePicRepositoryInterface::class, SchedulePicRepository::class);
         $this->app->bind(WorkstationRepositoryInterface::class, WorkstationRepository::class);
 
-        // Inventory domain
         $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
         $this->app->bind(ItemRepositoryInterface::class, ItemRepository::class);
 
-        // HR domain
         $this->app->bind(DepartmentRepositoryInterface::class, DepartmentRepository::class);
         $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
         $this->app->bind(EmployeeAttendanceRepositoryInterface::class, EmployeeAttendanceRepository::class);
 
-        // Portal domain
         $this->app->bind(BulletinRepositoryInterface::class, BulletinRepository::class);
     }
 
@@ -66,7 +66,9 @@ class AppServiceProvider extends ServiceProvider
         Item::observe(ItemObserver::class);
         Location::observe(LocationObserver::class);
 
-        // Cache invalidation for media updates
+        Event::listen(RoleAttachedEvent::class, [UserRoleAuditObserver::class, 'handleRoleAttached']);
+        Event::listen(RoleDetachedEvent::class, [UserRoleAuditObserver::class, 'handleRoleDetached']);
+
         $clearKioskCache = function () {
             Cache::forget('inventory:kiosk:locations');
         };
