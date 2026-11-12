@@ -14,7 +14,6 @@ class PositionSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Data Nomenklatur Baku 7 Tingkat Hierarki PT INALUM
         $positions = [
             [
                 'name' => 'Dewan Direksi',
@@ -76,7 +75,6 @@ class PositionSeeder extends Seeder
             $positionMap[$item['name']] = $position;
         }
 
-        // 2. Skrip Backfill Cerdas untuk Karyawan Eksisting yang Belum Memiliki position_id
         $unlinkedEmployees = Employee::whereNull('position_id')->get();
 
         foreach ($unlinkedEmployees as $emp) {
@@ -84,7 +82,6 @@ class PositionSeeder extends Seeder
             $matchedPosition = $this->resolveMatchedPosition($title, $positionMap);
 
             $emp->position_id = $matchedPosition->id;
-            // Mempertahankan saving hook untuk menyelaraskan position_title & hierarchy_level
             $emp->save();
         }
     }
@@ -130,7 +127,6 @@ class PositionSeeder extends Seeder
             return $positionMap['Administrasi'];
         }
 
-        // Default untuk seluruh staf analis, auditor, penyelia, dsb.
         return $positionMap['Staff'];
     }
 }

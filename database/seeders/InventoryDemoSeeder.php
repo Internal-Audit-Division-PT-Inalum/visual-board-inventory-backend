@@ -28,7 +28,6 @@ class InventoryDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Proteksi Lingkungan Produksi (Circuit Breaker)
         if (app()->environment('production')) {
             $this->command->error('InventoryDemoSeeder DILARANG dijalankan di lingkungan produksi!');
 
@@ -37,14 +36,14 @@ class InventoryDemoSeeder extends Seeder
 
         $this->command->info('Memulai seeding data demo & UAT Inventaris PT INALUM...');
 
-        // 2. Pastikan Role Inventory Tersedia
-        $inventoryAdminRole = Role::firstOrCreate(['name' => 'inventory_admin', 'guard_name' => 'web']);
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $pelaksanaRole = Role::firstOrCreate(['name' => 'pelaksana_5r', 'guard_name' => 'web']);
+
         $superAdmin = User::where('email', 'admin@admin.com')->first();
-        if ($superAdmin && ! $superAdmin->hasRole('inventory_admin')) {
-            $superAdmin->assignRole($inventoryAdminRole);
+        if ($superAdmin && ! $superAdmin->hasRole('super_admin')) {
+            $superAdmin->assignRole($superAdminRole);
         }
 
-        // 3. Gunakan Departemen Internal Audit yang Ada
         $dept = Department::where('name', 'like', '%Internal Audit%')->first()
             ?? Department::first()
             ?? Department::create([
@@ -53,7 +52,6 @@ class InventoryDemoSeeder extends Seeder
                 'is_active' => true,
             ]);
 
-        // 4. Sinkronkan & Aktifkan PIN pada Pegawai Riil yang Sudah Terdaftar
         $existingEmployees = Employee::all();
         foreach ($existingEmployees as $existingEmp) {
             $cleanNamecode = strtoupper(trim($existingEmp->namecode));
@@ -66,8 +64,8 @@ class InventoryDemoSeeder extends Seeder
                 ]
             );
 
-            if (! $user->hasRole('inventory_admin')) {
-                $user->assignRole($inventoryAdminRole);
+            if ($user->roles()->count() === 0) {
+                $user->assignRole($pelaksanaRole);
             }
 
             $existingEmp->update([
@@ -79,7 +77,6 @@ class InventoryDemoSeeder extends Seeder
             ]);
         }
 
-        // 5. Akun Pegawai Khusus UAT & Demo (Numeric Namecode: 101001, 101002, 101003, 101004, 101005)
         $uatAuditors = [
             [
                 'namecode' => '101001',
@@ -129,8 +126,8 @@ class InventoryDemoSeeder extends Seeder
                 ]
             );
 
-            if (! $user->hasRole('inventory_admin')) {
-                $user->assignRole($inventoryAdminRole);
+            if ($user->roles()->count() === 0) {
+                $user->assignRole($pelaksanaRole);
             }
 
             $employee = Employee::updateOrCreate(
@@ -152,7 +149,6 @@ class InventoryDemoSeeder extends Seeder
             $employeeMap[$auditorData['namecode']] = $employee;
         }
 
-        // 6. Master Lokasi Gudang & Rak Fisik PT INALUM
         $locations = [
             'RAK-ATK-01' => [
                 'name' => 'RAK-ATK-01',
@@ -183,9 +179,7 @@ class InventoryDemoSeeder extends Seeder
             );
         }
 
-        // 7. Master Barang Inventaris (Consumables & Assets)
         $itemsData = [
-            // --- Barang Habis Pakai (Consumables) ---
             [
                 'sku' => 'ATK-KTS-A4',
                 'name' => 'Kertas HVS A4 80gsm PaperOne',
@@ -252,19 +246,17 @@ class InventoryDemoSeeder extends Seeder
                 'type' => 'consumable',
                 'unit' => 'Pasang',
                 'location_code' => 'RAK-K3-03',
-                'current_stock' => 8, // Kondisi Stok Menipis (8 <= 10)
+                'current_stock' => 8,
                 'minimum_stock' => 10,
                 'description' => 'Sarung tangan pelindung panas inspeksi area potline',
             ],
-
-            // --- Aset Alat Kerja (Assets) ---
             [
                 'sku' => 'AST-LPT-001',
                 'name' => 'Laptop ThinkPad L14 Gen 4 Core i7 16GB',
                 'type' => 'asset',
                 'unit' => 'Unit',
                 'location_code' => 'RAK-ELK-02',
-                'current_stock' => 2, // 2 Tersedia, 2 Terpinjam
+                'current_stock' => 2,
                 'minimum_stock' => 1,
                 'description' => 'Laptop kerja dinas audit investigasi dan lapangan',
             ],
@@ -274,7 +266,7 @@ class InventoryDemoSeeder extends Seeder
                 'type' => 'asset',
                 'unit' => 'Unit',
                 'location_code' => 'RAK-ELK-02',
-                'current_stock' => 1, // 1 Tersedia, 1 Terpinjam (Overdue)
+                'current_stock' => 1,
                 'minimum_stock' => 1,
                 'description' => 'Proyektor presentasi exit meeting audit pabrik',
             ],
@@ -284,7 +276,7 @@ class InventoryDemoSeeder extends Seeder
                 'type' => 'asset',
                 'unit' => 'Unit',
                 'location_code' => 'RAK-ELK-02',
-                'current_stock' => 2, // 2 Tersedia
+                'current_stock' => 2,
                 'minimum_stock' => 1,
                 'description' => 'Alat ukur jarak presisi digital audit stock opname',
             ],
@@ -294,7 +286,7 @@ class InventoryDemoSeeder extends Seeder
                 'type' => 'asset',
                 'unit' => 'Unit',
                 'location_code' => 'RAK-ELK-02',
-                'current_stock' => 1, // 1 Tersedia, 1 Terpinjam
+                'current_stock' => 1,
                 'minimum_stock' => 1,
                 'description' => 'Alat uji kelistrikan fasilitas smelter dan gardu induk',
             ],
@@ -321,7 +313,6 @@ class InventoryDemoSeeder extends Seeder
 
             $itemMap[$data['sku']] = $item;
 
-            // Catat Buku Besar Saldo Awal (Initial Inventory Ledger)
             $existingLedger = InventoryLedger::where('item_id', $item->id)->first();
             if (! $existingLedger && $adminUser) {
                 InventoryLedger::create([
@@ -339,9 +330,7 @@ class InventoryDemoSeeder extends Seeder
             }
         }
 
-        // 8. Skenario Riwayat Pinjaman Berjalan (Asset Loans) & Uji Aging Dashboard
         $loansData = [
-            // Pinjaman 1: Laptop ThinkPad dipinjam 101001 (Baru 1 hari, status Aman)
             [
                 'sku' => 'AST-LPT-001',
                 'namecode' => '101001',
@@ -349,7 +338,6 @@ class InventoryDemoSeeder extends Seeder
                 'borrowed_at' => now()->subDay(),
                 'notes' => 'Pinjam untuk audit kepatuhan pengadaan Kuala Tanjung',
             ],
-            // Pinjaman 2: Laptop ThinkPad dipinjam 101002 (5 hari lalu, Menjelang Jatuh Tempo)
             [
                 'sku' => 'AST-LPT-001',
                 'namecode' => '101002',
@@ -357,8 +345,6 @@ class InventoryDemoSeeder extends Seeder
                 'borrowed_at' => now()->subDays(5),
                 'notes' => 'Peminjaman audit stock opname logistik dermaga',
             ],
-            // Pinjaman 3: Proyektor Epson dipinjam 101003 (9 hari lalu, OVERDUE > 7 hari)
-            // Skenario penting: Memvalidasi badge merah "Terlambat Dikembalikan" di Dashboard PWA
             [
                 'sku' => 'AST-PRJ-001',
                 'namecode' => '101003',
@@ -366,7 +352,6 @@ class InventoryDemoSeeder extends Seeder
                 'borrowed_at' => now()->subDays(9),
                 'notes' => 'Peminjaman presentasi interim exit meeting pabrik',
             ],
-            // Pinjaman 4: Digital Multimeter dipinjam 101004 (2 hari lalu, status Aman)
             [
                 'sku' => 'AST-MLT-001',
                 'namecode' => '101004',
@@ -384,7 +369,6 @@ class InventoryDemoSeeder extends Seeder
                 continue;
             }
 
-            // Cek apakah pinjaman aktif ini sudah tercatat sebelumnya
             $existingLoan = AssetLoan::where('item_id', $item->id)
                 ->where('employee_id', $employee->id)
                 ->whereNull('fully_returned_at')

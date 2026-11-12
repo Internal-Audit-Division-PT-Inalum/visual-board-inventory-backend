@@ -10,16 +10,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Buat Role Super Admin (Tanpa shield:generate)
+        $this->call(RbacSeeder::class);
+
         $role = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
 
-        // 1.5. Buat Role Operasional 5R & Inventory
-        $operationalRoles = ['pelaksana_5r', 'staff_penyelia', 'managerial_staff', 'inventory_admin'];
-        foreach ($operationalRoles as $roleName) {
-            Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
-        }
-
-        // 2. Buat Super Admin User
         $admin = User::firstOrCreate(
             ['email' => 'admin@admin.com'],
             [
@@ -29,12 +23,10 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 3. Assign role to super admin
         if (! $admin->hasRole('super_admin')) {
             $admin->assignRole($role);
         }
 
-        // 4. Seed Master Jabatan Baku 7 Tingkat Hierarki PT INALUM & Backfill Pegawai
         $this->call(PositionSeeder::class);
     }
 }
