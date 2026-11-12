@@ -43,7 +43,6 @@ class AbnormalityResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

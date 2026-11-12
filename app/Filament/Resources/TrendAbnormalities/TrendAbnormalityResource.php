@@ -48,7 +48,6 @@ class TrendAbnormalityResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 
