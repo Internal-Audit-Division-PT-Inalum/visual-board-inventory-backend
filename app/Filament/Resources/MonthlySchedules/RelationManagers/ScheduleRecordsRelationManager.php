@@ -167,7 +167,6 @@ class ScheduleRecordsRelationManager extends RelationManager
                             return $formComponents;
                         }
 
-                        // Group criteria
                         $generalFields = [];
                         $workstationFields = [];
 
@@ -276,7 +275,6 @@ class ScheduleRecordsRelationManager extends RelationManager
                             }
                         }
 
-                        // Generate untuk Meja (Workstations)
                         $workstations = Workstation::where('zone_id', $monthlySchedule->zone_id)->where('is_active', true)->get();
                         $masterCriteria = MasterWorkstationCriteria::where('is_active', true)->get();
 

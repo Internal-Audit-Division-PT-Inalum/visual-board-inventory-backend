@@ -16,9 +16,7 @@ class ScheduleRecordsRelationManager extends RelationManager
     public function form(Schema $schema): Schema
     {
         return $schema
-            ->components([
-                // Readonly form just for viewing if needed
-            ]);
+            ->components([]);
     }
 
     public function table(Table $table): Table
@@ -50,16 +48,12 @@ class ScheduleRecordsRelationManager extends RelationManager
             ])
             ->defaultSort('monthlySchedule.period_month', 'desc')
             ->filters([
-                //
             ])
             ->headerActions([
-                //
             ])
             ->recordActions([
-                //
             ])
             ->toolbarActions([
-                //
             ]);
     }
 }

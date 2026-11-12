@@ -47,7 +47,6 @@ class ItemsRelationManager extends RelationManager
                     ->label('Standar Qty'),
             ])
             ->filters([
-                //
             ])
             ->headerActions([
                 AttachAction::make()

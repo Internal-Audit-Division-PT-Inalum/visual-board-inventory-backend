@@ -74,7 +74,6 @@ class SchedulePicsRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
             ])
             ->headerActions([
                 CreateAction::make(),
