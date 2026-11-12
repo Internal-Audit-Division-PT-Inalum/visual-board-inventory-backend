@@ -4,6 +4,7 @@ namespace App\Filament\Resources\FiveREvaluations\Pages;
 
 use App\Filament\Resources\FiveREvaluations\FiveREvaluationResource;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class CreateFiveREvaluation extends CreateRecord
@@ -25,12 +26,10 @@ class CreateFiveREvaluation extends CreateRecord
 
                     $totalScore = null;
 
-                    // Search for "Nilai Total" in the first few columns
                     foreach ($worksheet->getRowIterator() as $row) {
                         $rowIndex = $row->getRowIndex();
                         $foundLabel = false;
 
-                        // Check columns A to D for the label
                         foreach (['A', 'B', 'C', 'D'] as $col) {
                             $cellValue = $worksheet->getCell($col . $rowIndex)->getCalculatedValue();
                             if (str_contains(strtolower((string) $cellValue), 'nilai total')) {
@@ -40,12 +39,11 @@ class CreateFiveREvaluation extends CreateRecord
                         }
 
                         if ($foundLabel) {
-                            // Search the rest of the row for a numeric value
                             foreach (['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'] as $valCol) {
                                 $val = $worksheet->getCell($valCol . $rowIndex)->getCalculatedValue();
                                 if (is_numeric($val) && $val > 0) {
                                     $totalScore = $val;
-                                    break 2; // Break both loops
+                                    break 2;
                                 }
                             }
                         }
@@ -56,7 +54,7 @@ class CreateFiveREvaluation extends CreateRecord
                     }
                 }
             } catch (\Exception $e) {
-                // Log exception if needed, fallback to 0
+                Log::warning('Gagal membaca nilai total evaluasi 5R dari berkas Excel: ' . $e->getMessage());
             }
         }
 
