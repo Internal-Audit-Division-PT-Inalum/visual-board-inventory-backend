@@ -41,7 +41,6 @@ class BulletinResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

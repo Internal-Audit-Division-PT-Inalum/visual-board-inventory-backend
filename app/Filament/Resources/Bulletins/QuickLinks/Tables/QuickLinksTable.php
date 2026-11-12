@@ -29,7 +29,6 @@ class QuickLinksTable
                     ->boolean(),
             ])
             ->filters([
-                //
             ])
             ->actions([
                 EditAction::make(),

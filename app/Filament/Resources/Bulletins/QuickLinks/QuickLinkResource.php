@@ -37,7 +37,6 @@ class QuickLinkResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 
