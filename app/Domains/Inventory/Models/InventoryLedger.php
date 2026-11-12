@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
+ * Immutable append-only inventory ledger for audit trail accountability.
+ *
  * @property string $id
  * @property string $item_id
  * @property string $user_id
@@ -27,8 +29,6 @@ use Illuminate\Support\Carbon;
 class InventoryLedger extends Model
 {
     use HasFactory, HasUlid;
-
-    // Append-only — TIDAK pakai SoftDeletes (AGENTS.md konvensi)
 
     protected $fillable = [
         'client_uuid',
