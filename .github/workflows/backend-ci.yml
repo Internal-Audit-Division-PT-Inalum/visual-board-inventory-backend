@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main, master, staging, develop]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Lint, Static Analysis & Pest Tests
@@ -48,6 +55,9 @@ jobs:
 
       - name: Install Composer Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Audit Composer Dependencies
+        run: composer run audit:locked
 
       - name: Prepare Environment File
         run: |
