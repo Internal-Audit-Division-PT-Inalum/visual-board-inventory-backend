@@ -9,7 +9,7 @@ use App\Http\Controllers\Api\VisualBoard\WorkstationController;
 use App\Http\Controllers\Api\VisualBoard\ZoneController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('kiosk')->group(function () {
+Route::prefix('kiosk')->middleware(['throttle:kiosk-read'])->group(function () {
     Route::get('/', [VisualBoardController::class, 'index']);
     Route::get('/workstations/{id}', [KioskWorkstationController::class, 'show']);
     Route::get('/workstations/by-employee/{employee_id}', [KioskWorkstationController::class, 'showByEmployee']);
@@ -17,7 +17,7 @@ Route::prefix('kiosk')->group(function () {
     Route::get('/general-documents', [KioskGeneralController::class, 'generalDocuments']);
 });
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api-authenticated'])->group(function () {
     Route::get('/zones/scan/{zonaId}', [ZoneController::class, 'scan']);
 
     Route::get('/schedules/{id}', [ScheduleController::class, 'show']);

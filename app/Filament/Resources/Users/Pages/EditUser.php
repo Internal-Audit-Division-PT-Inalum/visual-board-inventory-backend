@@ -8,6 +8,8 @@ use DomainException;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
@@ -26,6 +28,21 @@ class EditUser extends EditRecord
             Actions\DeleteAction::make()
                 ->hidden(fn (User $record): bool => $record->id === auth()->id() || $record->isLastStandingSuperAdmin()),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        if (array_key_exists('email_verified_at', $data)) {
+            $emailVerifiedAt = Arr::pull($data, 'email_verified_at');
+            $record->forceFill(['email_verified_at' => $emailVerifiedAt]);
+        }
+
+        $record->update($data);
+
+        return $record;
     }
 
     protected function beforeValidate(): void

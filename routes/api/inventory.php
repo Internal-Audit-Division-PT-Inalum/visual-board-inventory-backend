@@ -11,7 +11,7 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::get('kiosk/locations', [KioskController::class, 'locations']);
 });
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api-authenticated'])->group(function () {
     Route::apiResource('locations', LocationController::class);
     Route::apiResource('items', ItemController::class)->except(['update']);
 

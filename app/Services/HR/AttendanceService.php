@@ -2,12 +2,15 @@
 
 namespace App\Services\HR;
 
+use App\Domains\HR\Models\Employee;
 use App\Domains\HR\Models\EmployeeAttendance;
 use App\Repositories\Contracts\EmployeeAttendanceRepositoryInterface;
 use App\Repositories\Contracts\EmployeeRepositoryInterface;
 use DomainException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceService
 {
@@ -23,7 +26,7 @@ class AttendanceService
 
     public function processScan(string $namecode, string $status = 'present'): EmployeeAttendance
     {
-        $employee = $this->employeeRepository->findByNamecode($namecode);
+        $employee = $this->employeeRepository->findByNamecode(trim($namecode));
 
         if (! $employee) {
             throw new DomainException('Data pegawai tidak ditemukan. Silakan periksa kembali Kode Pegawai yang Anda masukkan.');
@@ -31,21 +34,38 @@ class AttendanceService
 
         $today = now()->format('Y-m-d');
 
-        $alreadyScanned = $employee->attendances()->whereDate('date', $today)->exists();
+        return DB::transaction(function () use ($employee, $status, $today): EmployeeAttendance {
+            $lockedEmployee = Employee::query()
+                ->whereKey($employee->id)
+                ->lockForUpdate()
+                ->first();
 
-        if ($alreadyScanned) {
-            throw new DomainException('Data kehadiran Anda untuk hari ini sudah tercatat sebelumnya. Terima kasih!');
-        }
+            if (! $lockedEmployee || ! $lockedEmployee->is_active) {
+                throw new DomainException('Data pegawai tidak ditemukan atau status pegawai tidak aktif.');
+            }
 
-        $attendance = $this->recordAttendance([
-            'employee_id' => $employee->id,
-            'date' => $today,
-            'status' => $status,
-        ]);
+            $alreadyScanned = $lockedEmployee->attendances()
+                ->whereDate('date', $today)
+                ->exists();
 
-        Cache::forget("hr:kiosk:attendance_summary:{$today}");
+            if ($alreadyScanned) {
+                throw new DomainException('Data kehadiran Anda untuk hari ini sudah tercatat sebelumnya. Terima kasih!');
+            }
 
-        return $attendance;
+            try {
+                $attendance = $this->recordAttendance([
+                    'employee_id' => $lockedEmployee->id,
+                    'date' => $today,
+                    'status' => $status,
+                ]);
+            } catch (UniqueConstraintViolationException) {
+                throw new DomainException('Data kehadiran Anda untuk hari ini sudah tercatat sebelumnya. Terima kasih!');
+            }
+
+            Cache::forget("hr:kiosk:attendance_summary:{$today}");
+
+            return $attendance;
+        });
     }
 
     /**

@@ -38,7 +38,7 @@ class NewAbnormalityNotification extends Notification implements ShouldQueue
             ->line('Sistem telah mencatat adanya temuan (abnormality) baru di area tanggung jawab Anda.')
             ->line('**Zona:** ' . $zoneName)
             ->line('**Tanggal Ditemukan:** ' . $foundDate)
-            ->line('**Deskripsi Temuan:** ' . ($this->abnormality->description ?? '-'))
+            ->line('**Deskripsi Temuan:** ' . ($this->abnormality->problem_description ?: '-'))
             ->action('Lihat Detail Temuan', $url)
             ->line('Mohon segera ditindaklanjuti untuk mempertahankan standar 5R.');
     }
@@ -48,7 +48,7 @@ class NewAbnormalityNotification extends Notification implements ShouldQueue
         return [
             'abnormality_id' => $this->abnormality->id,
             'zone_id' => $this->abnormality->zone_id,
-            'description' => $this->abnormality->description,
+            'description' => $this->abnormality->problem_description,
         ];
     }
 }

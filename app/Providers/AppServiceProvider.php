@@ -31,9 +31,15 @@ use App\Repositories\Eloquent\MonthlyScheduleRepository;
 use App\Repositories\Eloquent\SchedulePicRepository;
 use App\Repositories\Eloquent\WorkstationRepository;
 use App\Repositories\Eloquent\ZoneRepository;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Middleware\TrustProxies;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Events\RoleAttachedEvent;
@@ -61,6 +67,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->configureRuntimeHardening();
+        $this->configureRateLimiters();
+
         Abnormality::observe(AbnormalityObserver::class);
 
         Item::observe(ItemObserver::class);
@@ -80,6 +89,58 @@ class AppServiceProvider extends ServiceProvider
             $modelName = class_basename($modelName);
 
             return 'Database\\Factories\\' . $modelName . 'Factory';
+        });
+    }
+
+    private function configureRuntimeHardening(): void
+    {
+        $strict = ! app()->isProduction();
+        Model::preventLazyLoading($strict);
+        Model::preventSilentlyDiscardingAttributes($strict);
+        Model::preventAccessingMissingAttributes($strict);
+
+        $trustedProxies = config('security.trusted_proxies', ['127.0.0.1', '::1']);
+        if ((is_array($trustedProxies) && $trustedProxies !== []) || (is_string($trustedProxies) && $trustedProxies !== '')) {
+            TrustProxies::at($trustedProxies);
+        }
+
+        if ((bool) config('security.force_https', false)
+            || (app()->environment('production') && str_starts_with((string) config('app.url', ''), 'https://'))) {
+            URL::forceScheme('https');
+        }
+    }
+
+    private function configureRateLimiters(): void
+    {
+        RateLimiter::for('kiosk-scan', function (Request $request): array {
+            $ip = (string) ($request->ip() ?? 'unknown');
+            $namecode = strtoupper(trim((string) $request->input('namecode', '')));
+            $identityKey = $namecode !== '' ? "{$ip}|{$namecode}" : $ip;
+
+            return [
+                Limit::perMinute(180)->by("kiosk-scan-ip:{$ip}"),
+                Limit::perMinute(6)->by("kiosk-scan-id:{$identityKey}"),
+            ];
+        });
+
+        RateLimiter::for('kiosk-read', function (Request $request): Limit {
+            $ip = (string) ($request->ip() ?? 'unknown');
+
+            return Limit::perMinute(120)->by("kiosk-read:{$ip}");
+        });
+
+        RateLimiter::for('api-authenticated', function (Request $request): Limit {
+            $identifier = $request->user()?->getAuthIdentifier();
+            $key = $identifier !== null ? (string) $identifier : (string) ($request->ip() ?? 'unknown');
+
+            return Limit::perMinute(180)->by("api-auth:{$key}");
+        });
+
+        RateLimiter::for('pin-change', function (Request $request): Limit {
+            $identifier = $request->user()?->getAuthIdentifier();
+            $key = $identifier !== null ? (string) $identifier : (string) ($request->ip() ?? 'unknown');
+
+            return Limit::perMinute(10)->by("pin-change:{$key}");
         });
     }
 }
