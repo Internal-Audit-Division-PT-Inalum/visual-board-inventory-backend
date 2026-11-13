@@ -69,7 +69,7 @@ class AbnormalityController extends Controller
         $abnormality = $this->repository->findById($id);
 
         if (! $abnormality) {
-            return ApiResponse::error('Abnormality not found', 404);
+            return ApiResponse::error('Abnormality not found', [], 404);
         }
 
         return ApiResponse::success(new AbnormalityResource($abnormality));
@@ -88,7 +88,7 @@ class AbnormalityController extends Controller
         $abnormality = $this->repository->findById($id);
 
         if (! $abnormality) {
-            return ApiResponse::error('Abnormality not found', 404);
+            return ApiResponse::error('Abnormality not found', [], 404);
         }
 
         $updatedAbnormality = $this->service->updateProgress(
@@ -116,7 +116,7 @@ class AbnormalityController extends Controller
         $abnormality = $this->repository->findById($id);
 
         if (! $abnormality) {
-            return ApiResponse::error('Abnormality not found', 404);
+            return ApiResponse::error('Abnormality not found', [], 404);
         }
 
         $this->service->deleteAbnormality($id);

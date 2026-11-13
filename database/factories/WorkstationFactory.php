@@ -5,6 +5,9 @@ namespace Database\Factories;
 use App\Domains\VisualBoard\Models\Workstation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<Workstation>
+ */
 class WorkstationFactory extends Factory
 {
     protected $model = Workstation::class;

@@ -98,6 +98,9 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
             ->count();
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getKaizenChampions(): array
     {
         $champions = $this->model->newQuery()
@@ -116,8 +119,9 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
         foreach ($champions as $champion) {
             $user = $champion->pic;
             if ($user) {
-                $score = $champion->kaizen_count * 15;
-                $department = $user->employee?->department?->name ?? 'Produksi';
+                $kaizenCount = (int) $champion->getAttribute('kaizen_count');
+                $score = $kaizenCount * 15;
+                $department = $user->employee?->department->name ?? 'Produksi';
 
                 $result[] = [
                     'rank' => $rank++,
@@ -125,7 +129,7 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
                     'name' => $user->name,
                     'department' => $department,
                     'score' => $score,
-                    'kaizen_count' => $champion->kaizen_count,
+                    'kaizen_count' => $kaizenCount,
                 ];
             }
         }
@@ -133,6 +137,9 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
         return $result;
     }
 
+    /**
+     * @return array<int, array{day: string, alert_count: int}>
+     */
     public function getAbnormalityTrend(int $days = 7): array
     {
         $startDate = Carbon::today()->subDays($days - 1);
@@ -154,7 +161,7 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
 
             $result[] = [
                 'day' => $dayName,
-                'alert_count' => $trends->has($dateStr) ? $trends->get($dateStr)->count : 0,
+                'alert_count' => (int) ($trends->get($dateStr)?->getAttribute('count') ?? 0),
             ];
         }
 
@@ -193,9 +200,9 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
             foreach ($months as $m) {
                 $record = $zoneData->firstWhere('month', $m);
                 $row['months'][$m] = [
-                    'temuan' => $record ? (int) $record->temuan : null,
-                    'tindak_lanjut' => $record ? (int) $record->tindak_lanjut : null,
-                    'belum_selesai' => $record ? (int) $record->belum_selesai : null,
+                    'temuan' => $record ? (int) $record->getAttribute('temuan') : null,
+                    'tindak_lanjut' => $record ? (int) $record->getAttribute('tindak_lanjut') : null,
+                    'belum_selesai' => $record ? (int) $record->getAttribute('belum_selesai') : null,
                 ];
             }
 
@@ -219,9 +226,9 @@ class AbnormalityRepository implements AbnormalityRepositoryInterface
         foreach ($months as $m) {
             $total = $allAggregates->get($m);
             $totalRow['months'][$m] = [
-                'temuan' => $total ? (int) $total->temuan : null,
-                'tindak_lanjut' => $total ? (int) $total->tindak_lanjut : null,
-                'belum_selesai' => $total ? (int) $total->belum_selesai : null,
+                'temuan' => $total ? (int) $total->getAttribute('temuan') : null,
+                'tindak_lanjut' => $total ? (int) $total->getAttribute('tindak_lanjut') : null,
+                'belum_selesai' => $total ? (int) $total->getAttribute('belum_selesai') : null,
             ];
         }
         $matrix[] = $totalRow;

@@ -6,6 +6,9 @@ use App\Domains\VisualBoard\Models\InspectionCriteria;
 use App\Domains\VisualBoard\Models\Zone;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<InspectionCriteria>
+ */
 class InspectionCriteriaFactory extends Factory
 {
     protected $model = InspectionCriteria::class;

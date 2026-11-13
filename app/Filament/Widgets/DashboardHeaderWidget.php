@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Domains\Core\Models\User;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,13 +16,20 @@ class DashboardHeaderWidget extends Widget
 
     public function getUserName(): string
     {
-        return Auth::user()?->name ?? 'User';
+        $user = Auth::user();
+
+        return $user instanceof User ? $user->name : 'User';
     }
 
     public function getRoleName(): string
     {
-        $role = Auth::user()?->roles?->first()?->name ?? 'Guest';
+        $user = Auth::user();
+        if (! $user instanceof User) {
+            return 'Guest';
+        }
 
-        return ucwords(str_replace('_', ' ', $role));
+        $role = $user->getRoleNames()->first();
+
+        return ucwords(str_replace('_', ' ', is_string($role) ? $role : 'Guest'));
     }
 }

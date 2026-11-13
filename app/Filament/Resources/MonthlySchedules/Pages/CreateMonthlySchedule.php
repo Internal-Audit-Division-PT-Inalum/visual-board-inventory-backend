@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\MonthlySchedules\Pages;
 
 use App\Domains\VisualBoard\Models\InspectionCriteria;
+use App\Domains\VisualBoard\Models\MonthlySchedule;
 use App\Domains\VisualBoard\Models\ScheduleRecord;
 use App\Filament\Resources\MonthlySchedules\MonthlyScheduleResource;
 use Filament\Resources\Pages\CreateRecord;
@@ -14,6 +15,9 @@ class CreateMonthlySchedule extends CreateRecord
     protected function afterCreate(): void
     {
         $monthlySchedule = $this->record;
+        if (! $monthlySchedule instanceof MonthlySchedule) {
+            return;
+        }
 
         $activeCriteria = InspectionCriteria::where('zone_id', $monthlySchedule->zone_id)
             ->where('is_active', true)

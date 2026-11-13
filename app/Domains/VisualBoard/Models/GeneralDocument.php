@@ -4,6 +4,7 @@ namespace App\Domains\VisualBoard\Models;
 
 use App\Shared\Concerns\HasUlid;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -11,7 +12,10 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class GeneralDocument extends Model implements HasMedia
 {
-    use HasFactory, HasUlid, InteractsWithMedia;
+    /** @use HasFactory<Factory<self>> */
+    use HasFactory;
+
+    use HasUlid, InteractsWithMedia;
 
     protected $fillable = [
         'domain',
@@ -31,6 +35,9 @@ class GeneralDocument extends Model implements HasMedia
 
     /**
      * Scope: dokumen milik Tab GENERAL (Visual Board 5R — Basic Rule, Flow Process, Kaizen Report)
+     *
+     * @param  Builder<self>  $query
+     * @return Builder<self>
      */
     public function scopeVisualBoard(Builder $query): Builder
     {
@@ -39,6 +46,9 @@ class GeneralDocument extends Model implements HasMedia
 
     /**
      * Scope: dokumen milik Tab ORGANISASI (Bagan Struktur, Map Area 5R)
+     *
+     * @param  Builder<self>  $query
+     * @return Builder<self>
      */
     public function scopeOrganization(Builder $query): Builder
     {
@@ -47,6 +57,9 @@ class GeneralDocument extends Model implements HasMedia
 
     /**
      * Scope: dokumen milik Tab ASESMEN
+     *
+     * @param  Builder<self>  $query
+     * @return Builder<self>
      */
     public function scopeAssessment(Builder $query): Builder
     {

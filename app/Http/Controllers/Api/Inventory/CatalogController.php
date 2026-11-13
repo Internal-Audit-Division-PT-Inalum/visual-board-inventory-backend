@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Api\Inventory;
 
 use App\Domains\Inventory\Models\Item;
 use App\Http\Controllers\Controller;
+use App\Services\Inventory\InventoryService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CatalogController extends Controller
 {
-    public function index(Request $request)
+    public function __construct(
+        private InventoryService $inventoryService,
+    ) {}
+
+    public function index(Request $request): JsonResponse
     {
         $items = Item::with(['location', 'media'])
             ->where('is_active', true)
@@ -23,18 +28,12 @@ class CatalogController extends Controller
             return response()->json(null, 304);
         }
 
-        $itemIds = $items->where('type', 'asset')->pluck('id');
+        $assetIds = $items->where('type', 'asset')
+            ->map(fn (Item $item): string => $item->id)
+            ->values()
+            ->all();
 
-        $borrowedQuantities = [];
-        if ($itemIds->isNotEmpty()) {
-            $borrowedQuantities = DB::table('asset_loans')
-                ->whereIn('item_id', $itemIds)
-                ->whereNull('fully_returned_at')
-                ->select('item_id', DB::raw('SUM(quantity - returned_quantity) as total_borrowed'))
-                ->groupBy('item_id')
-                ->pluck('total_borrowed', 'item_id')
-                ->toArray();
-        }
+        $borrowedQuantities = $this->inventoryService->getActiveBorrowedQuantitiesByItemIds($assetIds);
 
         $data = $items->map(function ($item) use ($borrowedQuantities) {
             $borrowedQty = $item->type === 'asset'

@@ -14,7 +14,7 @@ class InventoryProvisionUsers extends Command
 
     protected $description = 'Provision synthetic users for employees without users';
 
-    public function handle()
+    public function handle(): int
     {
         $this->info('Provisioning users for employees...');
 
@@ -37,5 +37,7 @@ class InventoryProvisionUsers extends Command
         }
 
         $this->info("Provisioned $count users successfully.");
+
+        return self::SUCCESS;
     }
 }

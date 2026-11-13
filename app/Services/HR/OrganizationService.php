@@ -2,6 +2,8 @@
 
 namespace App\Services\HR;
 
+use App\Domains\HR\Models\Department;
+use App\Domains\HR\Models\Employee;
 use App\Repositories\Contracts\DepartmentRepositoryInterface;
 use App\Repositories\Contracts\EmployeeRepositoryInterface;
 
@@ -12,12 +14,18 @@ class OrganizationService
         private EmployeeRepositoryInterface $employeeRepository
     ) {}
 
-    public function createDepartment(array $data)
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function createDepartment(array $data): Department
     {
         return $this->departmentRepository->create($data);
     }
 
-    public function updateDepartment(string $id, array $data)
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function updateDepartment(string $id, array $data): ?Department
     {
         $this->departmentRepository->update($id, $data);
 
@@ -29,12 +37,18 @@ class OrganizationService
         $this->departmentRepository->delete($id);
     }
 
-    public function createEmployee(array $data)
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function createEmployee(array $data): Employee
     {
         return $this->employeeRepository->create($data);
     }
 
-    public function updateEmployee(string $id, array $data)
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function updateEmployee(string $id, array $data): ?Employee
     {
         $this->employeeRepository->update($id, $data);
 

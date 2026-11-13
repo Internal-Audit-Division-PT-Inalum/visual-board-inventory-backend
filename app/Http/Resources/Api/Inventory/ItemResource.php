@@ -2,11 +2,18 @@
 
 namespace App\Http\Resources\Api\Inventory;
 
+use App\Domains\Inventory\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin Item
+ */
 class ItemResource extends JsonResource
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [

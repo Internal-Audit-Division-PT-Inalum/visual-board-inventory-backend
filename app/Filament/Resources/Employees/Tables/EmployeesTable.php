@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Employees\Tables;
 
 use App\Domains\Core\Models\User;
+use App\Domains\HR\Models\Employee;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
@@ -151,6 +152,10 @@ class EmployeesTable
                         ->action(function (Collection $records) {
                             $count = 0;
                             foreach ($records->whereNull('user_id') as $employee) {
+                                if (! $employee instanceof Employee) {
+                                    continue;
+                                }
+
                                 $syntheticEmail = strtolower($employee->namecode) . '@synthetic.inalum.id';
                                 $user = User::firstOrCreate(
                                     ['email' => $syntheticEmail],

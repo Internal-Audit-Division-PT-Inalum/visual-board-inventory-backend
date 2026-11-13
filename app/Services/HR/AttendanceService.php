@@ -19,6 +19,9 @@ class AttendanceService
         protected EmployeeRepositoryInterface $employeeRepository
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function recordAttendance(array $data): EmployeeAttendance
     {
         return $this->attendanceRepository->create($data);
@@ -71,6 +74,8 @@ class AttendanceService
     /**
      * Get attendance summary for today's Kiosk display.
      * Cached for 5 minutes.
+     *
+     * @return array<string, mixed>
      */
     public function getKioskSummary(): array
     {

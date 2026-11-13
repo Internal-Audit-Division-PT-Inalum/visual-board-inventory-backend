@@ -6,6 +6,9 @@ use Illuminate\Http\JsonResponse;
 
 final class ApiResponse
 {
+    /**
+     * @param  array<string, mixed>  $meta
+     */
     public static function success(
         mixed $data = null,
         string $message = 'Request berhasil diproses.',
@@ -20,6 +23,10 @@ final class ApiResponse
         ], $status);
     }
 
+    /**
+     * @param  array<mixed>  $errors
+     * @param  array<string, mixed>  $meta
+     */
     public static function error(
         string $message = 'Terjadi kesalahan pada server.',
         array $errors = [],

@@ -24,7 +24,6 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -63,8 +62,8 @@ class ItemsTable
                     ->label('Stok Saat Ini')
                     ->numeric()
                     ->sortable()
-                    ->color(fn (Model $record): string => $record->current_stock <= $record->minimum_stock ? 'danger' : 'primary')
-                    ->weight(fn (Model $record): string => $record->current_stock <= $record->minimum_stock ? 'bold' : 'regular'),
+                    ->color(fn (Item $record): string => $record->current_stock <= $record->minimum_stock ? 'danger' : 'primary')
+                    ->weight(fn (Item $record): string => $record->current_stock <= $record->minimum_stock ? 'bold' : 'regular'),
                 TextColumn::make('minimum_stock')
                     ->label('Stok Minimum')
                     ->numeric()

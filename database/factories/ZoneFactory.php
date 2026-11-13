@@ -5,6 +5,9 @@ namespace Database\Factories;
 use App\Domains\VisualBoard\Models\Zone;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<Zone>
+ */
 class ZoneFactory extends Factory
 {
     protected $model = Zone::class;

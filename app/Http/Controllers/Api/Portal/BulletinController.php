@@ -9,6 +9,7 @@ use App\Services\Portal\PortalService;
 use App\Shared\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * @group Portal Domain
@@ -47,7 +48,7 @@ class BulletinController extends Controller
     /**
      * Get Bulletin Document
      */
-    public function kioskDocument(Bulletin $bulletin)
+    public function kioskDocument(Bulletin $bulletin): BinaryFileResponse
     {
         if (! $bulletin->document_url) {
             abort(404, 'Dokumen tidak ditemukan.');

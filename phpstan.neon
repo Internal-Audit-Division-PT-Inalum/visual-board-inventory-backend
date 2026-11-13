@@ -1,6 +1,5 @@
 includes:
     - vendor/larastan/larastan/extension.neon
-    - phpstan-baseline.neon
 
 parameters:
     paths:
@@ -8,5 +7,5 @@ parameters:
         - routes/
         - database/
 
-    # Level 5 adalah standar enterprise untuk proyek Laravel 12 + Filament v3
-    level: 5
+    # Level 6 adalah standar enterprise untuk proyek Laravel 12 + Filament v3
+    level: 6

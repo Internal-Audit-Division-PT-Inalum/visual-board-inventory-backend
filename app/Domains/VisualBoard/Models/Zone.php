@@ -4,6 +4,7 @@ namespace App\Domains\VisualBoard\Models;
 
 use App\Domains\HR\Models\Employee;
 use App\Shared\Concerns\HasUlid;
+use Database\Factories\ZoneFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,12 +19,16 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property string $area
  * @property string|null $pic_utama_id
  * @property string|null $pic_pengganti_id
+ * @property-read string|null $standard_image_url
  * @property-read Employee|null $picUtama
  * @property-read Employee|null $picPengganti
  */
 class Zone extends Model implements HasMedia
 {
-    use HasFactory, HasUlid, InteractsWithMedia, SoftDeletes;
+    /** @use HasFactory<ZoneFactory> */
+    use HasFactory;
+
+    use HasUlid, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -60,11 +65,17 @@ class Zone extends Model implements HasMedia
         return $this->belongsTo(Employee::class, 'pic_pengganti_id');
     }
 
+    /**
+     * @return HasMany<InspectionCriteria, $this>
+     */
     public function criterias(): HasMany
     {
         return $this->hasMany(InspectionCriteria::class);
     }
 
+    /**
+     * @return HasMany<Workstation, $this>
+     */
     public function workstations(): HasMany
     {
         return $this->hasMany(Workstation::class);

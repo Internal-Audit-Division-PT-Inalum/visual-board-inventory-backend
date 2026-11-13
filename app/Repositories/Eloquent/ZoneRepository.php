@@ -8,11 +8,17 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ZoneRepository implements ZoneRepositoryInterface
 {
+    /**
+     * @return Collection<int, Zone>
+     */
     public function getAllWithPics(): Collection
     {
         return Zone::with(['picUtama.user', 'picPengganti.user'])->get();
     }
 
+    /**
+     * @return Collection<int, Zone>
+     */
     public function getAllActive(): Collection
     {
         return Zone::with(['picUtama.user', 'picPengganti.user'])

@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers\Api\Inventory;
 
+use App\Domains\Inventory\Models\Item;
 use App\Domains\Inventory\Models\Location;
 use App\Http\Controllers\Controller;
+use App\Services\Inventory\InventoryService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class KioskController extends Controller
 {
-    public function locations(Request $request)
+    public function __construct(
+        private InventoryService $inventoryService,
+    ) {}
+
+    public function locations(Request $request): JsonResponse
     {
-        $data = Cache::remember('inventory:kiosk:locations', now()->addMinutes(5), function () {
+        $data = Cache::remember('inventory:kiosk:locations', now()->addMinutes(5), function (): array {
             $locations = Location::with(['items' => function ($query) {
                 $query->where('is_active', true)->with('media');
             }])->get();
@@ -26,23 +32,14 @@ class KioskController extends Controller
                 }
             }
 
-            $borrowedQuantities = [];
-            if (! empty($assetIds)) {
-                $borrowedQuantities = DB::table('asset_loans')
-                    ->whereIn('item_id', $assetIds)
-                    ->whereNull('fully_returned_at')
-                    ->select('item_id', DB::raw('SUM(quantity - returned_quantity) as total_borrowed'))
-                    ->groupBy('item_id')
-                    ->pluck('total_borrowed', 'item_id')
-                    ->toArray();
-            }
+            $borrowedQuantities = $this->inventoryService->getActiveBorrowedQuantitiesByItemIds($assetIds);
 
-            return $locations->map(function ($location) use ($borrowedQuantities) {
+            return $locations->map(function (Location $location) use ($borrowedQuantities): array {
                 return [
                     'id' => $location->id,
                     'name' => $location->name,
                     'code' => $location->code,
-                    'items' => $location->items->map(function ($item) use ($borrowedQuantities) {
+                    'items' => $location->items->map(function (Item $item) use ($borrowedQuantities): array {
                         $stockStatus = 'ok';
                         if ($item->current_stock <= 0) {
                             $stockStatus = 'empty';
@@ -65,9 +62,9 @@ class KioskController extends Controller
                             'stock_status' => $stockStatus,
                             'borrowed_quantity' => $borrowedQty,
                         ];
-                    })->values()->toArray(),
+                    })->values()->all(),
                 ];
-            })->values()->toArray();
+            })->values()->all();
         });
 
         return response()->json([

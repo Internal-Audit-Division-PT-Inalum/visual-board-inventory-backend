@@ -25,6 +25,8 @@ class VisualBoardService
     /**
      * Get aggregated data for the TV Kiosk Dashboard.
      * The result is cached for 1 minute to prevent database overload from auto-refreshing kiosks.
+     *
+     * @return array<string, mixed>
      */
     public function getKioskData(?int $month = null, ?int $year = null): array
     {
@@ -139,7 +141,7 @@ class VisualBoardService
         $totalEvaluated = 0;
         $totalPassed = 0;
         foreach ($scheduleMatrix as $matrixRow) {
-            foreach ($matrixRow['days'] as $status) {
+            foreach (get_object_vars($matrixRow['days']) as $status) {
                 if (in_array($status, ['ok_tanpa_5r', 'ok_dengan_5r', 'abnormal'])) {
                     $totalEvaluated++;
                     if (in_array($status, ['ok_tanpa_5r', 'ok_dengan_5r'])) {
@@ -150,9 +152,9 @@ class VisualBoardService
         }
         $compliancePercentage = $totalEvaluated > 0 ? round(($totalPassed / $totalEvaluated) * 100, 1) : 0;
 
-        $open = $abnormalitySummary['open'] ?? 0;
-        $inProgress = $abnormalitySummary['in_progress'] ?? 0;
-        $resolved = $abnormalitySummary['resolved'] ?? 0;
+        $open = $abnormalitySummary['open'];
+        $inProgress = $abnormalitySummary['in_progress'];
+        $resolved = $abnormalitySummary['resolved'];
         $totalAbnormalities = $open + $inProgress + $resolved;
         $resolutionRate = $totalAbnormalities > 0 ? round(($resolved / $totalAbnormalities) * 100, 1) : 0;
 
@@ -185,9 +187,9 @@ class VisualBoardService
 
         return [
             'pic' => $picData,
-            'open_abnormality_count' => ($abnormalitySummary['open'] ?? 0) + ($abnormalitySummary['in_progress'] ?? 0),
+            'open_abnormality_count' => $open + $inProgress,
             'abnormality_resolved_today' => $resolvedToday,
-            'abnormality_in_progress' => $abnormalitySummary['in_progress'] ?? 0,
+            'abnormality_in_progress' => $inProgress,
             'compliance_percentage' => $compliancePercentage,
             'compliance_mom_trend' => 'up',
             'resolution_rate' => $resolutionRate,
@@ -224,6 +226,8 @@ class VisualBoardService
     /**
      * Get Check Sheet (Schedule Records) for a specific Zone for today.
      * Digunakan oleh endpoint Barcode Scanner.
+     *
+     * @return array<string, mixed>
      */
     public function getZoneTodayCheckSheet(string $zonaId): array
     {

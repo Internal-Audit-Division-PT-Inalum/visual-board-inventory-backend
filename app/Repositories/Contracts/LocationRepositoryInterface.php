@@ -9,6 +9,8 @@ interface LocationRepositoryInterface
 {
     /**
      * Get all active locations.
+     *
+     * @return Collection<int, Location>
      */
     public function getAll(): Collection;
 
@@ -19,11 +21,15 @@ interface LocationRepositoryInterface
 
     /**
      * Create a new location.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): Location;
 
     /**
      * Update a location.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function update(string $id, array $data): Location;
 

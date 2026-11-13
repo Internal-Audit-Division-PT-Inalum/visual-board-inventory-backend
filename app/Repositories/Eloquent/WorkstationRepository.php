@@ -5,8 +5,13 @@ namespace App\Repositories\Eloquent;
 use App\Domains\VisualBoard\Models\MasterWorkstationCriteria;
 use App\Domains\VisualBoard\Models\Workstation;
 use App\Repositories\Contracts\WorkstationRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @extends BaseRepository<Workstation>
+ */
 class WorkstationRepository extends BaseRepository implements WorkstationRepositoryInterface
 {
     public function __construct(Workstation $model)
@@ -14,6 +19,26 @@ class WorkstationRepository extends BaseRepository implements WorkstationReposit
         parent::__construct($model);
     }
 
+    /**
+     * @return Builder<Workstation>
+     */
+    protected function newQuery(): Builder
+    {
+        return $this->model->newQuery();
+    }
+
+    /**
+     * @return Collection<int, Workstation>
+     */
+    public function all(): Collection
+    {
+        return $this->newQuery()->get();
+    }
+
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, Workstation>
+     */
     public function getAllPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = $this->model->newQuery();
@@ -33,7 +58,9 @@ class WorkstationRepository extends BaseRepository implements WorkstationReposit
 
     public function findWithItems(string $id): ?Workstation
     {
-        $workstation = $this->model->with(['items', 'zone', 'zone.media', 'media', 'employee', 'employee.media', 'employee.user'])->find($id);
+        $workstation = $this->model->newQuery()
+            ->with(['items', 'zone', 'zone.media', 'media', 'employee', 'employee.media', 'employee.user'])
+            ->find($id);
 
         if ($workstation) {
             $workstation->master_criterias = MasterWorkstationCriteria::where('is_active', true)->orderBy('criteria_code')->get();
@@ -44,7 +71,8 @@ class WorkstationRepository extends BaseRepository implements WorkstationReposit
 
     public function findByEmployeeWithItems(string $employeeId): ?Workstation
     {
-        $workstation = $this->model->with(['items', 'zone', 'zone.media', 'media', 'employee', 'employee.media', 'employee.user'])
+        $workstation = $this->model->newQuery()
+            ->with(['items', 'zone', 'zone.media', 'media', 'employee', 'employee.media', 'employee.user'])
             ->where('employee_id', $employeeId)
             ->first();
 

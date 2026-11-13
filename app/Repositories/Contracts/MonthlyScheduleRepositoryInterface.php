@@ -4,18 +4,20 @@ namespace App\Repositories\Contracts;
 
 use App\Domains\VisualBoard\Models\MonthlySchedule;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @extends RepositoryInterface<MonthlySchedule>
+ */
 interface MonthlyScheduleRepositoryInterface extends RepositoryInterface
 {
     public function findById(string $id): ?MonthlySchedule;
 
-    public function findByZoneAndPeriod(string $zoneId, string $periodMonth): ?Model;
+    public function findByZoneAndPeriod(string $zoneId, string $periodMonth): ?MonthlySchedule;
 
     /**
-     * @return Collection
+     * @return Collection<int, MonthlySchedule>
      */
-    public function getAllByPeriod(string $periodMonth);
+    public function getAllByPeriod(string $periodMonth): Collection;
 
-    public function getScheduleWithRecords(string $scheduleId): ?Model;
+    public function getScheduleWithRecords(string $scheduleId): ?MonthlySchedule;
 }

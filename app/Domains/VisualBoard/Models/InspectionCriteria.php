@@ -3,6 +3,7 @@
 namespace App\Domains\VisualBoard\Models;
 
 use App\Shared\Concerns\HasUlid;
+use Database\Factories\InspectionCriteriaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class InspectionCriteria extends Model
 {
-    use HasFactory, HasUlid, SoftDeletes;
+    /** @use HasFactory<InspectionCriteriaFactory> */
+    use HasFactory;
+
+    use HasUlid, SoftDeletes;
 
     protected $fillable = [
         'zone_id',
@@ -24,6 +28,9 @@ class InspectionCriteria extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * @return BelongsTo<Zone, $this>
+     */
     public function zone(): BelongsTo
     {
         return $this->belongsTo(Zone::class);

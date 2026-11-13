@@ -10,6 +10,9 @@ interface ItemRepositoryInterface
 {
     /**
      * Get paginated items with optional filters.
+     *
+     * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, Item>
      */
     public function getAllPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator;
 
@@ -25,11 +28,15 @@ interface ItemRepositoryInterface
 
     /**
      * Create a new item.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): Item;
 
     /**
      * Update an item.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function update(string $id, array $data): Item;
 
@@ -40,6 +47,8 @@ interface ItemRepositoryInterface
 
     /**
      * Get items with current_stock <= minimum_stock.
+     *
+     * @return Collection<int, Item>
      */
     public function getLowStockItems(): Collection;
 }

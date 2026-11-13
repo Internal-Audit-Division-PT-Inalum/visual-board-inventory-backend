@@ -4,6 +4,7 @@ namespace App\Domains\HR\Models;
 
 use App\Domains\Core\Models\User;
 use App\Shared\Concerns\HasUlid;
+use Database\Factories\EmployeeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,7 +24,10 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  */
 class Employee extends Model implements HasMedia
 {
-    use HasFactory, HasUlid, InteractsWithMedia, SoftDeletes;
+    /** @use HasFactory<EmployeeFactory> */
+    use HasFactory;
+
+    use HasUlid, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -63,16 +67,25 @@ class Employee extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsTo<Department, $this>
+     */
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
 
+    /**
+     * @return BelongsTo<Position, $this>
+     */
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
     }
 
+    /**
+     * @return HasMany<EmployeeAttendance, $this>
+     */
     public function attendances(): HasMany
     {
         return $this->hasMany(EmployeeAttendance::class);

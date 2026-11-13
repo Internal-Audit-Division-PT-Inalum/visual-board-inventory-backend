@@ -6,6 +6,9 @@ use App\Domains\VisualBoard\Models\MonthlySchedule;
 use App\Domains\VisualBoard\Models\Zone;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<MonthlySchedule>
+ */
 class MonthlyScheduleFactory extends Factory
 {
     protected $model = MonthlySchedule::class;

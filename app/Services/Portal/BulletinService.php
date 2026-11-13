@@ -11,6 +11,9 @@ class BulletinService
         protected BulletinRepositoryInterface $bulletinRepository
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function createBulletin(array $data): Bulletin
     {
         return $this->bulletinRepository->create($data);

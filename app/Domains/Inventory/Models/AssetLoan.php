@@ -4,6 +4,7 @@ namespace App\Domains\Inventory\Models;
 
 use App\Domains\HR\Models\Employee;
 use App\Shared\Concerns\HasUlid;
+use Database\Factories\AssetLoanFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AssetLoan extends Model
 {
-    use HasFactory, HasUlid;
+    /** @use HasFactory<AssetLoanFactory> */
+    use HasFactory;
+
+    use HasUlid;
 
     protected $fillable = [
         'item_id',

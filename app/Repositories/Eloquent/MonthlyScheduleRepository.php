@@ -4,8 +4,12 @@ namespace App\Repositories\Eloquent;
 
 use App\Domains\VisualBoard\Models\MonthlySchedule;
 use App\Repositories\Contracts\MonthlyScheduleRepositoryInterface;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @extends BaseRepository<MonthlySchedule>
+ */
 class MonthlyScheduleRepository extends BaseRepository implements MonthlyScheduleRepositoryInterface
 {
     public function __construct(MonthlySchedule $model)
@@ -13,31 +17,49 @@ class MonthlyScheduleRepository extends BaseRepository implements MonthlySchedul
         parent::__construct($model);
     }
 
-    public function findById(string $id): ?MonthlySchedule
+    /**
+     * @return Builder<MonthlySchedule>
+     */
+    protected function newQuery(): Builder
     {
-        /** @var MonthlySchedule|null */
-        return $this->model->find($id);
+        return $this->model->newQuery();
     }
 
-    public function findByZoneAndPeriod(string $zoneId, string $periodMonth): ?Model
+    /**
+     * @return Collection<int, MonthlySchedule>
+     */
+    public function all(): Collection
     {
-        return $this->model
+        return $this->newQuery()->get();
+    }
+
+    public function findById(string $id): ?MonthlySchedule
+    {
+        return $this->model->newQuery()->find($id);
+    }
+
+    public function findByZoneAndPeriod(string $zoneId, string $periodMonth): ?MonthlySchedule
+    {
+        return $this->model->newQuery()
             ->where('zone_id', $zoneId)
             ->where('period_month', $periodMonth)
             ->first();
     }
 
-    public function getAllByPeriod(string $periodMonth)
+    /**
+     * @return Collection<int, MonthlySchedule>
+     */
+    public function getAllByPeriod(string $periodMonth): Collection
     {
-        return $this->model
+        return $this->model->newQuery()
             ->with(['scheduleRecords.criteria', 'scheduleRecords.workstation', 'scheduleRecords.masterWorkstationCriteria', 'zone.picUtama', 'zone.picPengganti'])
             ->where('period_month', $periodMonth)
             ->get();
     }
 
-    public function getScheduleWithRecords(string $scheduleId): ?Model
+    public function getScheduleWithRecords(string $scheduleId): ?MonthlySchedule
     {
-        return $this->model
+        return $this->model->newQuery()
             ->with(['scheduleRecords.criteria', 'scheduleRecords.workstation', 'scheduleRecords.masterWorkstationCriteria', 'zone.picUtama', 'zone.picPengganti'])
             ->find($scheduleId);
     }

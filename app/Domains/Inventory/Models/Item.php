@@ -4,6 +4,7 @@ namespace App\Domains\Inventory\Models;
 
 use App\Domains\VisualBoard\Models\Workstation;
 use App\Shared\Concerns\HasUlid;
+use Database\Factories\ItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,7 +30,10 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  */
 class Item extends Model implements HasMedia
 {
-    use HasFactory, HasUlid, InteractsWithMedia, SoftDeletes;
+    /** @use HasFactory<ItemFactory> */
+    use HasFactory;
+
+    use HasUlid, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'location_id',
@@ -85,9 +89,9 @@ class Item extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
+            ->nonQueued()
             ->width(400)
             ->height(400)
-            ->format('webp')
-            ->nonQueued();
+            ->format('webp');
     }
 }

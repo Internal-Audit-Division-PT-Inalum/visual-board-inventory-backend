@@ -15,7 +15,7 @@ class AbnormalityFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      *
-     * @var string
+     * @var class-string<Abnormality>
      */
     protected $model = Abnormality::class;
 

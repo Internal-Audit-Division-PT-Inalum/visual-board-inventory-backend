@@ -6,6 +6,9 @@ use App\Domains\Core\Models\User;
 use App\Domains\Portal\Models\Bulletin;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<Bulletin>
+ */
 class BulletinFactory extends Factory
 {
     protected $model = Bulletin::class;

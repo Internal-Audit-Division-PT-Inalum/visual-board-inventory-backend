@@ -22,6 +22,8 @@ class AbnormalityService
 
     /**
      * Create a new abnormality.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function createAbnormality(array $data): Abnormality
     {
@@ -137,6 +139,8 @@ class AbnormalityService
 
     /**
      * Update an abnormality and handle notifications.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function updateAbnormality(string $id, array $data): Abnormality
     {
@@ -164,6 +168,8 @@ class AbnormalityService
 
     /**
      * Verify an abnormality.
+     *
+     * @return array<string, mixed>
      */
     public function verifyAbnormality(string $id, User $user): array
     {

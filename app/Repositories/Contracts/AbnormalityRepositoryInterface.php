@@ -10,6 +10,9 @@ interface AbnormalityRepositoryInterface
 {
     /**
      * Get paginated abnormalities with optional filters.
+     *
+     * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, Abnormality>
      */
     public function getAllPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator;
 
@@ -20,11 +23,15 @@ interface AbnormalityRepositoryInterface
 
     /**
      * Create a new abnormality.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): Abnormality;
 
     /**
      * Update an abnormality.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function update(string $id, array $data): Abnormality;
 
@@ -42,6 +49,8 @@ interface AbnormalityRepositoryInterface
 
     /**
      * Get the latest unresolved abnormalities.
+     *
+     * @return Collection<int, Abnormality>
      */
     public function getLatestUnresolved(int $limit = 5): Collection;
 
@@ -52,11 +61,15 @@ interface AbnormalityRepositoryInterface
 
     /**
      * Get Kaizen champions (top 3 PICs with most resolved kaizen abnormalities).
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getKaizenChampions(): array;
 
     /**
      * Get Abnormality trend (alert count) for the last N days.
+     *
+     * @return array<int, array{day: string, alert_count: int}>
      */
     public function getAbnormalityTrend(int $days = 7): array;
 

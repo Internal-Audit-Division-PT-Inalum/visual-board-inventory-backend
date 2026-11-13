@@ -11,6 +11,9 @@ class DepartmentService
         protected DepartmentRepositoryInterface $departmentRepository
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function createDepartment(array $data): Department
     {
         return $this->departmentRepository->create($data);

@@ -14,6 +14,9 @@ class InventoryAuthService
 
     const WEAK_PINS = ['000000', '123456', '111111', '654321', '123123'];
 
+    /**
+     * @return array<string, mixed>
+     */
     public function login(string $namecode, string $pin): array
     {
         $employee = Employee::where('namecode', strtoupper($namecode))

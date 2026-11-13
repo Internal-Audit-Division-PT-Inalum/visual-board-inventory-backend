@@ -4,8 +4,13 @@ namespace App\Repositories\Eloquent;
 
 use App\Domains\HR\Models\Employee;
 use App\Repositories\Contracts\EmployeeRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @extends BaseRepository<Employee>
+ */
 class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInterface
 {
     public function __construct(Employee $model)
@@ -13,11 +18,31 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
         parent::__construct($model);
     }
 
-    public function findByNamecode(string $namecode): ?Employee
+    /**
+     * @return Builder<Employee>
+     */
+    protected function newQuery(): Builder
     {
-        return $this->model->where('namecode', $namecode)->first();
+        return $this->model->newQuery();
     }
 
+    /**
+     * @return Collection<int, Employee>
+     */
+    public function all(): Collection
+    {
+        return $this->newQuery()->get();
+    }
+
+    public function findByNamecode(string $namecode): ?Employee
+    {
+        return $this->model->newQuery()->where('namecode', $namecode)->first();
+    }
+
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, Employee>
+     */
     public function getAllPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = $this->model->newQuery();

@@ -7,6 +7,9 @@ use App\Domains\VisualBoard\Models\MonthlySchedule;
 use App\Domains\VisualBoard\Models\SchedulePic;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<SchedulePic>
+ */
 class SchedulePicFactory extends Factory
 {
     protected $model = SchedulePic::class;

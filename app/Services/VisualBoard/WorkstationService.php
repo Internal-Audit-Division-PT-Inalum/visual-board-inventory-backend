@@ -11,12 +11,18 @@ class WorkstationService
         private WorkstationRepositoryInterface $repository
     ) {}
 
-    public function createWorkstation(array $data)
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function createWorkstation(array $data): Workstation
     {
         return $this->repository->create($data);
     }
 
-    public function updateWorkstation(string $id, array $data)
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function updateWorkstation(string $id, array $data): ?Workstation
     {
         $this->repository->update($id, $data);
 

@@ -7,6 +7,9 @@ use App\Domains\VisualBoard\Models\MonthlySchedule;
 use App\Domains\VisualBoard\Models\ScheduleRecord;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<ScheduleRecord>
+ */
 class ScheduleRecordFactory extends Factory
 {
     protected $model = ScheduleRecord::class;

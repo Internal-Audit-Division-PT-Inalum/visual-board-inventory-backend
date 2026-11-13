@@ -4,6 +4,7 @@ namespace App\Filament\Resources\MonthlySchedules\RelationManagers;
 
 use App\Domains\VisualBoard\Models\InspectionCriteria;
 use App\Domains\VisualBoard\Models\MasterWorkstationCriteria;
+use App\Domains\VisualBoard\Models\MonthlySchedule;
 use App\Domains\VisualBoard\Models\ScheduleRecord;
 use App\Domains\VisualBoard\Models\Workstation;
 use Filament\Actions\Action;
@@ -87,10 +88,14 @@ class ScheduleRecordsRelationManager extends RelationManager
                     ->modalSubmitActionLabel('Simpan Ceklis')
                     ->form(function (RelationManager $livewire) {
                         $monthlySchedule = $livewire->getOwnerRecord();
+                        if (! $monthlySchedule instanceof MonthlySchedule) {
+                            return [];
+                        }
+
                         $records = ScheduleRecord::where('monthly_schedule_id', $monthlySchedule->id)
                             ->with(['criteria', 'workstation', 'masterWorkstationCriteria'])
                             ->get()
-                            ->sortBy(function ($record) {
+                            ->sortBy(function (ScheduleRecord $record): string {
                                 $orderMap = [
                                     'Tidak ada barang yang tidak digunakan' => 1,
                                     'Barang / Peralatan terletak di area label' => 2,
@@ -121,11 +126,11 @@ class ScheduleRecordsRelationManager extends RelationManager
                                 ];
 
                                 if ($record->criteria) {
-                                    $descOrder = str_pad($orderMap[$record->criteria->description] ?? 99, 2, '0', STR_PAD_LEFT);
+                                    $descOrder = str_pad((string) ($orderMap[$record->criteria->description] ?? 99), 2, '0', STR_PAD_LEFT);
 
                                     return $record->criteria->item_group . '_' . $record->criteria->criteria_code . '_' . $descOrder;
                                 } elseif ($record->workstation && $record->masterWorkstationCriteria) {
-                                    $descOrder = str_pad($orderMap[$record->masterWorkstationCriteria->standard_criteria] ?? 99, 2, '0', STR_PAD_LEFT);
+                                    $descOrder = str_pad((string) ($orderMap[$record->masterWorkstationCriteria->standard_criteria] ?? 99), 2, '0', STR_PAD_LEFT);
 
                                     return 'Meja Kerja: ' . $record->workstation->name . '_' . $record->masterWorkstationCriteria->criteria_code . '_' . $descOrder;
                                 }
@@ -140,7 +145,7 @@ class ScheduleRecordsRelationManager extends RelationManager
                                 ->schema([
                                     Select::make('day')
                                         ->label('Tanggal Inspeksi')
-                                        ->options(array_combine(range(1, 31), range(1, 31)))
+                                        ->options(array_combine(range(1, 31), array_map('strval', range(1, 31))))
                                         ->required()
                                         ->live()
                                         ->afterStateUpdated(function ($set, $state) use ($records) {
@@ -171,17 +176,17 @@ class ScheduleRecordsRelationManager extends RelationManager
                         $workstationFields = [];
 
                         foreach ($records as $record) {
+                            $isGeneral = false;
                             if ($record->criteria) {
                                 $label = "[{$record->criteria->item_group}] {$record->criteria->criteria_code} - {$record->criteria->description}";
-                                $targetArray = &$generalFields;
+                                $isGeneral = true;
                             } elseif ($record->workstation && $record->masterWorkstationCriteria) {
                                 $label = "[Meja {$record->workstation->name}] {$record->masterWorkstationCriteria->criteria_code} - {$record->masterWorkstationCriteria->standard_criteria}";
-                                $targetArray = &$workstationFields;
                             } else {
                                 continue;
                             }
 
-                            $targetArray[] = ToggleButtons::make("record_{$record->id}")
+                            $toggle = ToggleButtons::make("record_{$record->id}")
                                 ->label($label)
                                 ->options([
                                     'ok_tanpa_5r' => 'OK Tanpa 5R',
@@ -200,6 +205,12 @@ class ScheduleRecordsRelationManager extends RelationManager
                                 ])
                                 ->inline()
                                 ->columnSpanFull();
+
+                            if ($isGeneral) {
+                                $generalFields[] = $toggle;
+                            } else {
+                                $workstationFields[] = $toggle;
+                            }
                         }
 
                         if (! empty($generalFields)) {
@@ -223,6 +234,10 @@ class ScheduleRecordsRelationManager extends RelationManager
                     ->action(function (array $data, RelationManager $livewire) {
                         $day = $data['day'];
                         $monthlySchedule = $livewire->getOwnerRecord();
+                        if (! $monthlySchedule instanceof MonthlySchedule) {
+                            return;
+                        }
+
                         $records = ScheduleRecord::where('monthly_schedule_id', $monthlySchedule->id)->get();
 
                         DB::transaction(function () use ($data, $day, $records) {
@@ -257,6 +272,10 @@ class ScheduleRecordsRelationManager extends RelationManager
                     ->modalDescription('Aksi ini akan menarik semua Kriteria Inspeksi yang aktif di zona ini dan belum ada di daftar, lalu menambahkannya secara otomatis.')
                     ->action(function (RelationManager $livewire) {
                         $monthlySchedule = $livewire->getOwnerRecord();
+                        if (! $monthlySchedule instanceof MonthlySchedule) {
+                            return;
+                        }
+
                         $activeCriteria = InspectionCriteria::where('zone_id', $monthlySchedule->zone_id)
                             ->where('is_active', true)
                             ->get();

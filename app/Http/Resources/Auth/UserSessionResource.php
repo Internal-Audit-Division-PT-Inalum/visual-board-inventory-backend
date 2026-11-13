@@ -2,11 +2,18 @@
 
 namespace App\Http\Resources\Auth;
 
+use App\Domains\HR\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin Employee
+ */
 class UserSessionResource extends JsonResource
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [

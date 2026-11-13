@@ -9,11 +9,15 @@ interface ZoneRepositoryInterface
 {
     /**
      * Get all zones with their PICs (Utama & Pengganti).
+     *
+     * @return Collection<int, Zone>
      */
     public function getAllWithPics(): Collection;
 
     /**
      * Get all active zones.
+     *
+     * @return Collection<int, Zone>
      */
     public function getAllActive(): Collection;
 

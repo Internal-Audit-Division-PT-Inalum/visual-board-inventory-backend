@@ -2,11 +2,18 @@
 
 namespace App\Http\Resources\Api\Inventory;
 
+use App\Domains\Inventory\Models\InventoryLedger;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin InventoryLedger
+ */
 class LedgerResource extends JsonResource
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [
@@ -24,10 +31,10 @@ class LedgerResource extends JsonResource
                 'name' => $this->user?->name,
                 'employee_name' => $this->user?->employee?->name,
             ],
-            'item' => $this->whenLoaded('item', fn () => [
+            'item' => $this->whenLoaded('item', fn () => $this->item ? [
                 'id' => $this->item->id,
                 'current_stock' => $this->item->current_stock,
-            ]),
+            ] : null),
             'created_at' => $this->created_at,
         ];
     }

@@ -3,12 +3,16 @@
 namespace App\Domains\VisualBoard\Models;
 
 use App\Shared\Concerns\HasUlid;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TrendAbnormality extends Model
 {
-    use HasFactory, HasUlid;
+    /** @use HasFactory<Factory<self>> */
+    use HasFactory;
+
+    use HasUlid;
 
     protected $fillable = [
         'year',

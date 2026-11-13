@@ -3,10 +3,12 @@
 namespace App\Domains\Inventory\Models;
 
 use App\Shared\Concerns\HasUlid;
+use Database\Factories\LocationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
@@ -14,10 +16,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $code
  * @property string|null $description
  * @property bool $is_active
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class Location extends Model
 {
-    use HasFactory, HasUlid, SoftDeletes;
+    /** @use HasFactory<LocationFactory> */
+    use HasFactory;
+
+    use HasUlid, SoftDeletes;
 
     protected $fillable = [
         'name',

@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Api\VisualBoard;
 
+use App\Domains\VisualBoard\Models\GeneralDocument;
+use App\Domains\VisualBoard\Models\Zone;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -57,37 +59,43 @@ class VisualBoardResource extends JsonResource
             'kaizen_champions' => $this->resource['kaizen_champions'],
             'schedule_matrix' => $this->resource['schedule_matrix'],
             'weekly_trend' => $this->resource['weekly_trend'],
-            'zones' => collect($this->resource['zones'] ?? [])->map(function ($zone) {
-                return [
-                    'id' => $zone->id,
-                    'name' => $zone->name,
-                    'area' => $zone->area,
-                    'standard_image_url' => $zone->getFirstMediaUrl('standard_images') ?: null,
-                    'pic_utama' => $zone->picUtama ? ($zone->picUtama->name ?? $zone->picUtama->namecode ?? ($zone->picUtama->user ? $zone->picUtama->user->name : null)) : null,
-                    'pic_pengganti' => $zone->picPengganti ? ($zone->picPengganti->name ?? $zone->picPengganti->namecode ?? ($zone->picPengganti->user ? $zone->picPengganti->user->name : null)) : null,
-                ];
-            }),
+            'zones' => collect(is_iterable($this->resource['zones'] ?? null) ? $this->resource['zones'] : [])
+                ->filter(fn (mixed $zone): bool => $zone instanceof Zone)
+                ->map(function (Zone $zone): array {
+                    return [
+                        'id' => $zone->id,
+                        'name' => $zone->name,
+                        'area' => $zone->area,
+                        'standard_image_url' => $zone->getFirstMediaUrl('standard_images') ?: null,
+                        'pic_utama' => $zone->picUtama ? ($zone->picUtama->name ?? $zone->picUtama->namecode ?? ($zone->picUtama->user ? $zone->picUtama->user->name : null)) : null,
+                        'pic_pengganti' => $zone->picPengganti ? ($zone->picPengganti->name ?? $zone->picPengganti->namecode ?? ($zone->picPengganti->user ? $zone->picPengganti->user->name : null)) : null,
+                    ];
+                })->values()->all(),
             'trend_matrix' => $this->resource['trend_matrix'] ?? [],
-            'reference_docs' => collect($this->resource['reference_docs'] ?? [])->map(function ($doc) {
-                return [
-                    'id' => $doc->id,
-                    'title' => $doc->title,
-                    'description' => $doc->description,
-                    'category' => $doc->category,
-                    'document_url' => $doc->getFirstMediaUrl('document'),
-                    'mime_type' => $doc->getFirstMedia('document')?->mime_type,
-                ];
-            }),
-            'assessment_docs' => collect($this->resource['assessment_docs'] ?? [])->map(function ($doc) {
-                return [
-                    'id' => $doc->id,
-                    'title' => $doc->title,
-                    'description' => $doc->description,
-                    'category' => $doc->category,
-                    'document_url' => $doc->getFirstMediaUrl('document'),
-                    'mime_type' => $doc->getFirstMedia('document')?->mime_type,
-                ];
-            }),
+            'reference_docs' => collect(is_iterable($this->resource['reference_docs'] ?? null) ? $this->resource['reference_docs'] : [])
+                ->filter(fn (mixed $doc): bool => $doc instanceof GeneralDocument)
+                ->map(function (GeneralDocument $doc): array {
+                    return [
+                        'id' => $doc->id,
+                        'title' => $doc->title,
+                        'description' => $doc->description,
+                        'category' => $doc->category,
+                        'document_url' => $doc->getFirstMediaUrl('document'),
+                        'mime_type' => $doc->getFirstMedia('document')?->mime_type,
+                    ];
+                })->values()->all(),
+            'assessment_docs' => collect(is_iterable($this->resource['assessment_docs'] ?? null) ? $this->resource['assessment_docs'] : [])
+                ->filter(fn (mixed $doc): bool => $doc instanceof GeneralDocument)
+                ->map(function (GeneralDocument $doc): array {
+                    return [
+                        'id' => $doc->id,
+                        'title' => $doc->title,
+                        'description' => $doc->description,
+                        'category' => $doc->category,
+                        'document_url' => $doc->getFirstMediaUrl('document'),
+                        'mime_type' => $doc->getFirstMedia('document')?->mime_type,
+                    ];
+                })->values()->all(),
             'five_r_evaluations' => $this->resource['five_r_evaluations'] ?? [],
         ];
     }

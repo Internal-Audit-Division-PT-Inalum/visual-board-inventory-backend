@@ -2,11 +2,19 @@
 
 namespace App\Http\Resources\Api\VisualBoard;
 
+use App\Domains\VisualBoard\Models\MonthlySchedule;
+use App\Domains\VisualBoard\Models\ScheduleRecord;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin MonthlySchedule
+ */
 class ScheduleResource extends JsonResource
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [
@@ -15,21 +23,21 @@ class ScheduleResource extends JsonResource
             'status' => $this->status,
             'approval_data' => $this->approval_data,
             'zone' => [
-                'id' => $this->zone->id ?? null,
-                'name' => $this->zone->name ?? null,
-                'area' => $this->zone->area ?? null,
-                'pic_utama' => $this->zone->picUtama->name ?? null,
+                'id' => $this->zone?->id,
+                'name' => $this->zone?->name,
+                'area' => $this->zone?->area,
+                'pic_utama' => $this->zone?->picUtama?->name,
             ],
-            'records' => $this->whenLoaded('scheduleRecords', function () {
-                return $this->scheduleRecords->map(function ($record) {
+            'records' => $this->whenLoaded('scheduleRecords', function (): array {
+                return $this->scheduleRecords->map(function (ScheduleRecord $record): array {
                     return [
                         'record_id' => $record->id,
-                        'criteria_group' => $record->criteria->item_group ?? null,
-                        'criteria_code' => $record->criteria->criteria_code ?? null,
-                        'criteria_desc' => $record->criteria->description ?? null,
+                        'criteria_group' => $record->criteria?->item_group,
+                        'criteria_code' => $record->criteria?->criteria_code,
+                        'criteria_desc' => $record->criteria?->description,
                         'days_data' => $record->days_data,
                     ];
-                });
+                })->values()->all();
             }),
         ];
     }

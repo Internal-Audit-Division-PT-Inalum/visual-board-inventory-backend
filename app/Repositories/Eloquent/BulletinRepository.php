@@ -4,8 +4,12 @@ namespace App\Repositories\Eloquent;
 
 use App\Domains\Portal\Models\Bulletin;
 use App\Repositories\Contracts\BulletinRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @extends BaseRepository<Bulletin>
+ */
 class BulletinRepository extends BaseRepository implements BulletinRepositoryInterface
 {
     public function __construct(Bulletin $model)
@@ -13,6 +17,25 @@ class BulletinRepository extends BaseRepository implements BulletinRepositoryInt
         parent::__construct($model);
     }
 
+    /**
+     * @return Builder<Bulletin>
+     */
+    protected function newQuery(): Builder
+    {
+        return $this->model->newQuery();
+    }
+
+    /**
+     * @return Collection<int, Bulletin>
+     */
+    public function all(): Collection
+    {
+        return $this->newQuery()->get();
+    }
+
+    /**
+     * @return Collection<int, Bulletin>
+     */
     public function getActiveBulletins(int $limit = 10, ?string $type = null): Collection
     {
         $query = $this->model->newQuery()

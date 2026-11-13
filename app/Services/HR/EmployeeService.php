@@ -11,6 +11,9 @@ class EmployeeService
         protected EmployeeRepositoryInterface $employeeRepository
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function createEmployee(array $data): Employee
     {
         return $this->employeeRepository->create($data);

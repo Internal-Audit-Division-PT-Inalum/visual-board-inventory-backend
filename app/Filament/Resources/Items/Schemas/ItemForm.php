@@ -46,7 +46,7 @@ class ItemForm
                     ->minValue(0)
                     ->default(0)
                     ->disabled(fn (string $operation): bool => $operation === 'edit')
-                    ->helperText(fn (string $operation): ?string => $operation === 'edit' ? 'Stok tidak dapat diubah langsung saat edit barang demi menjaga audit trail ledger. Gunakan aksi "Koreksi Stok" di tabel barang.' : 'Stok awal barang saat pertama kali didaftarkan.')
+                    ->helperText(fn (string $operation): string => $operation === 'edit' ? 'Stok tidak dapat diubah langsung saat edit barang demi menjaga audit trail ledger. Gunakan aksi "Koreksi Stok" di tabel barang.' : 'Stok awal barang saat pertama kali didaftarkan.')
                     ->dehydrated(fn (string $operation): bool => $operation !== 'edit'),
                 TextInput::make('minimum_stock')
                     ->label('Stok Minimum')

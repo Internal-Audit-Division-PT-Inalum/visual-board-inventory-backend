@@ -4,6 +4,7 @@ namespace App\Domains\Core\Models;
 
 use App\Domains\HR\Models\Employee;
 use App\Shared\Concerns\HasUlid;
+use Database\Factories\UserFactory;
 use DomainException;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -22,6 +23,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
+    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, HasUlid, Notifiable {
         HasRoles::bootHasRoles as spatieBootHasRoles;
         HasRoles::removeRole as spatieRemoveRole;

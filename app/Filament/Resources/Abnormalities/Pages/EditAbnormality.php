@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Abnormalities\Pages;
 
+use App\Domains\VisualBoard\Models\Abnormality;
 use App\Filament\Resources\Abnormalities\AbnormalityResource;
 use App\Services\VisualBoard\AbnormalityService;
 use Filament\Actions\DeleteAction;
@@ -16,6 +17,10 @@ class EditAbnormality extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        if (! $record instanceof Abnormality) {
+            return parent::handleRecordUpdate($record, $data);
+        }
+
         return app(AbnormalityService::class)->updateAbnormality($record->id, $data);
     }
 

@@ -11,11 +11,14 @@ class StoreDepartmentRequest extends FormRequest
         return true;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
             'name' => 'required|string|max:255',
-            'parent_id' => 'nullable|string|exists:departments,id',
+            'division' => 'nullable|string|max:255',
             'manager_id' => 'nullable|string|exists:users,id',
             'is_active' => 'boolean',
         ];

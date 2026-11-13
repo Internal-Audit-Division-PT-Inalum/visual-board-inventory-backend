@@ -5,7 +5,12 @@ namespace App\Repositories\Eloquent;
 use App\Domains\HR\Models\Employee;
 use App\Domains\HR\Models\EmployeeAttendance;
 use App\Repositories\Contracts\EmployeeAttendanceRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @extends BaseRepository<EmployeeAttendance>
+ */
 class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAttendanceRepositoryInterface
 {
     public function __construct(EmployeeAttendance $model)
@@ -13,15 +18,34 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
         parent::__construct($model);
     }
 
+    /**
+     * @return Builder<EmployeeAttendance>
+     */
+    protected function newQuery(): Builder
+    {
+        return $this->model->newQuery();
+    }
+
+    /**
+     * @return Collection<int, EmployeeAttendance>
+     */
+    public function all(): Collection
+    {
+        return $this->newQuery()->get();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     public function getTodaySummary(string $date): array
     {
         $totalEmployees = Employee::where('is_active', true)->count();
 
-        $presentCount = $this->model->whereDate('date', $date)
+        $presentCount = $this->model->newQuery()->whereDate('date', $date)
             ->where('status', 'present')
             ->count();
 
-        $absences = $this->model->whereDate('date', $date)
+        $absences = $this->model->newQuery()->whereDate('date', $date)
             ->where('status', '!=', 'present')
             ->with(['employee:id,name,namecode,user_id,position_title'])
             ->get();
@@ -30,7 +54,7 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
         $leaveCount = $absences->where('status', 'leave')->count();
         $businessTripCount = $absences->where('status', 'business_trip')->count();
 
-        $unavailableToday = $absences->map(function ($attendance) {
+        $unavailableToday = $absences->map(function (EmployeeAttendance $attendance): array {
             $leaveType = 'special_leave';
             if ($attendance->status === 'sick') {
                 $leaveType = 'sick_leave';
@@ -47,7 +71,7 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
                 'leave_type' => $leaveType,
                 'avatar_url' => $attendance->employee->getFirstMediaUrl('avatar') ?: null,
             ];
-        })->values()->toArray();
+        })->values()->all();
 
         $employees = Employee::with(['user:id,name', 'department:id,name'])
             ->where('is_active', true)
@@ -55,9 +79,9 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
             ->orderBy('namecode', 'asc')
             ->get();
 
-        $attendancesToday = $this->model->whereDate('date', $date)->get()->keyBy('employee_id');
+        $attendancesToday = $this->model->newQuery()->whereDate('date', $date)->get()->keyBy('employee_id');
 
-        $divisionEmployees = $employees->map(function ($emp) use ($attendancesToday) {
+        $divisionEmployees = $employees->map(function (Employee $emp) use ($attendancesToday): array {
             $attendance = $attendancesToday->get($emp->id);
 
             return [
@@ -69,7 +93,7 @@ class EmployeeAttendanceRepository extends BaseRepository implements EmployeeAtt
                 'avatar_url' => $emp->getFirstMediaUrl('avatar') ?: null,
                 'today_status' => $attendance ? $attendance->status : null,
             ];
-        })->values()->toArray();
+        })->values()->all();
 
         return [
             'total_employees' => $totalEmployees,

@@ -11,6 +11,10 @@ class ItemRepository implements ItemRepositoryInterface
 {
     public function __construct(protected Item $model) {}
 
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, Item>
+     */
     public function getAllPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = $this->model->newQuery()->with(['location']);
@@ -50,11 +54,17 @@ class ItemRepository implements ItemRepositoryInterface
         return $this->model->with(['location'])->where('sku', $sku)->first();
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function create(array $data): Item
     {
         return $this->model->create($data);
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function update(string $id, array $data): Item
     {
         $item = $this->model->findOrFail($id);
@@ -67,9 +77,12 @@ class ItemRepository implements ItemRepositoryInterface
     {
         $item = $this->model->findOrFail($id);
 
-        return $item->delete();
+        return (bool) $item->delete();
     }
 
+    /**
+     * @return Collection<int, Item>
+     */
     public function getLowStockItems(): Collection
     {
         return $this->model->newQuery()

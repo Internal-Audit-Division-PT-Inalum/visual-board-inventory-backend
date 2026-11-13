@@ -4,6 +4,7 @@ namespace App\Domains\Inventory\Models;
 
 use App\Domains\Core\Models\User;
 use App\Shared\Concerns\HasUlid;
+use Database\Factories\InventoryLedgerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,8 @@ use Illuminate\Support\Carbon;
  * @property int $stock_after
  * @property string|null $notes
  * @property string|null $reference_number
+ * @property string|null $client_uuid
+ * @property string|null $occurred_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Item|null $item
@@ -28,7 +31,10 @@ use Illuminate\Support\Carbon;
  */
 class InventoryLedger extends Model
 {
-    use HasFactory, HasUlid;
+    /** @use HasFactory<InventoryLedgerFactory> */
+    use HasFactory;
+
+    use HasUlid;
 
     protected $fillable = [
         'client_uuid',

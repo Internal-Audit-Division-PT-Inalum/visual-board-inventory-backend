@@ -10,6 +10,9 @@ class LocationRepository implements LocationRepositoryInterface
 {
     public function __construct(protected Location $model) {}
 
+    /**
+     * @return Collection<int, Location>
+     */
     public function getAll(): Collection
     {
         return $this->model->newQuery()
@@ -26,11 +29,17 @@ class LocationRepository implements LocationRepositoryInterface
             ->find($id);
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function create(array $data): Location
     {
         return $this->model->create($data);
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function update(string $id, array $data): Location
     {
         $location = $this->model->findOrFail($id);

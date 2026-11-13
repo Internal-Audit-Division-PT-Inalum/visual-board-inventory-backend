@@ -253,6 +253,8 @@ class InventoryService
 
     /**
      * Riwayat transaksi per item (paginated, terbaru di atas).
+     *
+     * @return LengthAwarePaginator<int, InventoryLedger>
      */
     public function getLedgerHistory(string $identifier, int $perPage = 15): LengthAwarePaginator
     {
@@ -263,6 +265,34 @@ class InventoryService
             ->latest('occurred_at')
             ->latest('id')
             ->paginate($perPage);
+    }
+
+    /**
+     * Hitung total kuantitas aset yang sedang dipinjam (belum dikembalikan penuh) per item ID.
+     *
+     * @param  array<int, string>  $itemIds
+     * @return array<string, int>
+     */
+    public function getActiveBorrowedQuantitiesByItemIds(array $itemIds): array
+    {
+        if ($itemIds === []) {
+            return [];
+        }
+
+        $totals = [];
+
+        $rows = AssetLoan::query()
+            ->whereIn('item_id', $itemIds)
+            ->whereNull('fully_returned_at')
+            ->selectRaw('item_id, SUM(quantity - returned_quantity) as total_borrowed')
+            ->groupBy('item_id')
+            ->get();
+
+        foreach ($rows as $row) {
+            $totals[$row->item_id] = (int) $row->getAttribute('total_borrowed');
+        }
+
+        return $totals;
     }
 
     /**

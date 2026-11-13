@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api\Inventory;
 use App\Domains\Inventory\Models\AssetLoan;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Inventory\AssetLoanResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class LoanController extends Controller
 {
-    public function mine(Request $request)
+    public function mine(Request $request): JsonResponse|AnonymousResourceCollection
     {
         $user = $request->user();
 

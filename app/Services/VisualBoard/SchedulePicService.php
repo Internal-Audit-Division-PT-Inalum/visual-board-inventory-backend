@@ -11,6 +11,9 @@ class SchedulePicService
         protected SchedulePicRepositoryInterface $schedulePicRepository
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function assignPic(array $data): SchedulePic
     {
         return $this->schedulePicRepository->create($data);
