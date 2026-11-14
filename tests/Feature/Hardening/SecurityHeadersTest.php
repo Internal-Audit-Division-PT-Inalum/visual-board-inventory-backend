@@ -4,7 +4,6 @@ namespace Tests\Feature\Hardening;
 
 use App\Domains\Core\Models\User;
 use App\Domains\Inventory\Models\Location;
-use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Support\Facades\Config;
 use Spatie\Permission\Models\Role;
 
@@ -82,7 +81,7 @@ test('hsts header is emitted only when https is active or forced by security con
 });
 
 test('trusted proxy configuration resolves real client ip only from loopback reverse proxies', function () {
-    TrustProxies::at(['127.0.0.1', '::1']);
+    expect(config('security.trusted_proxies'))->toBe(['127.0.0.1', '::1']);
 
     $untrustedAttempt = $this->withServerVariables([
         'REMOTE_ADDR' => '198.51.100.77',

@@ -7,5 +7,5 @@ parameters:
         - routes/
         - database/
 
-    # Level 6 adalah standar enterprise untuk proyek Laravel 12 + Filament v3
+    # Level 6 adalah standar enterprise untuk proyek Laravel 13 + Filament v5
     level: 6
