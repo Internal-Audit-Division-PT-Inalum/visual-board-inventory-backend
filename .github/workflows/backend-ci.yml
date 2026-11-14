@@ -59,6 +59,20 @@ jobs:
       - name: Audit Composer Dependencies
         run: composer run audit:locked
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install NPM Dependencies & Audit
+        run: |
+          npm ci
+          npm audit --audit-level=moderate
+
+      - name: Build Backend Vite Assets
+        run: npm run build
+
       - name: Prepare Environment File
         run: |
           cp .env.example .env.testing

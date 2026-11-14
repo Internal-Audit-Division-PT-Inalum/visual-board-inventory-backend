@@ -42,6 +42,9 @@ test('api 404 responses still carry strict security headers', function () {
 });
 
 test('filament web and print routes receive web-compatible security headers', function () {
+    // Isolasi pengujian header HTTP dari keberadaan artefak build Vite lokal (public/build/manifest.json)
+    $this->withoutVite();
+
     $loginResponse = $this->get('/admin/login');
     $loginResponse->assertOk()
         ->assertHeader('X-Content-Type-Options', 'nosniff')
